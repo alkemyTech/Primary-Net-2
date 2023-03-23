@@ -14,6 +14,8 @@ namespace PrimatesWallet.Infrastructure.ServiceExtension
         {
 
         }
-  
+
+        public DbSet<Prueba> Pruebas { get; set; }
+
     }
 }
