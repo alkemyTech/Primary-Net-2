@@ -9,22 +9,19 @@ using System.Threading.Tasks;
 
 namespace PrimatesWallet.Infrastructure.ServiceExtension
 {
-    //public static class InfraestructureExtension
-    //{
-    //    public static IServiceCollection AddInfraestructureExtension(this IServiceCollection services, IConfiguration configuration)
-    //    {
-    //        services.AddDbContext<PrimatesDBContext>(options =>
-    //        {
-    //            options.UseSqlServer(
-    //                configuration.GetConnectionString("DefaultConnection")
-    //                );
+    public static class InfraestructureExtension
+    {
+        public static IServiceCollection AddInfraestructureServicesExtension(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddDbContext<PrimatesDBContext>(options =>
+            {
+                options.UseSqlServer(
+                    configuration.GetConnectionString("DefaultConnection")
+                    );
 
-    //        });
+            });
 
-    //        //services.AddScoped<IUnitOfWork, UnitOfWork>();
-    //        //services.AddScoped<IProductRepository, ProductRepository>();
-
-    //        return services;
-    //    }
-    //}
+            return services;
+        }
+    }
 }

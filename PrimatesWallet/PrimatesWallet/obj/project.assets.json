@@ -2225,11 +2225,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\samu\\Desktop\\PrimatesWallet\\PrimatesWallet\\PrimatesWallet\\PrimatesWallet.csproj",
+      "projectUniqueName": "C:\\Users\\samu\\Desktop\\Primates\\Primary-Net-2\\PrimatesWallet\\PrimatesWallet\\PrimatesWallet.csproj",
       "projectName": "PrimatesWallet",
-      "projectPath": "C:\\Users\\samu\\Desktop\\PrimatesWallet\\PrimatesWallet\\PrimatesWallet\\PrimatesWallet.csproj",
+      "projectPath": "C:\\Users\\samu\\Desktop\\Primates\\Primary-Net-2\\PrimatesWallet\\PrimatesWallet\\PrimatesWallet.csproj",
       "packagesPath": "C:\\Users\\samu\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\samu\\Desktop\\PrimatesWallet\\PrimatesWallet\\PrimatesWallet\\obj\\",
+      "outputPath": "C:\\Users\\samu\\Desktop\\Primates\\Primary-Net-2\\PrimatesWallet\\PrimatesWallet\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -2249,8 +2249,8 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "C:\\Users\\samu\\Desktop\\PrimatesWallet\\PrimatesWallet\\PrimatesWallet.Infrastructure\\PrimatesWallet.Infrastructure.csproj": {
-              "projectPath": "C:\\Users\\samu\\Desktop\\PrimatesWallet\\PrimatesWallet\\PrimatesWallet.Infrastructure\\PrimatesWallet.Infrastructure.csproj"
+            "C:\\Users\\samu\\Desktop\\Primates\\Primary-Net-2\\PrimatesWallet\\PrimatesWallet.Infrastructure\\PrimatesWallet.Infrastructure.csproj": {
+              "projectPath": "C:\\Users\\samu\\Desktop\\Primates\\Primary-Net-2\\PrimatesWallet\\PrimatesWallet.Infrastructure\\PrimatesWallet.Infrastructure.csproj"
             }
           }
         }

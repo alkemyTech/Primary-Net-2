@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "nVPRg1bRWOC5V2L7/H7sZL2OR+SKOHKPYjHexJ8S1ZofzaGwexr0pUPY/SISSVamuinbsWy2FXin8NkTzlTA2A==",
+  "dgSpecHash": "QrHzEb7QZmJIYgUAIudvHTyIS2s5pjUITObDUnp94Njcb2a+lM0p4/eiilF2XaL7Q6EebIQmXWsX7CL9e9rZJQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\samu\\Desktop\\PrimatesWallet\\PrimatesWallet\\PrimatesWallet\\PrimatesWallet.csproj",
+  "projectFilePath": "C:\\Users\\samu\\Desktop\\Primates\\Primary-Net-2\\PrimatesWallet\\PrimatesWallet\\PrimatesWallet.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\samu\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",
