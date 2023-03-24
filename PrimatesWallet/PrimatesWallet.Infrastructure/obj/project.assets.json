@@ -2057,6 +2057,9 @@
           "projectReferences": {
             "C:\\Users\\samu\\Desktop\\Primates\\Primary-Net-2\\PrimatesWallet\\Core\\PrimatesWallet.Core.csproj": {
               "projectPath": "C:\\Users\\samu\\Desktop\\Primates\\Primary-Net-2\\PrimatesWallet\\Core\\PrimatesWallet.Core.csproj"
+            },
+            "C:\\Users\\samu\\Desktop\\Primates\\Primary-Net-2\\PrimatesWallet\\PrimatesWallet.Core\\PrimatesWallet.Core.csproj": {
+              "projectPath": "C:\\Users\\samu\\Desktop\\Primates\\Primary-Net-2\\PrimatesWallet\\PrimatesWallet.Core\\PrimatesWallet.Core.csproj"
             }
           }
         }

@@ -10,15 +10,3 @@ C:\Users\samu\Desktop\PrimatesWallet\PrimatesWallet\PrimatesWallet.Services\obj\
 C:\Users\samu\Desktop\PrimatesWallet\PrimatesWallet\PrimatesWallet.Services\obj\Debug\net6.0\refint\PrimatesWallet.Services.dll
 C:\Users\samu\Desktop\PrimatesWallet\PrimatesWallet\PrimatesWallet.Services\obj\Debug\net6.0\PrimatesWallet.Services.pdb
 C:\Users\samu\Desktop\PrimatesWallet\PrimatesWallet\PrimatesWallet.Services\obj\Debug\net6.0\ref\PrimatesWallet.Services.dll
-C:\Users\samu\Desktop\Primates\Primary-Net-2\PrimatesWallet\PrimatesWallet.Services\bin\Debug\net6.0\PrimatesWallet.Services.deps.json
-C:\Users\samu\Desktop\Primates\Primary-Net-2\PrimatesWallet\PrimatesWallet.Services\bin\Debug\net6.0\PrimatesWallet.Services.dll
-C:\Users\samu\Desktop\Primates\Primary-Net-2\PrimatesWallet\PrimatesWallet.Services\bin\Debug\net6.0\PrimatesWallet.Services.pdb
-C:\Users\samu\Desktop\Primates\Primary-Net-2\PrimatesWallet\PrimatesWallet.Services\obj\Debug\net6.0\PrimatesWallet.Services.csproj.AssemblyReference.cache
-C:\Users\samu\Desktop\Primates\Primary-Net-2\PrimatesWallet\PrimatesWallet.Services\obj\Debug\net6.0\PrimatesWallet.Services.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\samu\Desktop\Primates\Primary-Net-2\PrimatesWallet\PrimatesWallet.Services\obj\Debug\net6.0\PrimatesWallet.Services.AssemblyInfoInputs.cache
-C:\Users\samu\Desktop\Primates\Primary-Net-2\PrimatesWallet\PrimatesWallet.Services\obj\Debug\net6.0\PrimatesWallet.Services.AssemblyInfo.cs
-C:\Users\samu\Desktop\Primates\Primary-Net-2\PrimatesWallet\PrimatesWallet.Services\obj\Debug\net6.0\PrimatesWallet.Services.csproj.CoreCompileInputs.cache
-C:\Users\samu\Desktop\Primates\Primary-Net-2\PrimatesWallet\PrimatesWallet.Services\obj\Debug\net6.0\PrimatesWallet.Services.dll
-C:\Users\samu\Desktop\Primates\Primary-Net-2\PrimatesWallet\PrimatesWallet.Services\obj\Debug\net6.0\refint\PrimatesWallet.Services.dll
-C:\Users\samu\Desktop\Primates\Primary-Net-2\PrimatesWallet\PrimatesWallet.Services\obj\Debug\net6.0\PrimatesWallet.Services.pdb
-C:\Users\samu\Desktop\Primates\Primary-Net-2\PrimatesWallet\PrimatesWallet.Services\obj\Debug\net6.0\ref\PrimatesWallet.Services.dll

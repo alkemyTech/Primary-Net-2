@@ -3,13 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimatesWallet", "PrimatesWallet\PrimatesWallet.csproj", "{482C6A44-EF41-4E9B-BDCE-20F6B577A289}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrimatesWallet", "PrimatesWallet\PrimatesWallet.csproj", "{482C6A44-EF41-4E9B-BDCE-20F6B577A289}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimatesWallet.Core", "Core\PrimatesWallet.Core.csproj", "{A94C9C68-E047-4C73-9030-BA02A2FE5AE0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrimatesWallet.Infrastructure", "PrimatesWallet.Infrastructure\PrimatesWallet.Infrastructure.csproj", "{199EC767-24C5-4410-86BC-57DA4C299083}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimatesWallet.Infrastructure", "PrimatesWallet.Infrastructure\PrimatesWallet.Infrastructure.csproj", "{199EC767-24C5-4410-86BC-57DA4C299083}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimatesWallet.Services", "PrimatesWallet.Services\PrimatesWallet.Services.csproj", "{BD61DFF8-5FB9-4F12-A3C1-BCDFC9E6F817}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrimatesWallet.Services", "PrimatesWallet.Services\PrimatesWallet.Services.csproj", "{BD61DFF8-5FB9-4F12-A3C1-BCDFC9E6F817}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +19,6 @@ Global
 		{482C6A44-EF41-4E9B-BDCE-20F6B577A289}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{482C6A44-EF41-4E9B-BDCE-20F6B577A289}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{482C6A44-EF41-4E9B-BDCE-20F6B577A289}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A94C9C68-E047-4C73-9030-BA02A2FE5AE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A94C9C68-E047-4C73-9030-BA02A2FE5AE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A94C9C68-E047-4C73-9030-BA02A2FE5AE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A94C9C68-E047-4C73-9030-BA02A2FE5AE0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{199EC767-24C5-4410-86BC-57DA4C299083}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{199EC767-24C5-4410-86BC-57DA4C299083}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{199EC767-24C5-4410-86BC-57DA4C299083}.Release|Any CPU.ActiveCfg = Release|Any CPU

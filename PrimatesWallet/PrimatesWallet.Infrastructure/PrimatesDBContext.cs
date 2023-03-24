@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PrimatesWallet.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +12,5 @@ namespace PrimatesWallet.Infrastructure
         public PrimatesDBContext(DbContextOptions<PrimatesDBContext> options) : base(options)
         {
         }
-
-        public DbSet<Prueba> Pruebas { get; set; }
-
     }
 }

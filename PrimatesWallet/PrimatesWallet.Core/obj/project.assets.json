@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\samu\\Desktop\\Primates\\Primary-Net-2\\PrimatesWallet\\Core\\PrimatesWallet.Core.csproj",
+      "projectUniqueName": "C:\\Users\\samu\\Desktop\\Primates\\Primary-Net-2\\PrimatesWallet\\PrimatesWallet.Core\\PrimatesWallet.Core.csproj",
       "projectName": "PrimatesWallet.Core",
-      "projectPath": "C:\\Users\\samu\\Desktop\\Primates\\Primary-Net-2\\PrimatesWallet\\Core\\PrimatesWallet.Core.csproj",
+      "projectPath": "C:\\Users\\samu\\Desktop\\Primates\\Primary-Net-2\\PrimatesWallet\\PrimatesWallet.Core\\PrimatesWallet.Core.csproj",
       "packagesPath": "C:\\Users\\samu\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\samu\\Desktop\\Primates\\Primary-Net-2\\PrimatesWallet\\Core\\obj\\",
+      "outputPath": "C:\\Users\\samu\\Desktop\\Primates\\Primary-Net-2\\PrimatesWallet\\PrimatesWallet.Core\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
