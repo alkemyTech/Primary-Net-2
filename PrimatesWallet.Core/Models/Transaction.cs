@@ -44,8 +44,8 @@ namespace PrimatesWallet.Core.Models
         //FK
         public int? to_account_id { get; set; }
 
-        [ForeignKey("account_id")]
         //Propiedad de navegación hacía la cuenta asociada a esta transacción
+        [ForeignKey("account_id")]
         public Account Account { get; set; }
 
         //Propiedad de navegación hacia el usuario asociado a esta transacción
@@ -54,7 +54,7 @@ namespace PrimatesWallet.Core.Models
 
         //Propiedad de navegación hacia la cuenta receptora (en caso de type = payment).
         [ForeignKey("to_account_id")]
-        public virtual Account ToAccount { get; set; }
+        public Account ToAccount { get; set; }
 
 
     }
