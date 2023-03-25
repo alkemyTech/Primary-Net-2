@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace PrimatesWallet.Core.Enums
 {
-    internal class TransactionType
+    public enum TransactionType
     {
+        topup,
+        payment
     }
 }
