@@ -10,6 +10,7 @@ namespace PrimatesWallet.Infrastructure
 
         }
 
+        public DbSet<Account> Accounts { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Catalogue> Catalogues { get; set; }
 
