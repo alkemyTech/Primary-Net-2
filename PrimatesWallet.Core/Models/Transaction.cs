@@ -14,6 +14,7 @@ namespace PrimatesWallet.Core.Models
     public class Transaction
     {
         [Key]
+        [Column("id")]
         public int Id { get; set; }
 
         [Required]
