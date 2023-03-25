@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PrimatesWallet.Core.Models;
 
 namespace PrimatesWallet.Infrastructure
 {
@@ -8,6 +9,9 @@ namespace PrimatesWallet.Infrastructure
         {
 
         }
+
+
+        public DbSet <Catalogue> Catalogues { get; set; }
 
     }
 }
