@@ -11,6 +11,7 @@ namespace PrimatesWallet.Infrastructure
         }
 
         public DbSet<Role> Roles { get; set; }
+        public DbSet<Catalogue> Catalogues { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -19,5 +20,6 @@ namespace PrimatesWallet.Infrastructure
                 .Property(x => x.Name)
                 .HasConversion<string>();
         }
+
     }
 }
