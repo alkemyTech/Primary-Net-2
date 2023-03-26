@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace PrimatesWallet.Core.Models
 {
-    [Table("Transaction")]
+
     public class Transaction
     {
         [Key]
@@ -35,25 +35,25 @@ namespace PrimatesWallet.Core.Models
 
         // FK not null
         [Required]
-        public int account_id { get; set; }
+        public int Account_Id { get; set; }
 
         //FK not null
-        [Required]
-        public int user_id { get; set; }
+        //[Required]
+        //public int User_Id { get; set; }
 
         //FK
-        public int? to_account_id { get; set; }
+        public int? To_Account_Id { get; set; }
 
         //Propiedad de navegación hacía la cuenta asociada a esta transacción
-        [ForeignKey("account_id")]
+        [ForeignKey("Account_Id")]
         public Account Account { get; set; }
 
         //Propiedad de navegación hacia el usuario asociado a esta transacción
-        [ForeignKey("user_id")]
-        public User User { get; set; }
+        //[ForeignKey("User_Id")]
+        //public User User { get; set; }
 
         //Propiedad de navegación hacia la cuenta receptora (en caso de type = payment).
-        [ForeignKey("to_account_id")]
+        [ForeignKey("To_Account_Id")]
         public Account ToAccount { get; set; }
 
 

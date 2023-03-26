@@ -14,7 +14,7 @@ namespace PrimatesWallet.Core.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
-        public int id { get; set; }
+        public int Id { get; set; }
         
         [Required]
         [MaxLength(7)]
