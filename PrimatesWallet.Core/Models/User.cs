@@ -34,8 +34,11 @@ namespace PrimatesWallet.Core.Models
         [Column("points", TypeName = "INT")]
         public int Points { get; set; }
 
+        [Required]
+        public int Rol_Id { get; set; }
+
         [ForeignKey("rol_id")]
-        public Role Rol_Id { get; set; }
+        public Role Role { get; set; }
 
         public List<Transaction> Transactions { get; set; }
 
