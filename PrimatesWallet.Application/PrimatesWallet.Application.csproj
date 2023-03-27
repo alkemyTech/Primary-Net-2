@@ -7,10 +7,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Folder Include="Interfaces\" />
 		<Folder Include="DTOS\" />
 		<Folder Include="Mapping\" />
-		<Folder Include="Services\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\PrimatesWallet.Core\PrimatesWallet.Core.csproj" />
 	</ItemGroup>
 
 </Project>
