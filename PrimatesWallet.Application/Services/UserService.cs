@@ -28,6 +28,9 @@ namespace PrimatesWallet.Application.Services
                 return user is null ?
                     throw new AppException("Usuario no encontrado",HttpStatusCode.NotFound)
                     : user; //OBS: Falta mapping para DTO (configuracion en equipo)
+
+                //si no existe el usuario lanzamos un exception personalizada
+                //en otra parte del codigo la atrapamos y le damos un formato
             }
             catch (Exception ex) 
             {
