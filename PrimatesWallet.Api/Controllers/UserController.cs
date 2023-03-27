@@ -25,7 +25,7 @@ namespace PrimatesWallet.Api.Controllers
             try
             {
                 var Users = await userService.GetUserById(id);
-                var response = new BaseResponse<User>("Operacion exitosa.", Users, (int)HttpStatusCode.OK);
+                var response = new BaseResponse<User>(ReplyMessage.MESSAGE_QUERY, Users, (int)HttpStatusCode.OK);
                 return Ok(response);
 
             } catch (AppException ex)

@@ -1,4 +1,5 @@
 ﻿using PrimatesWallet.Application.Exceptions;
+using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
 using PrimatesWallet.Core.Interfaces;
 using PrimatesWallet.Core.Models;
@@ -26,7 +27,7 @@ namespace PrimatesWallet.Application.Services
             {
                 var user = await unitOfWork.UserRepository.GetById(id);
                 return user is null ?
-                    throw new AppException("Usuario no encontrado",HttpStatusCode.NotFound)
+                    throw new AppException(ReplyMessage.MESSAGE_QUERY_EMPTY, HttpStatusCode.NotFound)
                     : user; //OBS: Falta mapping para DTO (configuracion en equipo)
 
                 //si no existe el usuario lanzamos un exception personalizada
