@@ -1,5 +1,8 @@
+
 using PrimatesWallet.Application.Interfaces;
 using PrimatesWallet.Application.Services;
+using PrimatesWallet.Infrastructure.Seed;
+
 using PrimatesWallet.Infrastructure.ServiceExtension;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,5 +29,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+PopulateDataBase.Seed(app.Services);
 
 app.Run();
