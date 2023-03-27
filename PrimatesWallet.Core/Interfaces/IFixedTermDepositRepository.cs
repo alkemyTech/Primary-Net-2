@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 
 namespace PrimatesWallet.Core.Interfaces
 {
-    public interface IRoleRepository : IGenericRepository<Role>
+    public interface IFixedTermDepositRepository : IGenericRepository<FixedTermDeposit>
     {
+
+
     }
 }

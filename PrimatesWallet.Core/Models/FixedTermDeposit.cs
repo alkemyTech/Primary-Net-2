@@ -12,13 +12,6 @@ namespace PrimatesWallet.Core.Models
         [Column("id")]
         public int Id { get; set; }
 
-        //[Required]
-        //[Column("user_id")]
-        //public int UserId { get; set; }
-
-        //[ForeignKey("UserId")]
-        //public User User { get; set; }
-
         [Required]
         [Column("account_id")]
         public int AccountId { get; set; }

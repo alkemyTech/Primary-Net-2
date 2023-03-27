@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PrimatesWallet.Core.Interfaces
+﻿namespace PrimatesWallet.Core.Interfaces
 {
-    public interface IUnitOfWotk : IDisposable
+    public interface IUnitOfWork : IDisposable
     {
+
+        IUserRepository UserRepository { get; }
+        ITransactionRepository Transactions { get; }
+
         IRoleRepository Roles { get; }
         int Save();
     }

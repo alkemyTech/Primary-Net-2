@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PrimatesWallet.Application.Interfaces
 {
-    public interface IRoleService
+    public interface IUserService
     {
     }
 }
