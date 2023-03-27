@@ -12,8 +12,8 @@ using PrimatesWallet.Infrastructure;
 namespace PrimatesWallet.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230326213746_first migration")]
-    partial class firstmigration
+    [Migration("20230327143428_initial migration")]
+    partial class initialmigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -55,6 +55,34 @@ namespace PrimatesWallet.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Accounts");
+                });
+
+            modelBuilder.Entity("PrimatesWallet.Core.Models.Catalogue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(500)")
+                        .HasColumnName("image");
+
+                    b.Property<int>("Points")
+                        .HasColumnType("int")
+                        .HasColumnName("points");
+
+                    b.Property<string>("ProductDescription")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(500)")
+                        .HasColumnName("product_description");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Catalogues");
                 });
 
             modelBuilder.Entity("PrimatesWallet.Core.Models.FixedTermDeposit", b =>
@@ -123,7 +151,8 @@ namespace PrimatesWallet.Infrastructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("Account_Id")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("account_id");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)")
@@ -131,7 +160,7 @@ namespace PrimatesWallet.Infrastructure.Migrations
 
                     b.Property<string>("Concept")
                         .IsRequired()
-                        .HasColumnType("VARCHAR")
+                        .HasColumnType("VARCHAR(50)")
                         .HasColumnName("concept");
 
                     b.Property<DateTime>("Date")
@@ -139,23 +168,19 @@ namespace PrimatesWallet.Infrastructure.Migrations
                         .HasColumnName("date");
 
                     b.Property<int?>("To_Account_Id")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("to_account_id");
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasColumnType("VARCHAR")
+                        .HasColumnType("VARCHAR(15)")
                         .HasColumnName("type");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Account_Id");
 
                     b.HasIndex("To_Account_Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Transactions");
                 });
@@ -171,22 +196,22 @@ namespace PrimatesWallet.Infrastructure.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("VARCHAR")
+                        .HasColumnType("VARCHAR(100)")
                         .HasColumnName("email");
 
                     b.Property<string>("First_Name")
                         .IsRequired()
-                        .HasColumnType("VARCHAR")
+                        .HasColumnType("VARCHAR(50)")
                         .HasColumnName("first_name");
 
                     b.Property<string>("Last_Name")
                         .IsRequired()
-                        .HasColumnType("VARCHAR")
+                        .HasColumnType("VARCHAR(50)")
                         .HasColumnName("last_name");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("VARCHAR")
+                        .HasColumnType("VARCHAR(max)")
                         .HasColumnName("password");
 
                     b.Property<int>("Points")
@@ -240,10 +265,6 @@ namespace PrimatesWallet.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("To_Account_Id");
 
-                    b.HasOne("PrimatesWallet.Core.Models.User", null)
-                        .WithMany("Transactions")
-                        .HasForeignKey("UserId");
-
                     b.Navigation("Account");
 
                     b.Navigation("ToAccount");
@@ -264,8 +285,6 @@ namespace PrimatesWallet.Infrastructure.Migrations
                 {
                     b.Navigation("Account")
                         .IsRequired();
-
-                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

@@ -5,10 +5,25 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PrimatesWallet.Infrastructure.Migrations
 {
-    public partial class firstmigration : Migration
+    public partial class initialmigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Catalogues",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    product_description = table.Column<string>(type: "VARCHAR(500)", nullable: false),
+                    image = table.Column<string>(type: "VARCHAR(500)", nullable: false),
+                    points = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Catalogues", x => x.id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Roles",
                 columns: table => new
@@ -29,10 +44,10 @@ namespace PrimatesWallet.Infrastructure.Migrations
                 {
                     user_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    first_name = table.Column<string>(type: "VARCHAR", nullable: false),
-                    last_name = table.Column<string>(type: "VARCHAR", nullable: false),
-                    email = table.Column<string>(type: "VARCHAR", nullable: false),
-                    password = table.Column<string>(type: "VARCHAR", nullable: false),
+                    first_name = table.Column<string>(type: "VARCHAR(50)", nullable: false),
+                    last_name = table.Column<string>(type: "VARCHAR(50)", nullable: false),
+                    email = table.Column<string>(type: "VARCHAR(100)", nullable: false),
+                    password = table.Column<string>(type: "VARCHAR(max)", nullable: false),
                     points = table.Column<int>(type: "INT", nullable: false),
                     Rol_Id = table.Column<int>(type: "int", nullable: false)
                 },
@@ -98,32 +113,26 @@ namespace PrimatesWallet.Infrastructure.Migrations
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    concept = table.Column<string>(type: "VARCHAR", nullable: false),
+                    concept = table.Column<string>(type: "VARCHAR(50)", nullable: false),
                     date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    type = table.Column<string>(type: "VARCHAR", nullable: false),
-                    Account_Id = table.Column<int>(type: "int", nullable: false),
-                    To_Account_Id = table.Column<int>(type: "int", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: true)
+                    type = table.Column<string>(type: "VARCHAR(15)", nullable: false),
+                    account_id = table.Column<int>(type: "int", nullable: false),
+                    to_account_id = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Transactions", x => x.id);
                     table.ForeignKey(
-                        name: "FK_Transactions_Accounts_Account_Id",
-                        column: x => x.Account_Id,
+                        name: "FK_Transactions_Accounts_account_id",
+                        column: x => x.account_id,
                         principalTable: "Accounts",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Transactions_Accounts_To_Account_Id",
-                        column: x => x.To_Account_Id,
+                        name: "FK_Transactions_Accounts_to_account_id",
+                        column: x => x.to_account_id,
                         principalTable: "Accounts",
                         principalColumn: "id");
-                    table.ForeignKey(
-                        name: "FK_Transactions_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "user_id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -138,19 +147,14 @@ namespace PrimatesWallet.Infrastructure.Migrations
                 column: "account_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transactions_Account_Id",
+                name: "IX_Transactions_account_id",
                 table: "Transactions",
-                column: "Account_Id");
+                column: "account_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transactions_To_Account_Id",
+                name: "IX_Transactions_to_account_id",
                 table: "Transactions",
-                column: "To_Account_Id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Transactions_UserId",
-                table: "Transactions",
-                column: "UserId");
+                column: "to_account_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_email",
@@ -166,6 +170,9 @@ namespace PrimatesWallet.Infrastructure.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Catalogues");
+
             migrationBuilder.DropTable(
                 name: "FixedTermDeposits");
 

@@ -15,6 +15,7 @@ namespace PrimatesWallet.Infrastructure
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<FixedTermDeposit> FixedTermDeposits { get; set; }
+        public DbSet<Catalogue> Catalogues { get; set; }
 
 
 
@@ -23,6 +24,10 @@ namespace PrimatesWallet.Infrastructure
             //pasamos el enum que contiene Admin, Regular a string
             modelBuilder.Entity<Role>()
                 .Property(x => x.Name)
+                .HasConversion<string>();
+
+            modelBuilder.Entity<Transaction>()
+                .Property(x => x.Type)
                 .HasConversion<string>();
         }
     }
