@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PrimatesWallet.Application.Mapping
 {
-    internal class AutoMapperProfile : Profile
+    public class AutoMapperProfile : Profile
     {
         public AutoMapperProfile()
         {

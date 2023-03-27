@@ -14,30 +14,5 @@ namespace PrimatesWallet.Infrastructure.repositories
         {
 
         }
-
-        public Task Add(FixedTermDeposit entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Delete(FixedTermDeposit entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<FixedTermDeposit>> GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<FixedTermDeposit> GetById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Update(FixedTermDeposit entity)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

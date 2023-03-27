@@ -6,6 +6,8 @@
         IUserRepository UserRepository { get; }
         ITransactionRepository Transactions { get; }
 
+        IFixedTermDepositRepository FixedTermDeposits { get; }
+
         int Save();
     }
 }
