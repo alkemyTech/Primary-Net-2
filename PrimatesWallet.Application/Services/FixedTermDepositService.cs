@@ -12,9 +12,9 @@ namespace PrimatesWallet.Application.Services
     public class FixedTermDepositService : IFixedTermDepositService
     {
 
-        public IUnitOfWotk _unitOfWotk;
+        public IUnitOfWork _unitOfWotk;
 
-        public FixedTermDepositService (IUnitOfWotk unitOfWotk)
+        public FixedTermDepositService (IUnitOfWork unitOfWotk)
         {
             _unitOfWotk = unitOfWotk;
         }

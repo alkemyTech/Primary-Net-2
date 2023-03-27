@@ -1,4 +1,6 @@
-﻿using System;
+﻿using PrimatesWallet.Core.Interfaces;
+using PrimatesWallet.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +8,11 @@ using System.Threading.Tasks;
 
 namespace PrimatesWallet.Infrastructure.repositories
 {
-    internal class RoleRepository
+    public class RoleRepository : GenericRepository<Role>, IRoleRepository
     {
+        public RoleRepository(ApplicationDbContext context) : base(context) 
+        {
+
+        }
     }
 }
