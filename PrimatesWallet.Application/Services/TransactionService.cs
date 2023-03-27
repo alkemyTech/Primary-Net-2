@@ -16,6 +16,29 @@ namespace PrimatesWallet.Application.Services
             _unitOfWork = unitOfWork;
         }
 
+        //Consultamos los datos requeridos
+
+        public async Task<IEnumerable<Transaction>> GetAllTransactions()
+        {
+            var TransactionsList = await _unitOfWork.Transactions.GetAll();
+            return TransactionsList;
+        }
+
+        public async Task<Transaction> GetTransactionById(int transactionId)
+        {
+            if (transactionId > 0)
+            {
+                var transactionById = await _unitOfWork.Transactions.GetById(transactionId);
+                if (transactionById != null)
+                {
+                    return transactionById;
+                }
+            }
+            return null;
+        }
+
+        //Insertamos, modificamos o eliminamos datos
+
         public async Task<bool> CreateTransaction(Transaction transaction)
         {
             if (transaction != null)
@@ -51,26 +74,7 @@ namespace PrimatesWallet.Application.Services
             return false;
         }
 
-        public async Task<IEnumerable<Transaction>> GetAllTransactions()
-        {
-            var TransactionsList = await _unitOfWork.Transactions.GetAll();
-            return TransactionsList;
-        }
-
-        public async Task<Transaction> GetTransactionById(int transactionId)
-        {
-            if (transactionId > 0)
-            {
-                var transactionById = await _unitOfWork.Transactions.GetById(transactionId);
-                if (transactionById != null)
-                {
-                    return transactionById;
-                }
-            }
-            return null;
-        }
-
-        // Es conveniente actualizar una transaccion?...
+        //Consultar que se puede o no actualizar...
         public async Task<bool> UpdateTransaction(Transaction transaction)
         {
             if (transaction != null)

@@ -5,13 +5,13 @@ namespace PrimatesWallet.Infrastructure.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _dbContext;
-        public ITransactionRepository Transaction { get; }
-        //EJ: public IUserRepository Users { get; }
+        public ITransactionRepository Transactions { get; }
+
 
         public UnitOfWork(ApplicationDbContext dbContext, ITransactionRepository transactionRepository)
         {
             _dbContext = dbContext;
-            Transaction = transactionRepository;
+            Transactions = transactionRepository;
 
         }
 
