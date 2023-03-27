@@ -16,9 +16,11 @@ namespace PrimatesWallet.Core.Models
         [Column("user_id")]
         public int UserId { get; set; }
 
+        [Required]
         [Column("first_name", TypeName = "VARCHAR")]
         public string First_Name { get; set; }
 
+        [Required]
         [Column("last_name", TypeName = "VARCHAR")]
         public string Last_Name { get; set; }
 
@@ -31,16 +33,17 @@ namespace PrimatesWallet.Core.Models
         [Column("password", TypeName = "VARCHAR")]
         public string Password { get; set; }
 
+
         [Column("points", TypeName = "INT")]
-        public int Points { get; set; }
+        public int Points { get; set; } = 0;
 
         [Required]
         public int Rol_Id { get; set; }
 
-        [ForeignKey("rol_id")]
+        [ForeignKey("Rol_Id")]
         public Role Role { get; set; }
 
-        public List<Transaction> Transactions { get; set; }
+        public List<Transaction> Transactions { get; set; } = new List<Transaction>();
 
         public Account Account { get; set; }
 

@@ -13,7 +13,7 @@ namespace PrimatesWallet.Infrastructure
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Role> Roles { get; set; }
-        public DbSet<Catalogue> Catalogues { get; set; }
+        public DbSet<FixedTermDeposit> FixedTermDeposits { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
