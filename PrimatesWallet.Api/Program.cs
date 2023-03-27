@@ -1,7 +1,8 @@
 using PrimatesWallet.Infrastructure.ServiceExtension;
+using PrimatesWallet.Application.ServiceExtension;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddDIApplication(builder.Configuration);
 // Add services to the container.
 builder.Services.AddDIServices(builder.Configuration);
 builder.Services.AddControllers();
