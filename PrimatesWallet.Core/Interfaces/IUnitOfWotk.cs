@@ -6,6 +6,7 @@
         IUserRepository UserRepository { get; }
         ITransactionRepository Transactions { get; }
 
+        IRoleRepository Roles { get; }
         int Save();
     }
 }

@@ -8,6 +8,11 @@ namespace PrimatesWallet.Infrastructure.Repositories
         private readonly IFixedTermDepositRepository FixedTermDeposits;
         public ITransactionRepository Transactions { get; }
         public IUserRepository UserRepository { get; }
+        public IRoleRepository Roles { get; }
+
+        //EJ: public IUserRepository Users { get; }
+
+       
 
         public UnitOfWork(ApplicationDbContext dbContext, ITransactionRepository transactionRepository , IFixedTermDepositRepository fixedTermDepositRepository, IUserRepository userRepository)
         {
@@ -15,6 +20,9 @@ namespace PrimatesWallet.Infrastructure.Repositories
             Transactions = transactionRepository;
             UserRepository = userRepository;
             FixedTermDeposits = fixedTermDepositRepository;
+            Roles = roleRepository;
+            //EJ: Users = userRepository; 
+
         }
 
         public int Save()

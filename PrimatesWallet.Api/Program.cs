@@ -1,5 +1,3 @@
-
-
 using PrimatesWallet.Application.Interfaces;
 using PrimatesWallet.Application.Services;
 using PrimatesWallet.Infrastructure.Seed;
