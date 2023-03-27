@@ -18,12 +18,12 @@ namespace PrimatesWallet.Core.Models
         
         [Required]
         [MaxLength(7)]
-        [Column("name",TypeName ="VARCHAR(7)")]
+        [Column("name",TypeName ="VARCHAR(15)")]
         public RoleName Name { get; set; }
 
         [Required]
         [StringLength(255, MinimumLength = 10)]
-        [Column("description",TypeName = "VARCHAR")]
+        [Column("description",TypeName = "VARCHAR(500)")]
         public string Description { get; set; }
     }
 }
