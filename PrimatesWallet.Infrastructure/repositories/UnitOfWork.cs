@@ -11,13 +11,17 @@ namespace PrimatesWallet.Infrastructure.Repositories
     public class UnitOfWork : IUnitOfWotk
     {
         private readonly ApplicationDbContext _dbContext;
+        private readonly IFixedTermDepositRepository FixedTermDeposits;
 
         //EJ: public IUserRepository Users { get; }
 
-        public UnitOfWork(ApplicationDbContext dbContext/* EJ: IUserRepository userRepository*/ )
+        public UnitOfWork(ApplicationDbContext dbContext/* EJ: IUserRepository userRepository*/ , IFixedTermDepositRepository fixedTermDepositRepository)
         {
             _dbContext = dbContext;
             //EJ: Users = userRepository; 
+
+            FixedTermDeposits = fixedTermDepositRepository;
+            
 
         }
 
