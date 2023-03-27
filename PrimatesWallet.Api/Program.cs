@@ -1,9 +1,13 @@
+using PrimatesWallet.Application.Interfaces;
+using PrimatesWallet.Application.Services;
 using PrimatesWallet.Infrastructure.ServiceExtension;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddDIServices(builder.Configuration);
+builder.Services.AddScoped<IRoleService, RoleService>();
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

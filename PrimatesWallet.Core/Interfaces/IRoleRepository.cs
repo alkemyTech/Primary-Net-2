@@ -6,9 +6,7 @@ using System.Threading.Tasks;
 
 namespace PrimatesWallet.Core.Interfaces
 {
-    public interface IUnitOfWotk : IDisposable
+    internal interface Interface1
     {
-        IRoleRepository Roles { get; }
-        int Save();
     }
 }
