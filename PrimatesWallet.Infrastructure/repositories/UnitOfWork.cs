@@ -6,8 +6,8 @@ namespace PrimatesWallet.Infrastructure.Repositories
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly IFixedTermDepositRepository FixedTermDeposits;
-        public readonly ITransactionRepository Transactions { get; }
-        public readonly IUserRepository UserRepository { get; }
+        public ITransactionRepository Transactions { get; }
+        public IUserRepository UserRepository { get; }
 
         public UnitOfWork(ApplicationDbContext dbContext, ITransactionRepository transactionRepository , IFixedTermDepositRepository fixedTermDepositRepository, IUserRepository userRepository)
         {
