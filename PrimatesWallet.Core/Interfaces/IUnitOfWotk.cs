@@ -8,6 +8,7 @@ namespace PrimatesWallet.Core.Interfaces
 {
     public interface IUnitOfWotk : IDisposable
     {
+        IUserRepository UserRepository { get; }
         int Save();
     }
 }

@@ -13,11 +13,14 @@ namespace PrimatesWallet.Infrastructure.Repositories
         private readonly ApplicationDbContext _dbContext;
 
         //EJ: public IUserRepository Users { get; }
+        public IUserRepository UserRepository { get; }
 
-        public UnitOfWork(ApplicationDbContext dbContext/* EJ: IUserRepository userRepository*/ )
+        public UnitOfWork(ApplicationDbContext dbContext/* EJ: IUserRepository userRepository*/ , IUserRepository userRepository)
         {
             _dbContext = dbContext;
+            UserRepository = userRepository;
             //EJ: Users = userRepository; 
+
 
         }
 
