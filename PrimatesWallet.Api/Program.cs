@@ -1,8 +1,8 @@
 
+
 using PrimatesWallet.Application.Interfaces;
 using PrimatesWallet.Application.Services;
 using PrimatesWallet.Infrastructure.Seed;
-
 using PrimatesWallet.Infrastructure.ServiceExtension;
 using PrimatesWallet.Application.ServiceExtension;
 
