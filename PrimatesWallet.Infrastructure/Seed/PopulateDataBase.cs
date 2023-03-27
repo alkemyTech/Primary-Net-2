@@ -18,6 +18,8 @@ namespace PrimatesWallet.Infrastructure.Seed
                 {
                     new RoleSeed(),
                     new UserSeed(),
+                    new FixedTermDepositSeed()
+
                 };
 
                 foreach (var seeder in seeders)
@@ -25,6 +27,5 @@ namespace PrimatesWallet.Infrastructure.Seed
                     seeder.Seed(context);
                 }
             }
-        }   
     }
 }

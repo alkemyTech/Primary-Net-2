@@ -5,10 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PrimatesWallet.Application.Interfaces
+namespace PrimatesWallet.Core.Interfaces
 {
-    public interface IUserService
+    public interface IRoleRepository : IGenericRepository<Role>
     {
-        Task<User> GetUserById(int id);
     }
 }
