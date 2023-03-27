@@ -15,10 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\PrimatesWallet.Application\PrimatesWallet.Application.csproj" />
     <ProjectReference Include="..\PrimatesWallet.Infrastructure\PrimatesWallet.Infrastructure.csproj" />
   </ItemGroup>
 

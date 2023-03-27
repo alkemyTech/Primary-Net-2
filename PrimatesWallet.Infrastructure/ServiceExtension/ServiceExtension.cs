@@ -17,7 +17,8 @@ namespace PrimatesWallet.Infrastructure.ServiceExtension
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
             });
 
-            services.AddScoped<IUnitOfWotk, UnitOfWork>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
             //EJ: services.AddScoped<IUserRepository, UserRepository>();
 
             return services;

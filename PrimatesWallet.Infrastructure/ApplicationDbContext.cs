@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PrimatesWallet.Core.Models;
 
+
 namespace PrimatesWallet.Infrastructure
 {
     public class ApplicationDbContext : DbContext
@@ -14,6 +15,8 @@ namespace PrimatesWallet.Infrastructure
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<FixedTermDeposit> FixedTermDeposits { get; set; }
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
