@@ -3,7 +3,7 @@ using PrimatesWallet.Application.Interfaces;
 
 namespace PrimatesWallet.Api.Controllers
 {
-    [Route("api/fixedtermdeposit")]
+    [Route("api/FixedDeposit")]
     [ApiController]
     public class FixedTermDepositController : ControllerBase
     {
