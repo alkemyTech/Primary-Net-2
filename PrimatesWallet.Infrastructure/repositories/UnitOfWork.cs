@@ -1,23 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PrimatesWallet.Core.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using PrimatesWallet.Core.Interfaces;
 
 namespace PrimatesWallet.Infrastructure.Repositories
 {
-    public class UnitOfWork : IUnitOfWotk
+    public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _dbContext;
-
+        public ITransactionRepository Transaction { get; }
         //EJ: public IUserRepository Users { get; }
 
-        public UnitOfWork(ApplicationDbContext dbContext/* EJ: IUserRepository userRepository*/ )
+        public UnitOfWork(ApplicationDbContext dbContext, ITransactionRepository transactionRepository)
         {
             _dbContext = dbContext;
-            //EJ: Users = userRepository; 
+            Transaction = transactionRepository;
 
         }
 
@@ -38,6 +32,6 @@ namespace PrimatesWallet.Infrastructure.Repositories
             {
                 _dbContext.Dispose();
             }
-        }         
+        }
     }
 }
