@@ -1,4 +1,5 @@
 ﻿using PrimatesWallet.Core.Interfaces;
+using PrimatesWallet.Infrastructure.repositories;
 
 namespace PrimatesWallet.Infrastructure.Repositories
 {
@@ -9,11 +10,10 @@ namespace PrimatesWallet.Infrastructure.Repositories
         public ITransactionRepository Transactions { get; }
         public IUserRepository UserRepository { get; }
         public IRoleRepository Roles { get; }
+        public IAccountRepository Accounts { get; }
         public ICatalogueRepository Catalogues { get; }
-
-        //EJ: public IUserRepository Users { get; }
-
        
+        public UnitOfWork(ApplicationDbContext dbContext, ITransactionRepository transactionRepository , IFixedTermDepositRepository fixedTermDepositRepository, IUserRepository userRepository, IAccountRepository accountRepository)
 
         public UnitOfWork(ApplicationDbContext dbContext,
             ITransactionRepository transactionRepository,
@@ -28,9 +28,8 @@ namespace PrimatesWallet.Infrastructure.Repositories
             UserRepository = userRepository;
             FixedTermDeposits = fixedTermDepositRepository;
             Roles = roleRepository;
+            Accounts = accountRepository;
             Catalogues = catalogueRepository;
-            //EJ: Users = userRepository; 
-
         }
 
         public int Save()

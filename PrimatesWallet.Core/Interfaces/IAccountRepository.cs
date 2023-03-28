@@ -1,17 +1,14 @@
 ﻿using PrimatesWallet.Core.Models;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
-namespace PrimatesWallet.Application.Interfaces
+namespace PrimatesWallet.Core.Interfaces
 {
-    public interface IRoleService
+    public interface IAccountRepository : IGenericRepository<Account>
     {
-        Task<Role> GetRoleById(int id);
-        Task<IEnumerable<Role>> GetRoles();
+
     }
 }
