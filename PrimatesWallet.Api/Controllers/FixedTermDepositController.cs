@@ -14,5 +14,18 @@ namespace PrimatesWallet.Api.Controllers
             _fixedTermDeposit = fixedTermDeposit;
         }
 
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetFixedTermDepositById( [FromBody] int id)
+        {
+
+        // Falta la validacion del ID de account que hace el request que se recibe ese id por JWT
+            var fixedTermDeposit = await GetFixedTermDepositById(id);
+
+            if (fixedTermDeposit == null) { return NotFound(); }
+
+            return Ok(fixedTermDeposit);
+
+        }
     }
 }
