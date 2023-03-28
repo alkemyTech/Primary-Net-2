@@ -1,4 +1,5 @@
-﻿using PrimatesWallet.Core.Models;
+﻿using PrimatesWallet.Application.DTOS;
+using PrimatesWallet.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace PrimatesWallet.Application.Interfaces
 {
-    public interface IAccountService
+    public interface IAuthService
     {
+        Task<User> Authenticate(LoginUser login);
     }
 }

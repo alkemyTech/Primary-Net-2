@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace PrimatesWallet.Application.Interfaces
 {
-    public interface IAccountService
+    public interface IJwtJervice
     {
+        string Generate(User user);
     }
 }
