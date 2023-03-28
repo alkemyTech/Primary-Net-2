@@ -12,6 +12,7 @@ namespace PrimatesWallet.Application.ServiceExtension
         {
 
             services.AddScoped<IUserService,UserService> ();
+            services.AddScoped<IRoleService, RoleService> ();
             return services;
         }
     }

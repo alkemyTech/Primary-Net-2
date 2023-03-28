@@ -16,5 +16,13 @@ namespace PrimatesWallet.Api.Controllers
             _roleService = roleService;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetRoles()
+        {
+            var roles = await _roleService.GetRoles();
+            if (roles == null) { return NotFound(); }
+            return Ok(roles);
+        }
+
     }
 }
