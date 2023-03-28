@@ -12,8 +12,8 @@ using PrimatesWallet.Infrastructure;
 namespace PrimatesWallet.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230327143428_initial migration")]
-    partial class initialmigration
+    [Migration("20230328040848_seeder")]
+    partial class seeder
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
