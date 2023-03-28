@@ -23,11 +23,6 @@ namespace PrimatesWallet.Infrastructure.Seed.DataSeed
                 {
                     Name = RoleName.Regular,
                     Description = "Rol para Usuario con permisos limitados"
-                },
-                new Role()
-                {
-                    Name = RoleName.Regular,
-                    Description = "Rol para Usuario"
                 }
             };
         }

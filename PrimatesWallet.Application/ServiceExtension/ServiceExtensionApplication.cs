@@ -13,15 +13,18 @@ namespace PrimatesWallet.Application.ServiceExtension
         public static IServiceCollection AddDIApplication(this IServiceCollection services, IConfiguration configuration)
         {
 
-            services.AddScoped<IUserService,UserService> ();
-
             new MapperConfiguration(config =>
             {
                 config.AddProfile(new AutoMapperProfile());
             }).CreateMapper();
 
             services.AddAutoMapper(typeof(ServiceExtensionApplication));
-
+            
+            services.AddScoped<IUserService,UserService> ();
+            services.AddScoped<ICatalogueService, CatalogueService>();
+            services.AddScoped<IFixedTermDepositService, FixedTermDepositService>();
+            services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<ITransactionService, TransactionService>();
 
 
             return services;

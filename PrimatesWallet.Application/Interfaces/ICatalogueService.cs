@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace PrimatesWallet.Application.Interfaces
 {
-    public interface IUserService
+    public interface ICatalogueService
     {
-        Task<User> GetUserById(int id);
+        Task<List<Catalogue>> GetAllProducts();
+        Task<Catalogue> GetProductById(int id);
     }
 }

@@ -17,6 +17,10 @@ namespace PrimatesWallet.Infrastructure.Seed
                 var seeders = new List<ISeedData>()
                 {
                     new RoleSeed(),
+                    new UserSeed(),
+                    new CatalogueSeed(),
+                    //new FixedTermDepositSeed(),
+
                 };
 
                 foreach (var seeder in seeders)
@@ -24,6 +28,6 @@ namespace PrimatesWallet.Infrastructure.Seed
                     seeder.Seed(context);
                 }
             }
-        }   
+        }
     }
 }
