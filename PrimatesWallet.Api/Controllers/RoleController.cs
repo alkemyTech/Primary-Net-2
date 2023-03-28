@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PrimatesWallet.Application.Interfaces;
-using PrimatesWallet.Core.Interfaces;
+using PrimatesWallet.Core.Models;
 
 namespace PrimatesWallet.Api.Controllers
 {
@@ -16,5 +15,16 @@ namespace PrimatesWallet.Api.Controllers
             _roleService = roleService;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetRoleById(int id)
+        {
+            Role role = await _roleService.GetRoleById(id);
+            if (role == null)
+            {
+                return StatusCode(StatusCodes.Status204NoContent, $"No role found by id{id}");
+            }
+            return StatusCode(StatusCodes.Status200OK, role);
+
+        }
     }
 }
