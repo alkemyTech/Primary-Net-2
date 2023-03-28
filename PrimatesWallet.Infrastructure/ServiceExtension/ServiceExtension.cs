@@ -20,9 +20,13 @@ namespace PrimatesWallet.Infrastructure.ServiceExtension
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
-            //EJ: services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
+
             services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddScoped<IFixedTermDepositRepository, FixedTermDepositRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ICatalogueRepository, CatalogueRepository>();
+
 
             return services;
         }

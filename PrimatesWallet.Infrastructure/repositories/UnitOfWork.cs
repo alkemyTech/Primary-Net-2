@@ -6,17 +6,22 @@ namespace PrimatesWallet.Infrastructure.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _dbContext;
-        private readonly IFixedTermDepositRepository FixedTermDeposits;
+        public IFixedTermDepositRepository FixedTermDeposits { get; }
         public ITransactionRepository Transactions { get; }
         public IUserRepository UserRepository { get; }
         public IRoleRepository Roles { get; }
         public IAccountRepository Accounts { get; }
-
-        //EJ: public IUserRepository Users { get; }
-
+        public ICatalogueRepository Catalogues { get; }
        
-
         public UnitOfWork(ApplicationDbContext dbContext, ITransactionRepository transactionRepository , IFixedTermDepositRepository fixedTermDepositRepository, IUserRepository userRepository, IAccountRepository accountRepository)
+
+        public UnitOfWork(ApplicationDbContext dbContext,
+            ITransactionRepository transactionRepository,
+            IFixedTermDepositRepository fixedTermDepositRepository,
+            IUserRepository userRepository,
+            IRoleRepository roleRepository,
+            ICatalogueRepository catalogueRepository
+            )
         {
             _dbContext = dbContext;
             Transactions = transactionRepository;
@@ -24,8 +29,7 @@ namespace PrimatesWallet.Infrastructure.Repositories
             FixedTermDeposits = fixedTermDepositRepository;
             Roles = roleRepository;
             Accounts = accountRepository;
-            //EJ: Users = userRepository; 
-
+            Catalogues = catalogueRepository;
         }
 
         public int Save()

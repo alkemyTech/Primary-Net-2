@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PrimatesWallet.Infrastructure.Migrations
 {
-    public partial class initialmigration : Migration
+    public partial class seeder : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

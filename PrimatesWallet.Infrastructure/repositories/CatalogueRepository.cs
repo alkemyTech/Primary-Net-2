@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace PrimatesWallet.Infrastructure.repositories
 {
-    public class RoleRepository : GenericRepository<Role>, IRoleRepository
+    public class CatalogueRepository : GenericRepository<Catalogue>, ICatalogueRepository
     {
-        public RoleRepository(ApplicationDbContext context) : base(context) 
+        public CatalogueRepository(ApplicationDbContext context) : base(context)
         {
 
         }

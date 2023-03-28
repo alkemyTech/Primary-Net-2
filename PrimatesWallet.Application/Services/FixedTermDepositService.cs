@@ -12,36 +12,29 @@ namespace PrimatesWallet.Application.Services
     public class FixedTermDepositService : IFixedTermDepositService
     {
 
-        public IUnitOfWotk _unitOfWotk;
+        public readonly IUnitOfWork unitOfWotk;
 
-        public FixedTermDepositService (IUnitOfWotk unitOfWotk)
+        public FixedTermDepositService (IUnitOfWork unitOfWotk)
         {
-            _unitOfWotk = unitOfWotk;
+            this.unitOfWotk = unitOfWotk;
         }
 
-        public Task<bool> CreateFixedTermDeposit(FixedTermDeposit fixedTermDeposit)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<bool> DeleteFixedTermDeposit(int fixedTermDepositId)
+        public async Task<FixedTermDeposit> GetFixedTermDepositById(int id)
         {
-            throw new NotImplementedException();
-        }
+            try
+            {
+                var fixedTermDeposit = await unitOfWotk.FixedTermDeposits.GetById(id);
+                return fixedTermDeposit;
 
-        public Task<IEnumerable<FixedTermDeposit>> GetAllFixedTermDepositList()
-        {
-            throw new NotImplementedException();
+            }
+            catch(Exception ex) 
+            {
+                throw new Exception(ex.Message);
+            }
         }
+        
 
-        public Task<FixedTermDeposit> GetFixedTermDepositById(int fixedTermDepositId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> UpdateFixedTermDeposit(FixedTermDeposit fixedTermDeposit)
-        {
-            throw new NotImplementedException();
-        }
+ 
     }
 }
