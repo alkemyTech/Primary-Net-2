@@ -23,7 +23,7 @@ namespace PrimatesWallet.Infrastructure.ServiceExtension
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IFixedTermDepositRepository, FixedTermDepositRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
-
+            services.AddScoped<ICatalogueRepository, CatalogueRepository>();
 
             return services;
         }
