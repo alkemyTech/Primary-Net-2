@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
@@ -19,7 +20,7 @@ namespace PrimatesWallet.Api.Controllers
             this.userService = userService;
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public async  Task<IActionResult> GetUserById([FromRoute] int id)
         {
             try
@@ -43,6 +44,7 @@ namespace PrimatesWallet.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetUsers()
         {
             //Falta la validacion del JWT para el Rol de admin , pero esta ubicado en tickets posteriores

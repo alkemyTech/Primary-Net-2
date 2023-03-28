@@ -16,12 +16,12 @@ namespace PrimatesWallet.Infrastructure.Seed.DataSeed
             {
                 new Role()
                 {
-                    Name = RoleName.Admin,
+                    Name = "Admin",
                     Description = "Rol para administrador de la aplicacion"
                 },
                 new Role()
                 {
-                    Name = RoleName.Regular,
+                    Name = "Regular",
                     Description = "Rol para Usuario con permisos limitados"
                 }
             };

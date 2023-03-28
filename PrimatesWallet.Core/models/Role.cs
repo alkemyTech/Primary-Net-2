@@ -19,7 +19,7 @@ namespace PrimatesWallet.Core.Models
         [Required]
         [MaxLength(7)]
         [Column("name",TypeName ="VARCHAR(15)")]
-        public RoleName Name { get; set; }
+        public string Name { get; set; }
 
         [Required]
         [StringLength(255, MinimumLength = 10)]

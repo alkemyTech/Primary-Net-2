@@ -22,9 +22,9 @@ namespace PrimatesWallet.Infrastructure
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //pasamos el enum que contiene Admin, Regular a string
-            modelBuilder.Entity<Role>()
-                .Property(x => x.Name)
-                .HasConversion<string>();
+            //modelBuilder.Entity<Role>()
+            //    .Property(x => x.Name)
+            //    .HasConversion<string>();
 
             modelBuilder.Entity<Transaction>()
                 .Property(x => x.Type)

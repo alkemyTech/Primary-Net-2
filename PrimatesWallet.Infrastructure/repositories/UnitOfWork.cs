@@ -12,15 +12,14 @@ namespace PrimatesWallet.Infrastructure.Repositories
         public IRoleRepository Roles { get; }
         public IAccountRepository Accounts { get; }
         public ICatalogueRepository Catalogues { get; }
-       
-        public UnitOfWork(ApplicationDbContext dbContext, ITransactionRepository transactionRepository , IFixedTermDepositRepository fixedTermDepositRepository, IUserRepository userRepository, IAccountRepository accountRepository)
 
         public UnitOfWork(ApplicationDbContext dbContext,
             ITransactionRepository transactionRepository,
             IFixedTermDepositRepository fixedTermDepositRepository,
             IUserRepository userRepository,
             IRoleRepository roleRepository,
-            ICatalogueRepository catalogueRepository
+            ICatalogueRepository catalogueRepository,
+            IAccountRepository accountRepository
             )
         {
             _dbContext = dbContext;
