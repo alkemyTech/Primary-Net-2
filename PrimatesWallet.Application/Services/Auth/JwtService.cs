@@ -28,6 +28,7 @@ namespace PrimatesWallet.Application.Services.Auth
             var claims = new []
             {
                 new Claim(ClaimTypes.Role, user.Role.Name),
+                new Claim(ClaimTypes.NameIdentifier,user.UserId.ToString()),
                 new Claim(ClaimTypes.Name, user.First_Name),
             };
 
@@ -35,7 +36,7 @@ namespace PrimatesWallet.Application.Services.Auth
                     null,
                     null,
                     claims,
-                    expires: DateTime.Now.AddHours(1),
+                    expires: DateTime.Now.AddMinutes(10),
                     signingCredentials: credentials
                 );
 

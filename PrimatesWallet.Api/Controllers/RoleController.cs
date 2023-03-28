@@ -15,8 +15,7 @@ namespace PrimatesWallet.Api.Controllers
             _roleService = roleService;
         }
 
-        [HttpGet]
-
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetRoleById(int id)
         {
             Role role = await _roleService.GetRoleById(id);
@@ -27,6 +26,7 @@ namespace PrimatesWallet.Api.Controllers
             return StatusCode(StatusCodes.Status200OK, role);
         }
 
+        [HttpGet]
         public async Task<IActionResult> GetRoles()
         {
             var roles = await _roleService.GetRoles();
