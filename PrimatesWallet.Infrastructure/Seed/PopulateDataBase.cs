@@ -27,5 +27,6 @@ namespace PrimatesWallet.Infrastructure.Seed
                     seeder.Seed(context);
                 }
             }
+        }
     }
 }
