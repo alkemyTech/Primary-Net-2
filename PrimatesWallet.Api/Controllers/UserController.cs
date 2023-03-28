@@ -41,5 +41,17 @@ namespace PrimatesWallet.Api.Controllers
                 return StatusCode(response.StatusCode, response);
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUsers()
+        {
+            //Falta la validacion del JWT para el Rol de admin , pero esta ubicado en tickets posteriores
+
+            var users = await userService.GetUsers();
+            
+            if ( users == null) { return NotFound(); }
+
+            return Ok(users);
+        }
     }
 }
