@@ -38,5 +38,20 @@ namespace PrimatesWallet.Application.Services
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<IEnumerable<User>> GetUsers()
+        {
+            try
+            {
+                var users = await unitOfWork.UserRepository.GetAll();
+                return users;
+
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
     }
 }
