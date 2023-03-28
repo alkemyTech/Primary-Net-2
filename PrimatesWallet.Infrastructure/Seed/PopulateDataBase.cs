@@ -18,7 +18,8 @@ namespace PrimatesWallet.Infrastructure.Seed
                 {
                     new RoleSeed(),
                     new UserSeed(),
-                    new FixedTermDepositSeed()
+                    new CatalogueSeed(),
+                    //new FixedTermDepositSeed(),
 
                 };
 
