@@ -13,9 +13,10 @@ namespace PrimatesWallet.Application.Services.Auth
         {
             this.HttpContextAccessor = httpContextAccessor;
         }
-        public string GetCurrentUser()
+        public int GetCurrentUser()
         {
-            return HttpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            string userId = HttpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            return int.Parse(userId);
         }
     }
 }

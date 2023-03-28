@@ -8,6 +8,6 @@ namespace PrimatesWallet.Application.Interfaces
 {
     public interface IUserContextService
     {
-        string GetCurrentUser();
+        int GetCurrentUser();
     }
 }
