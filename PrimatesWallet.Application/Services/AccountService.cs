@@ -27,7 +27,7 @@ namespace PrimatesWallet.Application.Services
             }
         }
 
-        public async Task<Account> GetAccountDetails(int id)
+        public async Task<Account> GetAccountById(int id)
         {
             try
             {

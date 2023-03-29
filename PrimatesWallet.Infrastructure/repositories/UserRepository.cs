@@ -21,7 +21,7 @@ namespace PrimatesWallet.Infrastructure.repositories
         {
             var user = await _dbContext.Users.Where(u => u.Email == email).Include(u => u.Role).FirstOrDefaultAsync();
 
-            return user; 
+            return user;
         }
 
     }
