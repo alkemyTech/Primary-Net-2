@@ -6,6 +6,7 @@ using PrimatesWallet.Application.ServiceExtension;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddDIApplication(builder.Configuration);
 // Add services to the container.
 builder.Services.AddDIServices(builder.Configuration);
