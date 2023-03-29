@@ -243,7 +243,7 @@ namespace PrimatesWallet.Infrastructure.Migrations
             modelBuilder.Entity("PrimatesWallet.Core.Models.FixedTermDeposit", b =>
                 {
                     b.HasOne("PrimatesWallet.Core.Models.Account", "Account")
-                        .WithMany()
+                        .WithMany("FixedTermDeposit")
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -254,7 +254,7 @@ namespace PrimatesWallet.Infrastructure.Migrations
             modelBuilder.Entity("PrimatesWallet.Core.Models.Transaction", b =>
                 {
                     b.HasOne("PrimatesWallet.Core.Models.Account", "Account")
-                        .WithMany()
+                        .WithMany("Transactions")
                         .HasForeignKey("Account_Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -277,6 +277,13 @@ namespace PrimatesWallet.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("PrimatesWallet.Core.Models.Account", b =>
+                {
+                    b.Navigation("FixedTermDeposit");
+
+                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("PrimatesWallet.Core.Models.User", b =>

@@ -21,6 +21,12 @@ namespace PrimatesWallet.Infrastructure
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Account>()
+            .HasMany(a => a.Transactions)
+            .WithOne(t => t.Account)
+            .HasForeignKey(t => t.Account_Id)
+            .OnDelete(DeleteBehavior.Cascade);
+
             //pasamos el enum que contiene Admin, Regular a string
             //modelBuilder.Entity<Role>()
             //    .Property(x => x.Name)
