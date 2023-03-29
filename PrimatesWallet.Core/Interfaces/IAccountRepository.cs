@@ -9,6 +9,6 @@ namespace PrimatesWallet.Core.Interfaces
 {
     public interface IAccountRepository : IGenericRepository<Account>
     {
-
+        Task<Account> GetByUserId_FixedTerm(int userId);
     }
 }
