@@ -16,6 +16,7 @@ namespace PrimatesWallet.Infrastructure.repositories
         {
         }
 
+        //Metodo para obtener un usuario vía email y hacer un inner join con la tabla Role.
         public async Task<User> GetByEmail(string email)
         {
             var user = await _dbContext.Users.Where(u => u.Email == email).Include(u => u.Role).FirstOrDefaultAsync();

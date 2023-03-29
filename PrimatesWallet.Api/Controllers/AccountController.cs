@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PrimatesWallet.Application.Exceptions;
+using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
+using System.Net;
 
 namespace PrimatesWallet.Api.Controllers
 {
@@ -25,6 +28,27 @@ namespace PrimatesWallet.Api.Controllers
             }
 
             return StatusCode(StatusCodes.Status200OK, accounts);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAccountDetails(int id)
+        {
+
+            try
+            {
+                var account = await _account.GetAccountById(id);
+
+                if (account is null) return NotFound($"The account with id: {id} does not exist");
+
+                return Ok(account);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+
+
         }
 
 
