@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
@@ -43,7 +44,8 @@ namespace PrimatesWallet.Api.Controllers
 
         }
 
-
+        [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetByUser()
         {
             try
