@@ -1,4 +1,5 @@
-﻿using PrimatesWallet.Core.Models;
+﻿using PrimatesWallet.Application.DTOS;
+using PrimatesWallet.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,6 @@ namespace PrimatesWallet.Application.Interfaces
     {
         Task <FixedTermDeposit> GetFixedTermDepositById(int id );
         Task<IEnumerable<FixedTermDeposit>> GetByUser(int userId);
-        Task<FixedTermDeposit> GetFixedTermDepositDetails(int id, int userId);
+        Task<FixedTermDepositDetailDTO> GetFixedTermDepositDetails(int id, int userId);
     }
 }
