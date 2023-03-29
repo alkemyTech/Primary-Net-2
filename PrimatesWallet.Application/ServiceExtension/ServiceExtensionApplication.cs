@@ -22,17 +22,19 @@ namespace PrimatesWallet.Application.ServiceExtension
             }).CreateMapper();
 
             //services.AddAutoMapper(typeof(ServiceExtensionApplication));
-            
-            services.AddScoped<IUserService,UserService> ();
-            services.AddScoped<IRoleService, RoleService> ();
+
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<ICatalogueService, CatalogueService>();
             services.AddScoped<IFixedTermDepositService, FixedTermDepositService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IJwtJervice, JwtService>();
+            services.AddScoped<IAccountService, AccountService>();
 
-            services.AddAuthentication(options => {
+            services.AddAuthentication(options =>
+            {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;

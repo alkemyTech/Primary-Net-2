@@ -1,10 +1,6 @@
 ﻿using PrimatesWallet.Application.Interfaces;
 using PrimatesWallet.Core.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using PrimatesWallet.Core.Models;
 
 
 namespace PrimatesWallet.Application.Services
@@ -18,5 +14,16 @@ namespace PrimatesWallet.Application.Services
             this.unitOfWork = unitOfWork;
         }
 
+        public async Task<IEnumerable<Account>> GetAccountsList()
+        {
+            try
+            {
+                return await unitOfWork.Accounts.GetAll();
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }

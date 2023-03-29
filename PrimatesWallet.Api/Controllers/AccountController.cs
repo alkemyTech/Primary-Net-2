@@ -14,5 +14,19 @@ namespace PrimatesWallet.Api.Controllers
         {
             _account = account;
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var accounts = await _account.GetAccountsList();
+            if (accounts == null)
+            {
+                return StatusCode(StatusCodes.Status204NoContent, "No accounts in database.");
+            }
+
+            return StatusCode(StatusCodes.Status200OK, accounts);
+        }
+
+
     }
 }
