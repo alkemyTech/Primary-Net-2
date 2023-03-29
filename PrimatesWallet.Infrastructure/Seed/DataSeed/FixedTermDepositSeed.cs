@@ -11,7 +11,7 @@ namespace PrimatesWallet.Infrastructure.Seed.DataSeed
             {
                 new FixedTermDeposit()
                 {
-                   Id=1,
+      
                    AccountId=1,
                    Amount=50000,
                    Creation_Date=new DateTime(2023,1, 10),
@@ -19,7 +19,7 @@ namespace PrimatesWallet.Infrastructure.Seed.DataSeed
                 },
                 new FixedTermDeposit()
                 {
-                   Id=1,
+        
                    AccountId=2,
                    Amount=85800,
                    Creation_Date=new DateTime(2023,1, 17),
@@ -27,7 +27,7 @@ namespace PrimatesWallet.Infrastructure.Seed.DataSeed
                 },
                 new FixedTermDeposit()
                 {
-                   Id=1,
+       
                    AccountId=3,
                    Amount=23965,
                    Creation_Date=new DateTime(2023,2, 10),
@@ -35,7 +35,7 @@ namespace PrimatesWallet.Infrastructure.Seed.DataSeed
                 },
                  new FixedTermDeposit()
                 {
-                   Id=1,
+   
                    AccountId=4,
                    Amount=105000,
                    Creation_Date=new DateTime(2023,1, 20),
@@ -43,7 +43,7 @@ namespace PrimatesWallet.Infrastructure.Seed.DataSeed
                 },
                   new FixedTermDeposit()
                 {
-                   Id=1,
+    
                    AccountId=5,
                    Amount=200000,
                    Creation_Date=new DateTime(2023,2, 25),

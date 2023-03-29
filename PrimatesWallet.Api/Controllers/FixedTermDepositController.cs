@@ -16,30 +16,28 @@ namespace PrimatesWallet.Api.Controllers
         private readonly IFixedTermDepositService _fixedTermDeposit;
         private readonly IUserContextService userContextService;
 
-        public FixedTermDepositController(IFixedTermDepositService fixedTermDeposit, IUserContextService userContextService)
+        public FixedTermDepositController(IFixedTermDepositService fixedTermDepositService, IUserContextService userContextService)
         {
-            _fixedTermDeposit = fixedTermDeposit;
+            _fixedTermDeposit = fixedTermDepositService;
             this.userContextService = userContextService;
+
         }
 
-
+        [Authorize]
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetFixedTermDepositById([FromBody] int id)
+        public async Task<IActionResult> GetFixedTermDepositById(int id)
         {
-
-            // Falta la validacion del ID de account que hace el request que se recibe ese id por JWT
             try
             {
-                var fixedTermDeposit = await GetFixedTermDepositById(id);
-
-                if (fixedTermDeposit == null) { return NotFound(); }
+                var userRequestId =  userContextService.GetCurrentUser();
+                var fixedTermDeposit = await _fixedTermDeposit.GetFixedTermDepositDetails(userRequestId, id);
+                if ( fixedTermDeposit == null) { return NotFound("No se encontró el plazo fijo"); }
 
                 return Ok(fixedTermDeposit);
-
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
 
         }

@@ -24,5 +24,20 @@ namespace PrimatesWallet.Infrastructure.repositories
             return user;
         }
 
+        public async Task<User> GetAccountByUserEmail(string email)
+        {
+            try
+            {
+                var user = await base._dbContext.Users.Where(x => x.Email == email).Include(x => x.Account).FirstOrDefaultAsync();
+
+                return user;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Interfaces;
 
 namespace PrimatesWallet.Api.Controllers
@@ -12,9 +13,12 @@ namespace PrimatesWallet.Api.Controllers
         //Se deja pendiente el desarrollo de los endpoints asignados.
         private readonly ITransactionService _transaction;
 
+
         public TransactionsController(ITransactionService transaction)
         {
             _transaction = transaction;
         }
+
+
     }
 }

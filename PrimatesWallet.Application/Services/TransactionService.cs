@@ -1,5 +1,8 @@
-﻿using PrimatesWallet.Application.Interfaces;
+﻿using PrimatesWallet.Application.DTOS;
+using PrimatesWallet.Application.Interfaces;
+using PrimatesWallet.Core.Enums;
 using PrimatesWallet.Core.Interfaces;
+using PrimatesWallet.Core.Models;
 
 namespace PrimatesWallet.Application.Services
 {
@@ -16,7 +19,7 @@ namespace PrimatesWallet.Application.Services
         }
 
         //Gestionar operaciones
-
+       
 
     }
 }
