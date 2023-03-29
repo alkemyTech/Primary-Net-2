@@ -16,11 +16,10 @@ namespace PrimatesWallet.Api.Controllers
         private readonly IAccountService _account;
         private readonly IUserContextService _userContextService;
 
-        public AccountController(IAccountService accountService, IUserContextService userContextService, ITransactionService transactionService )
+        public AccountController(IAccountService accountService, IUserContextService userContextService )
         {
             _account = accountService;
             _userContextService = userContextService;
-            _transaction = transactionService;
         }
 
         [HttpGet]
