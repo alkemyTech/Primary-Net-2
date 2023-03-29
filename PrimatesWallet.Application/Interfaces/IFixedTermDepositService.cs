@@ -11,6 +11,6 @@ namespace PrimatesWallet.Application.Interfaces
     {
         Task <FixedTermDeposit> GetFixedTermDepositById(int id );
         Task<IEnumerable<FixedTermDeposit>> GetByUser(int userId);
-
+        Task<FixedTermDeposit> GetFixedTermDepositDetails(int id, int userId);
     }
 }

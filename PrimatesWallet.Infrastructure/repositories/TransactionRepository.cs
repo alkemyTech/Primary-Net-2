@@ -12,7 +12,7 @@ namespace PrimatesWallet.Infrastructure.Repositories
         {
 
         }
-        
+
         public async Task<IEnumerable<Transaction>> GetAllByAccount(int id)
         {
             return await base._dbContext.Transactions

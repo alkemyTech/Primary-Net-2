@@ -19,7 +19,9 @@ namespace PrimatesWallet.Api.Controllers
         private readonly ITransactionService transactionService;
         private readonly IUserContextService UserContextService;
 
+
         public TransactionsController(ITransactionService transaction, IUserContextService userContextService)
+
         {
             transactionService = transaction;
             UserContextService = userContextService;
@@ -66,5 +68,7 @@ namespace PrimatesWallet.Api.Controllers
             }
 
         }
+
+
     }
 }

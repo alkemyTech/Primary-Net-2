@@ -9,7 +9,6 @@ namespace PrimatesWallet.Core.Interfaces
 {
     public interface IFixedTermDepositRepository : IGenericRepository<FixedTermDeposit>
     {
-
-
+        Task<FixedTermDeposit> GetFixedTermByIdAndUserId(int userId, int fixedId);
     }
 }

@@ -39,7 +39,6 @@ namespace PrimatesWallet.Infrastructure.Seed.DataSeed
                 },
                   new FixedTermDeposit()
                 {
-
                    AccountId=5,
                    Amount=200000,
                    Creation_Date=new DateTime(2023,2, 25),

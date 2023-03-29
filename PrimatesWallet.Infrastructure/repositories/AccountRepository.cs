@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
 using PrimatesWallet.Core.Enums;
 using PrimatesWallet.Core.Interfaces;
 using PrimatesWallet.Core.Models;
+using PrimatesWallet.Infrastructure.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +27,7 @@ namespace PrimatesWallet.Infrastructure.repositories
 
             return account;
         }
+
         public async Task<Account>Get_Transaccion(int Id)
         {
             return await base._dbContext.Accounts
@@ -35,7 +36,6 @@ namespace PrimatesWallet.Infrastructure.repositories
                 .FirstOrDefaultAsync();
         }
 
-
         public async Task<int?> GetIdAccount(int userId)
         {
             return await base._dbContext.Accounts
@@ -43,5 +43,6 @@ namespace PrimatesWallet.Infrastructure.repositories
                 .Select(x => x.Id) //retornamos de la db solo el id porque no se necesita el objeto completo
                 .FirstOrDefaultAsync();
         }
+
     }
 }

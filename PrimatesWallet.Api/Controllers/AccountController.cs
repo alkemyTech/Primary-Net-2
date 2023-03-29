@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
+using PrimatesWallet.Application.Services.Auth;
+using PrimatesWallet.Application.Services;
 using System.Net;
 using PrimatesWallet.Application.DTOS;
 
@@ -14,12 +17,14 @@ namespace PrimatesWallet.Api.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _account;
-        private readonly IUserContextService _userContext;
+        private readonly IUserContextService _userContextService;
+        private readonly ITransactionService _transaction;
 
-        public AccountController(IAccountService account, IUserContextService user)
+        public AccountController(IAccountService accountService, IUserContextService userContextService, ITransactionService transactionService )
         {
-            _account = account;
-            _userContext = user;
+            _account = accountService;
+            _userContextService = userContextService;
+            _transaction = transactionService;
         }
 
         [HttpGet]
@@ -57,6 +62,8 @@ namespace PrimatesWallet.Api.Controllers
         }
 
 
+
+
         [HttpPost("{id}")]
         [Authorize]
         public async Task<IActionResult> Depositar([FromRoute] int id, [FromBody] TopUpDTO topUpDTO)
@@ -89,7 +96,27 @@ namespace PrimatesWallet.Api.Controllers
 
         }
 
+        [HttpPost("{accountId}")]
+        public async Task<IActionResult> Transfer(int accountId, [FromBody] TransferDTO transferDTO)
+        {
+            var userId = _userContextService.GetCurrentUser();
+            try
+            {
+                if (transferDTO.Amount <= 0) return StatusCode(StatusCodes.Status400BadRequest, "Amount must be positive");
+                
+                var isValidAccount = await _account.ValidateAccount(userId, accountId);
 
+                if (!isValidAccount) return StatusCode(StatusCodes.Status401Unauthorized, "Invalid credentials");
+              
+                var transaction = await _account.Transfer(transferDTO.Amount, userId, transferDTO.Email, transferDTO.Concept);
+                return Ok(transaction);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
+
+            }
+        }
 
 
 

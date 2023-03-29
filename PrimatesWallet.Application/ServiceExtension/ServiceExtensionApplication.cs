@@ -21,6 +21,8 @@ namespace PrimatesWallet.Application.ServiceExtension
                 config.AddProfile(new AutoMapperProfile());
             }).CreateMapper();
 
+
+
             //services.AddAutoMapper(typeof(ServiceExtensionApplication));
             services.AddScoped<IUserContextService, UserContextService>();
             services.AddScoped<IUserService,UserService> ();
@@ -32,6 +34,10 @@ namespace PrimatesWallet.Application.ServiceExtension
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IJwtJervice, JwtService>();
             services.AddScoped<IAccountService, AccountService>();
+
+            services.AddControllers().AddNewtonsoftJson(options =>
+            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
 
             services.AddAuthentication(options =>
             {

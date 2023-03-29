@@ -50,5 +50,19 @@ namespace PrimatesWallet.Application.Services
             }
         }
 
+        public async Task<FixedTermDeposit> GetFixedTermDepositDetails(int id, int userId)
+        {
+            try
+            {
+                var fixedTermDeposit = await unitOfWotk.FixedTermDeposits.GetFixedTermByIdAndUserId(id , userId);
+                return fixedTermDeposit;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
     }
 }
