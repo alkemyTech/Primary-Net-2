@@ -7,6 +7,7 @@ using PrimatesWallet.Core.Interfaces;
 using PrimatesWallet.Core.Models;
 using System.Net;
 
+
 namespace PrimatesWallet.Application.Services
 {
     //servicio de transaccion con su logica de negocio
@@ -42,8 +43,22 @@ namespace PrimatesWallet.Application.Services
                 .WithAccountId(x.Account_Id)
                 .WithToAccountId(x.Account_Id)
                 .Build()).ToList();
-
+                
             return transactionsDTO;
+        }
+        
+        public async Task<Transaction> GetTransactionById(int id)
+        {
+            try
+            {
+                var transaction = await _unitOfWork.Transactions.GetById(id);
+                return transaction;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

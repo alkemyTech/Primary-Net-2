@@ -1,5 +1,3 @@
-﻿
-
 using Microsoft.EntityFrameworkCore;
 using PrimatesWallet.Core.Enums;
 using PrimatesWallet.Core.Interfaces;
@@ -14,6 +12,7 @@ namespace PrimatesWallet.Infrastructure.Repositories
         {
 
         }
+        
         public async Task<IEnumerable<Transaction>> GetAllByAccount(int id)
         {
             return await base._dbContext.Transactions
@@ -22,5 +21,6 @@ namespace PrimatesWallet.Infrastructure.Repositories
                      || (t.Type == TransactionType.payment && t.To_Account_Id == id)) //transferencias recibidas
                      .ToListAsync();
         }
+
     }
 }

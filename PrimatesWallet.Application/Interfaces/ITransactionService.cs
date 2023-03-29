@@ -8,7 +8,6 @@ namespace PrimatesWallet.Application.Interfaces
     /// </summary>
     public interface ITransactionService
     {
-
         /// <summary>
         /// Obtiene todas las transacciones de un usuario a partir de su ID.
         /// </summary>
@@ -16,5 +15,7 @@ namespace PrimatesWallet.Application.Interfaces
         /// <returns>Una colección de objetos Transaction que representan las transacciones realizadas por el usuario.</returns>
         /// <exception cref="AppException">Se lanza cuando no se encuentran transacciones para el usuario.</exception>
         Task<IEnumerable<TransactionDTO>> GetAllByUser(int userId);
+        
+        Task<Transaction> GetTransactionById(int id);
     }
 }
