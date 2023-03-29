@@ -26,5 +26,13 @@ namespace PrimatesWallet.Infrastructure.repositories
 
             return account;
         }
+        public async Task<Account>Get_Transaccion(int Id)
+        {
+            return await base._dbContext.Accounts
+                .Where(a => a.Id == Id)
+                .Include(x => x.Transactions)
+                .FirstOrDefaultAsync();
+        }
     }
+    
 }
