@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using PrimatesWallet.Core.Interfaces;
 using PrimatesWallet.Core.Models;
 using PrimatesWallet.Infrastructure.Repositories;
@@ -28,5 +28,14 @@ namespace PrimatesWallet.Infrastructure.repositories
             return account;
         }
 
+        public async Task<Account>Get_Transaccion(int Id)
+        {
+            return await base._dbContext.Accounts
+                .Where(a => a.Id == Id)
+                .Include(x => x.Transactions)
+                .FirstOrDefaultAsync();
+        }
+
     }
+    
 }

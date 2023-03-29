@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
@@ -7,6 +7,7 @@ using PrimatesWallet.Core.Enums;
 using PrimatesWallet.Core.Interfaces;
 using PrimatesWallet.Core.Models;
 using System.Net;
+
 
 namespace PrimatesWallet.Application.Services
 {
@@ -17,6 +18,29 @@ namespace PrimatesWallet.Application.Services
         public AccountService(IUnitOfWork unitOfWork)
         {
             this.unitOfWork = unitOfWork;
+        }
+
+        public async Task<bool> DepositToAccount(int id, TopUpDTO topUpDTO)
+        {
+            var account = await unitOfWork.Accounts.Get_Transaccion(id);
+            account.Money += topUpDTO.Money;
+            var transactions = new Transaction
+            {
+                Amount = topUpDTO.Money,
+                Concept = topUpDTO.Concept,
+                Date = DateTime.Now,
+                Type = topUpDTO.Type,
+                Account_Id = account.Id,
+                To_Account_Id = account.Id,
+
+            };
+            account.Transactions.Add(transactions);
+            var response = unitOfWork.Save();
+            if (response > 0)
+                return true;
+            else
+                return false;
+
         }
 
         public async Task<IEnumerable<Account>> GetAccountsList()

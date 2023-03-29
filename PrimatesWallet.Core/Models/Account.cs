@@ -24,9 +24,7 @@ namespace PrimatesWallet.Core.Models
 
         public User User { get; set; }
 
-        [NotMapped]
         public ICollection<Transaction> Transactions { get; set; }
-        //[NotMapped]
         public ICollection<FixedTermDeposit> FixedTermDeposit { get; set; }
     }
 }

@@ -22,6 +22,7 @@ namespace PrimatesWallet.Infrastructure.Seed.DataSeed
                     UserId= 1
 
                 },
+
                new Account()
                 {
                     CreationDate= new DateTime(2023,1, 16),
