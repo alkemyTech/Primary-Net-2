@@ -4,10 +4,7 @@ using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
-using PrimatesWallet.Application.Services.Auth;
-using PrimatesWallet.Application.Services;
 using System.Net;
-using PrimatesWallet.Application.DTOS;
 
 namespace PrimatesWallet.Api.Controllers
 {
@@ -18,7 +15,6 @@ namespace PrimatesWallet.Api.Controllers
     {
         private readonly IAccountService _account;
         private readonly IUserContextService _userContextService;
-        private readonly ITransactionService _transaction;
 
         public AccountController(IAccountService accountService, IUserContextService userContextService, ITransactionService transactionService )
         {
@@ -28,6 +24,7 @@ namespace PrimatesWallet.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAll()
         {
             var accounts = await _account.GetAccountsList();
@@ -61,16 +58,13 @@ namespace PrimatesWallet.Api.Controllers
 
         }
 
-
-
-
         [HttpPost("{id}")]
         [Authorize]
         public async Task<IActionResult> Depositar([FromRoute] int id, [FromBody] TopUpDTO topUpDTO)
         {
             try
             {
-                var idUser = _userContext.GetCurrentUser();
+                var idUser = _userContextService.GetCurrentUser();
                 if (idUser != id)
                 {
                     throw new AppException("User not authorized", HttpStatusCode.Unauthorized);
@@ -97,6 +91,7 @@ namespace PrimatesWallet.Api.Controllers
         }
 
         [HttpPost("{accountId}")]
+        [Authorize]
         public async Task<IActionResult> Transfer(int accountId, [FromBody] TransferDTO transferDTO)
         {
             var userId = _userContextService.GetCurrentUser();
