@@ -1,5 +1,6 @@
 ﻿using PrimatesWallet.Application.Interfaces;
 using PrimatesWallet.Core.Interfaces;
+using PrimatesWallet.Core.Models;
 
 namespace PrimatesWallet.Application.Services
 {
@@ -16,7 +17,19 @@ namespace PrimatesWallet.Application.Services
         }
 
         //Gestionar operaciones
+        public async Task<Transaction> GetTransactionById(int id)
+        {
+            try
+            {
+                var transaction = await _unitOfWork.Transactions.GetById(id);
+                return transaction;
 
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
     }
 }
