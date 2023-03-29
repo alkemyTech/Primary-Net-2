@@ -23,6 +23,7 @@ namespace PrimatesWallet.Application.ServiceExtension
 
             //services.AddAutoMapper(typeof(ServiceExtensionApplication));
             
+            services.AddScoped<IUserContextService, UserContextService>();
             services.AddScoped<IUserService,UserService> ();
             services.AddScoped<IRoleService, RoleService> ();
             services.AddScoped<ICatalogueService, CatalogueService>();
