@@ -16,5 +16,24 @@ namespace PrimatesWallet.Api.Controllers
         {
             _transaction = transaction;
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetTransactionById([FromBody] int id)
+        {
+            try
+            {
+                var transaction = await GetTransactionById(id);
+
+                if (transaction == null) { return NotFound(); }
+
+                return Ok(transaction);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
     }
 }

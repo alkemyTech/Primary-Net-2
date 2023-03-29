@@ -12,5 +12,6 @@ namespace PrimatesWallet.Infrastructure.Repositories
         {
 
         }
+
     }
 }

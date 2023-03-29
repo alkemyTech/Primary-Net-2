@@ -4,5 +4,6 @@ namespace PrimatesWallet.Core.Interfaces
 {
     public interface ITransactionRepository : IGenericRepository<Transaction>
     {
+        
     }
 }
