@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
@@ -32,7 +33,7 @@ namespace PrimatesWallet.Api.Controllers
                 var userId = UserContextService.GetCurrentUser(); //buscamos el id del usuario que se logeo
                 var transactions = await transactionService.GetAllByUser(userId); //buscamos las transacciones solo de ese user
 
-                var response = new BaseResponse<IEnumerable<Transaction>>(ReplyMessage.MESSAGE_QUERY, transactions, (int)HttpStatusCode.OK);
+                var response = new BaseResponse<IEnumerable<TransactionDTO>>(ReplyMessage.MESSAGE_QUERY, transactions, (int)HttpStatusCode.OK);
                 return Ok(response);
             }
             catch (AppException ex)

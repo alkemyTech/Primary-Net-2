@@ -1,4 +1,5 @@
-﻿using PrimatesWallet.Core.Models;
+﻿using PrimatesWallet.Application.DTOS;
+using PrimatesWallet.Core.Models;
 
 namespace PrimatesWallet.Application.Interfaces
 {
@@ -14,6 +15,6 @@ namespace PrimatesWallet.Application.Interfaces
         /// <param name="userId">ID del usuario del que se desean obtener las transacciones.</param>
         /// <returns>Una colección de objetos Transaction que representan las transacciones realizadas por el usuario.</returns>
         /// <exception cref="AppException">Se lanza cuando no se encuentran transacciones para el usuario.</exception>
-        Task<IEnumerable<Transaction>> GetAllByUser(int userId);
+        Task<IEnumerable<TransactionDTO>> GetAllByUser(int userId);
     }
 }
