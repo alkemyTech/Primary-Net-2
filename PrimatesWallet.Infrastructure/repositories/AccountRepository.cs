@@ -1,4 +1,5 @@
-﻿using PrimatesWallet.Core.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using PrimatesWallet.Core.Interfaces;
 using PrimatesWallet.Core.Models;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,17 @@ namespace PrimatesWallet.Infrastructure.repositories
         public AccountRepository(ApplicationDbContext context) : base(context)
         {
 
+        }
+
+        public async Task<Account> GetByUserId_FixedTerm(int userId)
+        {
+            var account = await base._dbContext.Accounts
+                .Where(a => a.UserId == userId)
+                .Include(b => b.FixedTermDeposit //join con fixedTermc
+                    .OrderBy(c => c.Closing_Date)) //ordenamos en base de datos para mejor rendimiento
+                .FirstOrDefaultAsync();
+
+            return account;
         }
     }
 }
