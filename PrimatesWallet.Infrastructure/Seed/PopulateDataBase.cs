@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using PrimatesWallet.Infrastructure.Seed.DataSeed;
 
@@ -20,9 +20,8 @@ namespace PrimatesWallet.Infrastructure.Seed
                     new UserSeed(),
                     new CatalogueSeed(),
                     new AccountSeed(),
+                    new TransactionSeed(),
                     new FixedTermDepositSeed(),
-                    new TransactionSeed()
-
                 };
 
                 foreach (var seeder in seeders)
