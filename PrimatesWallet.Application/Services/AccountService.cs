@@ -1,7 +1,8 @@
-﻿using PrimatesWallet.Application.Interfaces;
+﻿using PrimatesWallet.Application.Exceptions;
+using PrimatesWallet.Application.Interfaces;
 using PrimatesWallet.Core.Interfaces;
 using PrimatesWallet.Core.Models;
-
+using System.Net;
 
 namespace PrimatesWallet.Application.Services
 {
@@ -24,6 +25,21 @@ namespace PrimatesWallet.Application.Services
             {
                 return null;
             }
+        }
+
+        public async Task<Account> GetAccountById(int id)
+        {
+            try
+            {
+                var account = await unitOfWork.Accounts.GetById(id);
+
+                return account;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
         }
     }
 }
