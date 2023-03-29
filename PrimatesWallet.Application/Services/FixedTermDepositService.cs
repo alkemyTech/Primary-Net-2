@@ -33,8 +33,10 @@ namespace PrimatesWallet.Application.Services
                 throw new Exception(ex.Message);
             }
         }
-        
 
- 
+        public Task<IEnumerable<FixedTermDeposit>> GetUserById(int userId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
