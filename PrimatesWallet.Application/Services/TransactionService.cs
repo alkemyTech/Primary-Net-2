@@ -1,5 +1,9 @@
-﻿using PrimatesWallet.Application.Interfaces;
+﻿using PrimatesWallet.Application.Exceptions;
+using PrimatesWallet.Application.Helpers;
+using PrimatesWallet.Application.Interfaces;
 using PrimatesWallet.Core.Interfaces;
+using PrimatesWallet.Core.Models;
+using System.Net;
 
 namespace PrimatesWallet.Application.Services
 {
@@ -15,8 +19,18 @@ namespace PrimatesWallet.Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        //Gestionar operaciones
+        public async Task<IEnumerable<Transaction>> GetAllByUser(int userId)
+        {
+        
+            //con el id del usuario buscamos el id de su cuenta
+            var accountId = await _unitOfWork.Accounts.GetIdAccount(userId)
+                ?? throw new AppException(ReplyMessage.MESSAGE_QUERY_EMPTY, HttpStatusCode.NotFound);
 
+            //devolvemos las transacciones de ese usuario ya sea: deposito, transferencia realizada o recibida
+            var transactions = await _unitOfWork.Transactions.GetAllByAccount(accountId)
+                ?? throw new AppException(ReplyMessage.MESSAGE_QUERY_EMPTY, HttpStatusCode.NotFound);
 
+            return transactions;
+        }
     }
 }
