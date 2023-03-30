@@ -1,11 +1,5 @@
-﻿using PrimatesWallet.Core.Enums;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PrimatesWallet.Core.Models
 {
@@ -14,16 +8,27 @@ namespace PrimatesWallet.Core.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
+        /// <summary>
+        /// Role id
+        /// </summary>
         public int Id { get; set; }
-        
+
+
         [Required]
         [MaxLength(7)]
-        [Column("name",TypeName ="VARCHAR(15)")]
+        [Column("name", TypeName = "VARCHAR(15)")]
+        /// <summary>
+        /// Role name
+        /// </summary>
         public string Name { get; set; }
+
 
         [Required]
         [StringLength(255, MinimumLength = 10)]
-        [Column("description",TypeName = "VARCHAR(500)")]
+        [Column("description", TypeName = "VARCHAR(500)")]
+        /// <summary>
+        /// Role description
+        /// </summary>
         public string Description { get; set; }
     }
 }
