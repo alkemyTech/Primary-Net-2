@@ -140,18 +140,12 @@ namespace PrimatesWallet.Application.Services
 
             if (existingAccount == true) throw new AppException("There is an account for this user.", HttpStatusCode.BadRequest);
 
-            try
-            {
-                var newAccount = new Account() { CreationDate = DateTime.Now, Money = 0, IsBlocked = false, UserId = userId };
-                await unitOfWork.Accounts.Add(newAccount);
-                var response = unitOfWork.Save();
-                if (response > 0) return true;
-                return false;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            var newAccount = new Account() { CreationDate = DateTime.Now, Money = 0, IsBlocked = false, UserId = userId };
+            await unitOfWork.Accounts.Add(newAccount);
+            var response = unitOfWork.Save();
+
+            if (response > 0) return true;
+            return false;
         }
 
 
