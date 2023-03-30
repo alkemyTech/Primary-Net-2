@@ -18,5 +18,6 @@ namespace PrimatesWallet.Core.Interfaces
         /// <param name="userId">El ID del usuario para el que se desea obtener el ID de la cuenta.</param>
         /// <returns>El ID de la cuenta, si existe. De lo contrario, devuelve null.</returns>
         Task<int?> GetIdAccount(int userId);
+        Task<bool> CheckAccountByUserId(int userId);
     }
 }
