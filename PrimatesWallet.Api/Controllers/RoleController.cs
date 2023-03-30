@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PrimatesWallet.Application.Interfaces;
 using PrimatesWallet.Core.Models;
@@ -16,6 +17,7 @@ namespace PrimatesWallet.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<IActionResult> GetRoleById(int id)
         {
             Role role = await _roleService.GetRoleById(id);
@@ -27,6 +29,7 @@ namespace PrimatesWallet.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetRoles()
         {
             var roles = await _roleService.GetRoles();

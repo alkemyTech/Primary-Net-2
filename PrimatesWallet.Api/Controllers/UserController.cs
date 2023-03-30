@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
@@ -21,6 +20,7 @@ namespace PrimatesWallet.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async  Task<IActionResult> GetUserById([FromRoute] int id)
         {
             try
