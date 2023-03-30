@@ -33,7 +33,7 @@ namespace PrimatesWallet.Api.Controllers
         [HttpGet("{id}")]
         [Authorize]
         [SwaggerOperation(Summary = "Get a specific item", Description = "Get a specific item by its ID.")]
-        [SwaggerResponse(StatusCodes.Status200OK, "The operation is successful.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
         [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
         [SwaggerResponse(StatusCodes.Status404NotFound, "NotFound. The requested operation was not found.")]
         [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
@@ -65,8 +65,8 @@ namespace PrimatesWallet.Api.Controllers
         [Authorize]
 
         [SwaggerOperation(Summary = "Get specific list", Description = "Get role list details")]
-        [SwaggerResponse(StatusCodes.Status200OK, "The requested item")]
-        [SwaggerResponse(StatusCodes.Status404NotFound, "The item was not found")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "NotFound. The requested operation was not found.")]
         [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
         public async Task<IActionResult> GetRoles()
         {
