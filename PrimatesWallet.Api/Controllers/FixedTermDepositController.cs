@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
-using PrimatesWallet.Application.Services;
 using PrimatesWallet.Core.Models;
 using System.Net;
 

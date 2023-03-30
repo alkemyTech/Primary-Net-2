@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
-using PrimatesWallet.Application.Services;
-using PrimatesWallet.Core.Models;
 using System.Net;
 
 namespace PrimatesWallet.Api.Controllers
@@ -28,6 +27,7 @@ namespace PrimatesWallet.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetTransactions()
         {
             try
@@ -51,6 +51,7 @@ namespace PrimatesWallet.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<IActionResult> GetTransactionById([FromBody] int id)
         {
             try
