@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Interfaces;
 using PrimatesWallet.Core.Models;
+using System.Net;
 
 namespace PrimatesWallet.Api.Controllers
 {
@@ -36,6 +38,5 @@ namespace PrimatesWallet.Api.Controllers
             if (roles == null) { return NotFound(); }
             return Ok(roles);
         }
-
     }
 }
