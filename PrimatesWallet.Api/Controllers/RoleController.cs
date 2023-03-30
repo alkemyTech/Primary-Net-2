@@ -19,9 +19,6 @@ namespace PrimatesWallet.Api.Controllers
 
 
         // GET: api/Role/1
-        /// <summary>
-        /// Get role details by Id.
-        /// </summary>
         /// <remarks>
         /// Get role by id and show details
         /// </remarks>     
@@ -50,10 +47,7 @@ namespace PrimatesWallet.Api.Controllers
 
 
 
-        // GET: api/Role
-        /// <summary>
-        /// Get all roles.
-        /// </summary>
+        // GET: api/Role     
         /// <remarks>
         /// Get roles and show details
         /// </remarks>     
