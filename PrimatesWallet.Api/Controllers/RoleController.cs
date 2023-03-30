@@ -27,7 +27,7 @@ namespace PrimatesWallet.Api.Controllers
         /// </remarks>     
         /// <param name="id">Get role searching by id</param>
         /// <response code="401">Unauthorized user for this operation.</response>              
-        /// <response code="200">The operation is successful.</response>        
+        /// <response code="200">Successful operation.</response>        
         /// <response code="404">NotFound. The requested operation was not found.</response>
         /// <response code="500">Internal Server Error. Something has gone wrong on the Primates Wallet server.</response>
         [HttpGet("{id}")]
@@ -64,8 +64,9 @@ namespace PrimatesWallet.Api.Controllers
         [HttpGet]
         [Authorize]
 
-        [SwaggerOperation(Summary = "Get specific list", Description = "Get role list details")]
+        [SwaggerOperation(Summary = "Get specific list", Description = "Get role list")]
         [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
         [SwaggerResponse(StatusCodes.Status404NotFound, "NotFound. The requested operation was not found.")]
         [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
         public async Task<IActionResult> GetRoles()
