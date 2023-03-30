@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
@@ -55,5 +56,19 @@ namespace PrimatesWallet.Api.Controllers
 
             return Ok(users);
         }
+
+        [HttpPost("signup")]
+        public async Task<IActionResult> RegisterUser([FromBody] RegisterUserDTO user)
+        {
+            var newUser = await userService.Signup(user);
+                if (newUser == null) return BadRequest();
+            
+            var userDTO = new RegisterUserDTO() { First_Name = user.First_Name, Last_Name = user.Last_Name, Email = user.Email, Password = user.Password };
+            var response = new BaseResponse<RegisterUserDTO>(ReplyMessage.MESSAGE_QUERY, userDTO, (int)HttpStatusCode.Created);
+
+            return StatusCode(response.StatusCode, response);
+        }
+   
+
     }
 }
