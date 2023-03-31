@@ -8,7 +8,7 @@ namespace PrimatesWallet.Application.Interfaces
     {
         Task<Account> GetAccountById(int id);
         Task<IEnumerable<Account>> GetAccountsList();
-        Task<TransferDetailDTO> Transfer(decimal amount, int remitentId, string recieverEmail, string concept = "Some");
+        Task<TransferDetailDTO> Transfer(int remitentId, TransferDTO transferDTO);
         Task<bool> ValidateAccount(int userId, int accountId);
         Task<bool> DepositToAccount(int Id, TopUpDTO topUpDTO);
         Task<Account> UpdateAccountAdmin(int accountId, AccountUpdateDTO accountUpdateDTO);

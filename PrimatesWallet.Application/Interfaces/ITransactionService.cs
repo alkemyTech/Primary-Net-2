@@ -16,8 +16,10 @@ namespace PrimatesWallet.Application.Interfaces
         /// <exception cref="AppException">Se lanza cuando no se encuentran transacciones para el usuario.</exception>
         Task<IEnumerable<TransactionDTO>> GetAllByUser(int userId);
         
-        Task<Transaction> GetTransactionById(int id);
+        Task<TransactionDTO> GetTransactionById(int id);
         
         Task<bool> DeleteTransaction(int transactionId , int userId);
+        Task<bool> UpdateTransaction(int transactionId, string concept = "repayment");
+        Task<IEnumerable<TransactionDTO>> GetAllTransactions();
     }
 }

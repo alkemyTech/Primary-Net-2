@@ -46,7 +46,7 @@ namespace PrimatesWallet.Application.Mapping.Transaction
 
         public TransactionDTOBuilder WithType(TransactionType type)
         {
-            _transactionDTO.Type = type == TransactionType.topup ? "topup" : "payment";
+            _transactionDTO.Type = type.ToString();
             return this;
         }
 
