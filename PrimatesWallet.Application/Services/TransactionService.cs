@@ -48,18 +48,16 @@ namespace PrimatesWallet.Application.Services
                 
             return transactionsDTO;
         }
-        
-        public async Task<Transaction> GetTransactionById(int id)
+
+        public async Task<Transaction> GetTransactionById(int transactionId)
         {
             try
             {
-                var transaction = await _unitOfWork.Transactions.GetById(id);
-                return transaction;
-
+                return await _unitOfWork.Transactions.GetById(transactionId);
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                return null;
             }
         }
     }
