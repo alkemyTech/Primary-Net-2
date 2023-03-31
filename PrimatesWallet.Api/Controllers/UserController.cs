@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
@@ -46,15 +47,15 @@ namespace PrimatesWallet.Api.Controllers
         }
 
         [HttpGet]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetUsers([FromQuery] int page = 1, int pageSize = 10)
         {
             var users = await userService.GetUsers(page, pageSize); //obtenemos solo los usuarios que necesitamos
             var totalPages = await userService.TotalPageUsers(pageSize); //obtenemos el total de paginas
-            string url = getURL(); //esamos el metodo para obtener la url
+            string url = getURL(); //usamos el metodo para obtener la url
 
 
-            var response = new BasePaginateResponse<IEnumerable<User>>()
+            var response = new BasePaginateResponse<IEnumerable<UserResponseDTO>>()
             {
                 Message = ReplyMessage.MESSAGE_QUERY,
                 Result = users,

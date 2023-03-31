@@ -1,6 +1,8 @@
-﻿using PrimatesWallet.Application.Exceptions;
+﻿using PrimatesWallet.Application.DTOS;
+using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
+using PrimatesWallet.Application.Mapping.User;
 using PrimatesWallet.Core.Interfaces;
 using PrimatesWallet.Core.Models;
 using System;
@@ -39,13 +41,22 @@ namespace PrimatesWallet.Application.Services
             }
         }
 
-        public async Task<IEnumerable<User>> GetUsers(int page, int pageSize)
+        public async Task<IEnumerable<UserResponseDTO>> GetUsers(int page, int pageSize)
         {
-            var users = await unitOfWork.UserRepository.GetAll(page, pageSize);
+            var users = await unitOfWork.UserRepository.GetAll(page, pageSize)
+                 ?? throw new AppException(ReplyMessage.MESSAGE_QUERY_EMPTY, HttpStatusCode.NotFound);
 
-            return users is null 
-                ? throw new AppException(ReplyMessage.MESSAGE_QUERY_EMPTY, HttpStatusCode.NotFound) 
-                : users;
+            var usersDTO = users.Select(x => 
+                new UserResponseDTOBuilder()
+                .WithUserId(x.UserId)
+                .WithFirstName(x.First_Name)
+                .WithLastName(x.Last_Name)
+                .WithEmail(x.Email)
+                .WithPoints(x.Points)
+                .WithRolId(x.Rol_Id)
+                .Build()).ToList();
+
+            return usersDTO;
         }
 
         public async Task<int> TotalPageUsers(int pageSize)
