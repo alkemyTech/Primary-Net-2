@@ -62,5 +62,26 @@ namespace PrimatesWallet.Application.Services
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<bool> DeleteTransaction(int transactionId, int userId)
+        {
+
+            var user = await _unitOfWork.UserRepository.GetById(userId);
+            var isAdmin = await _unitOfWork.UserRepository.IsAdmin(user);
+            if (!isAdmin) 
+            {
+                throw new AppException("Invalid Credentials", HttpStatusCode.Forbidden);
+            }
+            var transaction = await _unitOfWork.Transactions.GetById(transactionId);
+            
+            if(transaction == null)
+            {
+                throw new AppException($"Transaction {transactionId} not found", HttpStatusCode.NotFound);
+            }
+            _unitOfWork.Transactions.Delete(transaction);
+            _unitOfWork.Save();
+            return true;
+
+        }
     }
 }

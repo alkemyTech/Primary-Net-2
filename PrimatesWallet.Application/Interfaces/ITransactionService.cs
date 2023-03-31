@@ -17,5 +17,7 @@ namespace PrimatesWallet.Application.Interfaces
         Task<IEnumerable<TransactionDTO>> GetAllByUser(int userId);
         
         Task<Transaction> GetTransactionById(int id);
+        
+        Task<bool> DeleteTransaction(int transactionId , int userId);
     }
 }
