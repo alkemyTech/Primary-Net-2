@@ -9,11 +9,8 @@ using PrimatesWallet.Core.Enums;
 using PrimatesWallet.Core.Interfaces;
 using PrimatesWallet.Core.Models;
 using System.Net;
-<<<<<<< HEAD
 using System.Transactions;
-=======
 using System.Security.Principal;
->>>>>>> d0f78c7440ee290e388ad99a7b0df13846bb85ab
 
 
 namespace PrimatesWallet.Application.Services
@@ -134,7 +131,7 @@ namespace PrimatesWallet.Application.Services
             }
         }
 
-<<<<<<< HEAD
+
         public async Task<Account> UpdateAccountAdmin(int accountId, AccountUpdateDTO accountUpdateDTO)
         {
             if(accountId == null) throw new AppException("No id recieved", HttpStatusCode.BadRequest);
@@ -159,7 +156,7 @@ namespace PrimatesWallet.Application.Services
 
 
         }
-=======
+
         /// <summary>
         ///     This accountService method creates an account for a user if the user does not have one.
         /// </summary>
@@ -181,7 +178,6 @@ namespace PrimatesWallet.Application.Services
             return false;
         }
 
->>>>>>> d0f78c7440ee290e388ad99a7b0df13846bb85ab
 
     }
 }
