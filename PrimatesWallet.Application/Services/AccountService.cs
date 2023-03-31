@@ -154,11 +154,9 @@ namespace PrimatesWallet.Application.Services
 
             
             return account;
-
-
         }
-
-
+        
+        
         /// <summary>
         ///     This accountService method creates an account for a user if the user does not have one.
         /// </summary>
@@ -179,6 +177,5 @@ namespace PrimatesWallet.Application.Services
             if (response > 0) return true;
             return false;
         }
-
     }
 }

@@ -58,7 +58,8 @@ namespace PrimatesWallet.Application.Services
 
         }
 
-        public async Task<bool> Signup(RegisterUserDTO user)
+        public async Task<int> Signup(RegisterUserDTO user)
+
         {
             var isRegistered = await unitOfWork.UserRepository.IsRegistered(user.Email);
 
@@ -79,9 +80,12 @@ namespace PrimatesWallet.Application.Services
             await unitOfWork.UserRepository.Add(newUser);
             var response = unitOfWork.Save();
 
-            if (response > 0)  return true;
-            return false;
+            var userId = await unitOfWork.UserRepository.GetUserIdByEmail(newUser.Email);
+            if (userId == 0) throw new AppException($"No user with id {userId}", HttpStatusCode.BadRequest);
+            
 
+            if (response > 0)  return userId;
+            return 0;
 
         }
 

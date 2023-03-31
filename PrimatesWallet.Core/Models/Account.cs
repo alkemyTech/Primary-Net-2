@@ -14,10 +14,10 @@ namespace PrimatesWallet.Core.Models
 
         [Column("money", TypeName = "DECIMAL")]
         [Range(0, Double.PositiveInfinity)]
-        public decimal? Money { get; set; }
+        public decimal? Money { get; set; } = 0;
 
         [Column("isBlocked", TypeName = "BIT")]
-        public bool IsBlocked { get; set; }
+        public bool IsBlocked { get; set; } = false;
 
         [Column("user_id", TypeName = "INT")]
         public int UserId { get; set; }

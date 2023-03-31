@@ -12,6 +12,6 @@ namespace PrimatesWallet.Application.Interfaces
     {
         Task<User> GetUserById(int id);
         Task<IEnumerable<User>> GetUsers();
-        Task<bool> Signup(RegisterUserDTO user);
+        Task<int> Signup(RegisterUserDTO user);
     }
 }

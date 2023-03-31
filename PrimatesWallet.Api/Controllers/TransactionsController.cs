@@ -70,6 +70,16 @@ namespace PrimatesWallet.Api.Controllers
 
         }
 
+        [HttpDelete("{transactionId}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteTransaction (int transactionId)
+        {
+            var requestedUser = UserContextService.GetCurrentUser();
+            var response = await transactionService.DeleteTransaction(transactionId, requestedUser);
+            if( !response ) { return NotFound(); }
+            return Ok($"Transaction {transactionId} deleted.");
+        }
+
 
     }
 }
