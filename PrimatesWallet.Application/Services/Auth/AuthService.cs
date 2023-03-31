@@ -27,11 +27,18 @@ namespace PrimatesWallet.Application.Services.Auth
 
             if (currentUSer is null) throw new AppException("No se encontro el usuario", HttpStatusCode.NotFound);
 
-            if(currentUSer.Password != login.Password) throw new AppException("Credenciales invalidas", HttpStatusCode.Unauthorized);
+            int hash = 12;
 
+            bool isValidPassword = BCrypt.Net.BCrypt.Verify(login.Password, currentUSer.Password);
+            
+            if( isValidPassword ) return currentUSer;
 
+            return null;
 
-            return currentUSer;
+            //if(currentUSer.Password != login.Password) throw new AppException("Credenciales invalidas", HttpStatusCode.Unauthorized);
+            //return currentUSer;
         }
+
+
     }
 }

@@ -13,5 +13,6 @@ namespace PrimatesWallet.Core.Interfaces
 
         //Aca se define cualquier metodo de acceso a base de datos que no este en generic
         Task<User> GetByEmail(string email);
+        Task<bool> IsRegistered(string email);
     }
 }

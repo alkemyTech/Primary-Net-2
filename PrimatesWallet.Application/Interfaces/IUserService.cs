@@ -1,4 +1,5 @@
-﻿using PrimatesWallet.Core.Models;
+﻿using PrimatesWallet.Application.DTOS;
+using PrimatesWallet.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,6 @@ namespace PrimatesWallet.Application.Interfaces
     {
         Task<User> GetUserById(int id);
         Task<IEnumerable<User>> GetUsers();
+        Task<bool> Signup(RegisterUserDTO user);
     }
 }
