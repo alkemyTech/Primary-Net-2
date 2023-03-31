@@ -59,6 +59,7 @@ namespace PrimatesWallet.Application.Services
         }
 
         public async Task<int> Signup(RegisterUserDTO user)
+
         {
             var isRegistered = await unitOfWork.UserRepository.IsRegistered(user.Email);
 

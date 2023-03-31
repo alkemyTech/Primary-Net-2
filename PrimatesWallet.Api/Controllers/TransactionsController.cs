@@ -4,6 +4,7 @@ using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
+using PrimatesWallet.Core.Models;
 using System.Net;
 
 namespace PrimatesWallet.Api.Controllers
@@ -52,22 +53,14 @@ namespace PrimatesWallet.Api.Controllers
 
         [HttpGet("{id}")]
         [Authorize]
-        public async Task<IActionResult> GetTransactionById([FromBody] int id)
+        public async Task<IActionResult> GetTransactionById(int id)
         {
-            try
+            Transaction transaction = await transactionService.GetTransactionById(id);
+            if (transaction == null)
             {
-                var transaction = await GetTransactionById(id);
-
-                if (transaction == null) { return NotFound(); }
-
-                return Ok(transaction);
-
+                return StatusCode(StatusCodes.Status204NoContent, $"No transaction found by id{id}");
             }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-
+            return StatusCode(StatusCodes.Status200OK, transaction);
         }
 
         [HttpDelete("{transactionId}")]

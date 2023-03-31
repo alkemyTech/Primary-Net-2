@@ -13,6 +13,7 @@ using System.Transactions;
 using System.Security.Principal;
 
 
+
 namespace PrimatesWallet.Application.Services
 {
     public class AccountService : IAccountService
@@ -153,9 +154,8 @@ namespace PrimatesWallet.Application.Services
 
             
             return account;
-
-
         }
+
 
         /// <summary>
         ///     This accountService method creates an account for a user if the user does not have one.
@@ -177,7 +177,5 @@ namespace PrimatesWallet.Application.Services
             if (response > 0) return true;
             return false;
         }
-
-
     }
 }
