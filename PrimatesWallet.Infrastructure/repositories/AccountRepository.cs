@@ -37,6 +37,19 @@ namespace PrimatesWallet.Infrastructure.repositories
                 .Select(x => x.Id) //retornamos de la db solo el id porque no se necesita el objeto completo
                 .FirstOrDefaultAsync();
         }
+        /// <summary>
+        ///     This method checks if an account exists with a specific user id.
+        ///     If there is an account with this id, return true else return false.
+        /// </summary>
+        /// <param name="userId">
+        ///     user id value, extracted from token.
+        /// </param>
+        public async Task<bool> CheckAccountByUserId(int userId)
+        {
+            var existingAccount = base._dbContext.Accounts.Where(a => a.UserId == userId).FirstOrDefault();
+
+            return ( existingAccount == null ) ? false: true;
+        }
 
         public void UpdateAccountRepository(Account account)
         {

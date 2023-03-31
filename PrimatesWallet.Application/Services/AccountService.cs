@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PrimatesWallet.Application.DTOS;
@@ -9,6 +10,8 @@ using PrimatesWallet.Core.Interfaces;
 using PrimatesWallet.Core.Models;
 using System.Net;
 using System.Transactions;
+using System.Security.Principal;
+
 
 
 namespace PrimatesWallet.Application.Services
@@ -129,6 +132,7 @@ namespace PrimatesWallet.Application.Services
             }
         }
 
+
         public async Task<Account> UpdateAccountAdmin(int accountId, AccountUpdateDTO accountUpdateDTO)
         {
             if(accountId == null) throw new AppException("No id recieved", HttpStatusCode.BadRequest);
@@ -152,6 +156,28 @@ namespace PrimatesWallet.Application.Services
             return account;
 
 
+        }
+
+
+        /// <summary>
+        ///     This accountService method creates an account for a user if the user does not have one.
+        /// </summary>
+        /// <param name="userId">user id extraxted from a token.</param>
+        /// <returns>if the account was created successfully, the method returns true</returns>
+        /// <exception cref="AppException">If the user have an account, the method throw an error with status 400</exception>
+        /// <exception cref="Exception">If there is an internal server error, the method catches it and throws an exception.</exception>
+        public async Task<bool> Create(int userId)
+        {
+            var existingAccount = await unitOfWork.Accounts.CheckAccountByUserId(userId);
+
+            if (existingAccount == true) throw new AppException("There is an account for this user.", HttpStatusCode.BadRequest);
+
+            var newAccount = new Account() { CreationDate = DateTime.Now, Money = 0, IsBlocked = false, UserId = userId };
+            await unitOfWork.Accounts.Add(newAccount);
+            var response = unitOfWork.Save();
+
+            if (response > 0) return true;
+            return false;
         }
 
     }

@@ -12,5 +12,7 @@ namespace PrimatesWallet.Application.Interfaces
         Task<bool> ValidateAccount(int userId, int accountId);
         Task<bool> DepositToAccount(int Id, TopUpDTO topUpDTO);
         Task<Account> UpdateAccountAdmin(int accountId, AccountUpdateDTO accountUpdateDTO);
+        Task<bool> Create(int userId);
+
     }
 }

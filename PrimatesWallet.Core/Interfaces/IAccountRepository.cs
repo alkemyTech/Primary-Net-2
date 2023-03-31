@@ -20,5 +20,7 @@ namespace PrimatesWallet.Core.Interfaces
         Task<int?> GetIdAccount(int userId);
 
         void UpdateAccountRepository(Account account);
+
+        Task<bool> CheckAccountByUserId(int userId);
     }
 }

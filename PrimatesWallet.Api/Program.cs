@@ -1,11 +1,13 @@
-using PrimatesWallet.Application.Interfaces;
-using PrimatesWallet.Application.Services;
+using Microsoft.OpenApi.Models;
+using PrimatesWallet.Application.ServiceExtension;
 using PrimatesWallet.Infrastructure.Seed;
 using PrimatesWallet.Infrastructure.ServiceExtension;
+using System.Reflection;
 using PrimatesWallet.Application.ServiceExtension;
 using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
 using PrimatesWallet.Application.Middleware;
+
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
@@ -17,6 +19,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
+    c.SwaggerDoc(
+        "v1", new OpenApiInfo { Title = "Primates-Wallet", Description = "Demo Api for Primates Wallet", Version = "v1" });
+    var fileName = $"{ Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var filePath = Path.Combine(AppContext.BaseDirectory, fileName);
+    c.IncludeXmlComments(filePath);
+
+
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
         Name = "Authorization",
@@ -37,14 +46,19 @@ builder.Services.AddSwaggerGen(c =>
             new string[] {}
         }
     });
+
 });
+
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json",
+                 "Primates-Wallet v1"));
 }
 
 app.UseHttpsRedirection();
