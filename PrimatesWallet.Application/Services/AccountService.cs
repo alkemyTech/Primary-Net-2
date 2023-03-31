@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
@@ -7,6 +8,7 @@ using PrimatesWallet.Core.Enums;
 using PrimatesWallet.Core.Interfaces;
 using PrimatesWallet.Core.Models;
 using System.Net;
+using System.Transactions;
 
 
 namespace PrimatesWallet.Application.Services
@@ -15,16 +17,18 @@ namespace PrimatesWallet.Application.Services
     {
         public readonly IUnitOfWork unitOfWork;
 
-        public AccountService(IUnitOfWork unitOfWork)
+
+        public AccountService(IUnitOfWork unitOfWork )
         {
             this.unitOfWork = unitOfWork;
+   
         }
 
         public async Task<bool> DepositToAccount(int id, TopUpDTO topUpDTO)
         {
             var account = await unitOfWork.Accounts.Get_Transaccion(id);
             account.Money += topUpDTO.Money;
-            var transactions = new Transaction
+            var transactions = new Core.Models.Transaction
             {
                 Amount = topUpDTO.Money,
                 Concept = topUpDTO.Concept,
@@ -99,7 +103,7 @@ namespace PrimatesWallet.Application.Services
                 unitOfWork.Accounts.Update(remitent);
                 unitOfWork.Accounts.Update(reciever.Account);
 
-                var transaction = new Transaction() { Amount = amount, Concept = concept, Date = DateTime.Now, Type = TransactionType.payment, Account_Id = remitentId, To_Account_Id = reciever.Account.Id };
+                var transaction = new Core.Models.Transaction() { Amount = amount, Concept = concept, Date = DateTime.Now, Type = TransactionType.payment, Account_Id = remitentId, To_Account_Id = reciever.Account.Id };
 
                 var transferDetail = new TransferDetailDTO()
                 {
@@ -125,6 +129,30 @@ namespace PrimatesWallet.Application.Services
             }
         }
 
+        public async Task<Account> UpdateAccountAdmin(int accountId, AccountUpdateDTO accountUpdateDTO)
+        {
+            if(accountId == null) throw new AppException("No id recieved", HttpStatusCode.BadRequest);
+            var account = await unitOfWork.Accounts.GetById(accountId);
+            
+            if(account == null) throw new AppException($"No account with id {accountId}", HttpStatusCode.NotFound);
+
+            var user = await unitOfWork.UserRepository.GetById(account.UserId);
+
+            var isAdmin = await unitOfWork.UserRepository.IsAdmin(user);
+
+            if (!isAdmin) throw new AppException("Invalid credentials", HttpStatusCode.Forbidden);
+
+            account.Money = accountUpdateDTO.Money;
+            account.IsBlocked = accountUpdateDTO.IsBlocked;
+
+            unitOfWork.Accounts.Update(account);
+            unitOfWork.Save();
+
+            
+            return account;
+
+
+        }
 
     }
 }

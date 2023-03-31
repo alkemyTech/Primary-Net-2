@@ -38,5 +38,12 @@ namespace PrimatesWallet.Infrastructure.repositories
                 .FirstOrDefaultAsync();
         }
 
+        public void UpdateAccountRepository(Account account)
+        {
+            _dbContext.Accounts.Update(account);
+        }
+
+
+
     }
 }

@@ -12,8 +12,8 @@ using PrimatesWallet.Infrastructure;
 namespace PrimatesWallet.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230330164105_registertest")]
-    partial class registertest
+    [Migration("20230331031250_hashed seed passwords")]
+    partial class hashedseedpasswords
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
