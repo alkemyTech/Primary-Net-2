@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PrimatesWallet.Api.Helpers;
 using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
@@ -52,7 +53,7 @@ namespace PrimatesWallet.Api.Controllers
         {
             var users = await userService.GetUsers(page, pageSize); //obtenemos solo los usuarios que necesitamos
             var totalPages = await userService.TotalPageUsers(pageSize); //obtenemos el total de paginas
-            string url = getURL(); //usamos el metodo para obtener la url
+            string url = CurrentURL.Get(HttpContext.Request); //Clase estatica en helpers para obtener la url como string
 
 
             var response = new BasePaginateResponse<IEnumerable<UserResponseDTO>>()
@@ -65,21 +66,6 @@ namespace PrimatesWallet.Api.Controllers
                 StatusCode = (int)HttpStatusCode.OK
             };
             return Ok(response);
-        }
-
-
-
-        /// <summary>
-        /// Returns the current URL of the HTTP request received in the current context.
-        /// </summary>
-        /// <returns>A string representing the current URL.</returns>
-        private string getURL()
-        {
-            var scheme = HttpContext.Request.Scheme;
-            var host = HttpContext.Request.Host;
-            var pathBase = HttpContext.Request.PathBase;
-            var path = HttpContext.Request.Path;
-            return $"{scheme}://{host}{pathBase}{path}";
         }
 
         [HttpPost("signup")]

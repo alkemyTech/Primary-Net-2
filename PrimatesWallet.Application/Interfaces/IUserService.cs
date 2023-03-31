@@ -11,7 +11,6 @@ namespace PrimatesWallet.Application.Interfaces
     public interface IUserService
     {
         Task<User> GetUserById(int id);
-        Task<IEnumerable<User>> GetUsers();
         Task<int> Signup(RegisterUserDTO user);
         
         /// <summary>
