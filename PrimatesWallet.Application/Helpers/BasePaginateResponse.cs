@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 
 namespace PrimatesWallet.Application.Helpers
 {
+    /// <summary>
+    /// Represents a generic response containing a paged list of data.
+    /// </summary>
+    /// <typeparam name="T">The type of data contained in the response.</typeparam>
     public class BasePaginateResponse<T>
     {
         public string Message { get; set; }

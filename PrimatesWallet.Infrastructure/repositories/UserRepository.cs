@@ -41,14 +41,16 @@ namespace PrimatesWallet.Infrastructure.repositories
 
         public async Task<IEnumerable<User>> GetAll(int page, int pageSize )
         {
+            //recuperamos en base de datos solo lo que necesitamos
             return await base._dbContext.Users
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
+                .Skip((page - 1) * pageSize) //saltamos lo anterior
+                .Take(pageSize) //tomamos los 10 que necesitamos
                 .ToListAsync();
         }
 
         public async Task<int> GetCount()
         {
+            //la cuenta se hace en base de datos para eficiencia
             return await base._dbContext.Users.CountAsync();
         }
     }

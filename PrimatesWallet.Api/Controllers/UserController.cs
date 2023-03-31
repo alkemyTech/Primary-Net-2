@@ -49,9 +49,9 @@ namespace PrimatesWallet.Api.Controllers
         //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetUsers([FromQuery] int page = 1, int pageSize = 10)
         {
-            var users = await userService.GetUsers(page, pageSize);
-            var totalPages = await userService.TotalPageUsers(pageSize);
-            string url = getURL();
+            var users = await userService.GetUsers(page, pageSize); //obtenemos solo los usuarios que necesitamos
+            var totalPages = await userService.TotalPageUsers(pageSize); //obtenemos el total de paginas
+            string url = getURL(); //esamos el metodo para obtener la url
 
 
             var response = new BasePaginateResponse<IEnumerable<User>>()
@@ -66,6 +66,12 @@ namespace PrimatesWallet.Api.Controllers
             return Ok(response);
         }
 
+
+
+        /// <summary>
+        /// Returns the current URL of the HTTP request received in the current context.
+        /// </summary>
+        /// <returns>A string representing the current URL.</returns>
         private string getURL()
         {
             var scheme = HttpContext.Request.Scheme;

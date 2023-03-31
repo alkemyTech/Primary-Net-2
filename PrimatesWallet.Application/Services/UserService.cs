@@ -51,6 +51,7 @@ namespace PrimatesWallet.Application.Services
         public async Task<int> TotalPageUsers(int pageSize)
         {
             var totalUsers = await unitOfWork.UserRepository.GetCount();
+            //contamos el total de usuarios y calculamos cuantas paginas hay en total
             return (int)Math.Ceiling((double)totalUsers / pageSize);
         }
     }
