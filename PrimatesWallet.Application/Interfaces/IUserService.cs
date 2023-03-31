@@ -10,6 +10,8 @@ namespace PrimatesWallet.Application.Interfaces
     public interface IUserService
     {
         Task<User> GetUserById(int id);
-        Task<IEnumerable<User>> GetUsers();
+        Task<IEnumerable<User>> GetUsers(int page,int pageSize);
+
+        Task<int> TotalPageUsers(int PageSize);
     }
 }

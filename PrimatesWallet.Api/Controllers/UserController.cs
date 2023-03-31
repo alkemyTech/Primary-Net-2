@@ -21,7 +21,7 @@ namespace PrimatesWallet.Api.Controllers
 
         [HttpGet("{id}")]
         [Authorize]
-        public async  Task<IActionResult> GetUserById([FromRoute] int id)
+        public async Task<IActionResult> GetUserById([FromRoute] int id)
         {
             try
             {
@@ -29,31 +29,50 @@ namespace PrimatesWallet.Api.Controllers
                 var response = new BaseResponse<User>(ReplyMessage.MESSAGE_QUERY, Users, (int)HttpStatusCode.OK);
                 return Ok(response);
 
-            } catch (AppException ex)
+            }
+            catch (AppException ex)
             {
                 //atrapamos las excepciones y le damos un formato,
                 //pendiente de middleware para definir esto en un solo lugar
                 var response = new BaseResponse<object>(ex.Message, null, (int)ex.StatusCode);
                 return StatusCode(response.StatusCode, response);
 
-            }catch(Exception ex) 
+            }
+            catch (Exception ex)
             {
-                var response = new BaseResponse<object>(ex.Message,null, (int)HttpStatusCode.InternalServerError);
+                var response = new BaseResponse<object>(ex.Message, null, (int)HttpStatusCode.InternalServerError);
                 return StatusCode(response.StatusCode, response);
             }
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetUsers()
+        //[Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetUsers([FromQuery] int page = 1, int pageSize = 10)
         {
-            //Falta la validacion del JWT para el Rol de admin , pero esta ubicado en tickets posteriores
+            var users = await userService.GetUsers(page, pageSize);
+            var totalPages = await userService.TotalPageUsers(pageSize);
+            string url = getURL();
 
-            var users = await userService.GetUsers();
-            
-            if ( users == null) { return NotFound(); }
 
-            return Ok(users);
+            var response = new BasePaginateResponse<IEnumerable<User>>()
+            {
+                Message = ReplyMessage.MESSAGE_QUERY,
+                Result = users,
+                Page = page,
+                NextPage = (page < totalPages) ? $"{url}?page={page + 1}" : "None",
+                PreviousPage = (page == 1) ? "none" : $"{url}?page={page - 1}",
+                StatusCode = (int)HttpStatusCode.OK
+            };
+            return Ok(response);
+        }
+
+        private string getURL()
+        {
+            var scheme = HttpContext.Request.Scheme;
+            var host = HttpContext.Request.Host;
+            var pathBase = HttpContext.Request.PathBase;
+            var path = HttpContext.Request.Path;
+            return $"{scheme}://{host}{pathBase}{path}";
         }
     }
 }

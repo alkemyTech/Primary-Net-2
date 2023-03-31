@@ -23,7 +23,7 @@ namespace PrimatesWallet.Application.Services
 
         public async Task<User> GetUserById(int id)
         {
-            try 
+            try
             {
                 var user = await unitOfWork.UserRepository.GetById(id);
                 return user is null ?
@@ -33,25 +33,25 @@ namespace PrimatesWallet.Application.Services
                 //si no existe el usuario lanzamos un exception personalizada
                 //en otra parte del codigo la atrapamos y le damos un formato
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
         }
 
-        public async Task<IEnumerable<User>> GetUsers()
+        public async Task<IEnumerable<User>> GetUsers(int page, int pageSize)
         {
-            try
-            {
-                var users = await unitOfWork.UserRepository.GetAll();
-                return users;
+            var users = await unitOfWork.UserRepository.GetAll(page, pageSize);
 
-            }
-            catch(Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            return users is null 
+                ? throw new AppException(ReplyMessage.MESSAGE_QUERY_EMPTY, HttpStatusCode.NotFound) 
+                : users;
+        }
 
+        public async Task<int> TotalPageUsers(int pageSize)
+        {
+            var totalUsers = await unitOfWork.UserRepository.GetCount();
+            return (int)Math.Ceiling((double)totalUsers / pageSize);
         }
     }
 }

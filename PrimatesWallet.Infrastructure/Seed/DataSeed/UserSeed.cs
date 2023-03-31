@@ -12,6 +12,26 @@ namespace PrimatesWallet.Infrastructure.Seed.DataSeed
     {
         protected override IEnumerable<User> GetData()
         {
+            Random random = new();
+            List<User> users = new();
+
+            for (int i = 0; i < 25; i++)
+            {
+                User user = new User()
+                {
+                    First_Name = "User" + i.ToString(),
+                    Last_Name = "Lastname" + i.ToString(),
+                    Email = "user" + i.ToString() + "@example.com",
+                    Password = "password" + i.ToString(),
+                    Points = random.Next(0, 100),
+                    Rol_Id = random.Next(1, 3)
+                };
+                users.Add(user);
+            }
+
+            return users;
+
+            /*
             return new List<User>()
             {
                 new User()
@@ -61,6 +81,7 @@ namespace PrimatesWallet.Infrastructure.Seed.DataSeed
                 }
 
             };
+            */
         }
     }
 }
