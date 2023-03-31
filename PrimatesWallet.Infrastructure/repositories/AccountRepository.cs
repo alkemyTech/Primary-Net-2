@@ -51,5 +51,12 @@ namespace PrimatesWallet.Infrastructure.repositories
             return ( existingAccount == null ) ? false: true;
         }
 
+        public void UpdateAccountRepository(Account account)
+        {
+            _dbContext.Accounts.Update(account);
+        }
+
+
+
     }
 }

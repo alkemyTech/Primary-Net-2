@@ -4,7 +4,7 @@
 
 namespace PrimatesWallet.Infrastructure.Migrations
 {
-    public partial class registertest : Migration
+    public partial class hashedseedpasswords : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

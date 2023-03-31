@@ -46,5 +46,12 @@ namespace PrimatesWallet.Infrastructure.repositories
             return true;
         }
 
+        public async Task<bool> IsAdmin (User user)
+        {
+            if (user == null) return false;
+            if(user.Rol_Id == 1 ) return true;
+            return false;
+        }
+
     }
 }

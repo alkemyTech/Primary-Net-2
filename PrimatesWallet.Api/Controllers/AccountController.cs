@@ -4,6 +4,8 @@ using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
+using PrimatesWallet.Core.Models;
+using PrimatesWallet.Infrastructure.Repositories;
 using System.Net;
 
 namespace PrimatesWallet.Api.Controllers
@@ -127,6 +129,19 @@ namespace PrimatesWallet.Api.Controllers
 
             }
         }
+
+
+
+        [HttpPut("{accountId}")]
+        public async Task<IActionResult> UpdateAccount(int accountId, [FromBody] AccountUpdateDTO accountUpdateDTO) 
+        {
+          var updatedAccount =  await _account.UpdateAccountAdmin( accountId, accountUpdateDTO);
+            return Ok(updatedAccount);
+           
+
+        }
+
+
 
 
 
