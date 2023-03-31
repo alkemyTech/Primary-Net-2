@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PrimatesWallet.Api.Helpers;
 using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
@@ -22,7 +23,7 @@ namespace PrimatesWallet.Api.Controllers
 
         [HttpGet("{id}")]
         [Authorize]
-        public async  Task<IActionResult> GetUserById([FromRoute] int id)
+        public async Task<IActionResult> GetUserById([FromRoute] int id)
         {
             try
             {
@@ -30,31 +31,41 @@ namespace PrimatesWallet.Api.Controllers
                 var response = new BaseResponse<User>(ReplyMessage.MESSAGE_QUERY, Users, (int)HttpStatusCode.OK);
                 return Ok(response);
 
-            } catch (AppException ex)
+            }
+            catch (AppException ex)
             {
                 //atrapamos las excepciones y le damos un formato,
                 //pendiente de middleware para definir esto en un solo lugar
                 var response = new BaseResponse<object>(ex.Message, null, (int)ex.StatusCode);
                 return StatusCode(response.StatusCode, response);
 
-            }catch(Exception ex) 
+            }
+            catch (Exception ex)
             {
-                var response = new BaseResponse<object>(ex.Message,null, (int)HttpStatusCode.InternalServerError);
+                var response = new BaseResponse<object>(ex.Message, null, (int)HttpStatusCode.InternalServerError);
                 return StatusCode(response.StatusCode, response);
             }
         }
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetUsers([FromQuery] int page = 1, int pageSize = 10)
         {
-            //Falta la validacion del JWT para el Rol de admin , pero esta ubicado en tickets posteriores
+            var users = await userService.GetUsers(page, pageSize); //obtenemos solo los usuarios que necesitamos
+            var totalPages = await userService.TotalPageUsers(pageSize); //obtenemos el total de paginas
+            string url = CurrentURL.Get(HttpContext.Request); //Clase estatica en helpers para obtener la url como string
 
-            var users = await userService.GetUsers();
-            
-            if ( users == null) { return NotFound(); }
 
-            return Ok(users);
+            var response = new BasePaginateResponse<IEnumerable<UserResponseDTO>>()
+            {
+                Message = ReplyMessage.MESSAGE_QUERY,
+                Result = users,
+                Page = page,
+                NextPage = (page < totalPages) ? $"{url}?page={page + 1}" : "None",
+                PreviousPage = (page == 1) ? "none" : $"{url}?page={page - 1}",
+                StatusCode = (int)HttpStatusCode.OK
+            };
+            return Ok(response);
         }
 
         [HttpPost("signup")]
