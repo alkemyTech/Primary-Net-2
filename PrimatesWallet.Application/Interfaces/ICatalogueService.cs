@@ -1,4 +1,5 @@
-﻿using PrimatesWallet.Core.Models;
+﻿using PrimatesWallet.Application.DTOS;
+using PrimatesWallet.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace PrimatesWallet.Application.Interfaces
 {
     public interface ICatalogueService
     {
+        Task<Catalogue> CreateProduct(CatalogueProductDTO productdto, int userId);
         Task<List<Catalogue>> GetAllProducts();
         Task<Catalogue> GetProductById(int id);
     }
