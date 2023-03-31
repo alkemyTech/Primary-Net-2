@@ -1,4 +1,5 @@
-﻿using PrimatesWallet.Application.Exceptions;
+﻿using PrimatesWallet.Application.DTOS;
+using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
 using PrimatesWallet.Core.Interfaces;
@@ -50,12 +51,14 @@ namespace PrimatesWallet.Application.Services
             }
         }
 
-        public async Task<FixedTermDeposit> GetFixedTermDepositDetails(int id, int userId)
+        public async Task<FixedTermDepositDetailDTO> GetFixedTermDepositDetails(int id, int userId)
         {
             try
             {
-                var fixedTermDeposit = await unitOfWotk.FixedTermDeposits.GetFixedTermByIdAndUserId(id , userId);
-                return fixedTermDeposit;
+                var fixedTermDeposit = await unitOfWotk.FixedTermDeposits.GetFixedTermByIdAndUserId(id, userId);
+                var response = new FixedTermDepositDetailDTO() { Amount= fixedTermDeposit.Amount , Closing_Date=fixedTermDeposit.Closing_Date, Creation_Date=fixedTermDeposit.Creation_Date };
+                
+                return response;
 
             }
             catch (Exception ex)

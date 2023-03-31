@@ -81,5 +81,19 @@ namespace PrimatesWallet.Api.Controllers
             var path = HttpContext.Request.Path;
             return $"{scheme}://{host}{pathBase}{path}";
         }
+
+        [HttpPost("signup")]
+        public async Task<IActionResult> RegisterUser([FromBody] RegisterUserDTO user)
+        {
+            var newUser = await userService.Signup(user);
+                if (newUser == null) return BadRequest();
+            
+            var userDTO = new RegisterUserDTO() { First_Name = user.First_Name, Last_Name = user.Last_Name, Email = user.Email, Password = user.Password };
+            var response = new BaseResponse<RegisterUserDTO>(ReplyMessage.MESSAGE_QUERY, userDTO, (int)HttpStatusCode.Created);
+
+            return StatusCode(response.StatusCode, response);
+        }
+   
+
     }
 }

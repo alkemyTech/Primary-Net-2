@@ -1,4 +1,4 @@
-﻿using PrimatesWallet.Application.DTOS;
+using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Core.Models;
 using System;
 using System.Collections.Generic;
@@ -11,8 +11,9 @@ namespace PrimatesWallet.Application.Interfaces
     public interface IUserService
     {
         Task<User> GetUserById(int id);
-
-
+        Task<IEnumerable<User>> GetUsers();
+        Task<int> Signup(RegisterUserDTO user);
+        
         /// <summary>
         /// Service to retrieve a paged list of users.
         /// </summary>

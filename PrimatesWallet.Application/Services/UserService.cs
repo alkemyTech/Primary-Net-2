@@ -1,4 +1,6 @@
-﻿using PrimatesWallet.Application.DTOS;
+using AutoMapper;
+using BCrypt.Net;
+using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
@@ -11,6 +13,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace PrimatesWallet.Application.Services
 {
@@ -65,5 +68,37 @@ namespace PrimatesWallet.Application.Services
             //contamos el total de usuarios y calculamos cuantas paginas hay en total
             return (int)Math.Ceiling((double)totalUsers / pageSize);
         }
+
+        public async Task<int> Signup(RegisterUserDTO user)
+
+        {
+            var isRegistered = await unitOfWork.UserRepository.IsRegistered(user.Email);
+
+            if (isRegistered) throw new AppException("Email already registered.", HttpStatusCode.BadRequest);
+
+            int salt = 10;
+
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(user.Password, salt);
+
+            var newUser = new User()
+            {
+                First_Name = user.First_Name,
+                Last_Name = user.Last_Name,
+                Email = user.Email,
+                Password = hashedPassword,
+            };
+           
+            await unitOfWork.UserRepository.Add(newUser);
+            var response = unitOfWork.Save();
+
+            var userId = await unitOfWork.UserRepository.GetUserIdByEmail(newUser.Email);
+            if (userId == 0) throw new AppException($"No user with id {userId}", HttpStatusCode.BadRequest);
+            
+
+            if (response > 0)  return userId;
+            return 0;
+
+        }
+
     }
 }

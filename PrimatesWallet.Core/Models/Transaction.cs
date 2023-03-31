@@ -18,7 +18,7 @@ namespace PrimatesWallet.Core.Models
         public int Id { get; set; }
 
         [Required]
-        [Column("amount")]
+        [Column("amount", TypeName = "decimal(18,2)")]
         public decimal Amount { get; set; }
 
         [Required]
