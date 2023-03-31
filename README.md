@@ -22,6 +22,7 @@
 - El formato de commits es: `{jiraTicket#}: {commitDescription}`. Es bueno tener commits pequeños.
 - El pull request tiene que contener sólo los cambios relacionados con el ámbito definido en el ticket.
 - Pull request siempre debe ser de su rama actual a desarrollar.
+- El proyecto debe de mantener el idioma, si usamos ingles todos los metodos, funciones, comentarios y variables deberan estar en el mismo idioma.
 
 #### EVIDENCE
 - Si no escribes pruebas unitarias o pruebas de integración como parte de tus cambios de código, deberías añadir la petición y respuesta HTTP como evidencia de que el código está funcionando como se esperaba.
