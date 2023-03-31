@@ -57,6 +57,22 @@ namespace PrimatesWallet.Api.Controllers
 
         }
 
+        /// <summary>
+        ///     Endpoint to create an account for an registered user.
+        /// </summary>
+        [Authorize]
+        [HttpPost("Create")]
+        public async Task<IActionResult> Create()
+        {
+            var userId = _userContextService.GetCurrentUser();
+
+            var response = await _account.Create(userId);
+
+            var result = new BaseResponse<bool>("Account created successfully", response, (int)HttpStatusCode.OK);
+
+            return Ok(result);
+        }
+
         [HttpPost("{id}")]
         [Authorize]
         public async Task<IActionResult> Depositar([FromRoute] int id, [FromBody] TopUpDTO topUpDTO)
