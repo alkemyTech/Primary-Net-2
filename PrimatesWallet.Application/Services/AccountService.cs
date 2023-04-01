@@ -79,7 +79,7 @@ namespace PrimatesWallet.Application.Services
         public async Task<bool> ValidateAccount(int userId, int accountId)
         {
             var account = await unitOfWork.Accounts.GetById(accountId);
-            if( account == null) throw new Exception("The account does not exist");
+            if( account == null) throw new AppException("The account does not exist", HttpStatusCode.BadRequest);
             if(account.UserId == userId) return true;
             return false;
         }
@@ -125,17 +125,14 @@ namespace PrimatesWallet.Application.Services
 
             if (response > 0) return transferDetail;
 
-            throw new Exception("An error ocurred");
+            throw new AppException("An error ocurred", HttpStatusCode.InternalServerError);
         }
 
 
         public async Task<Account> UpdateAccountAdmin(int accountId, AccountUpdateDTO accountUpdateDTO)
         {
-            if(accountId == null) throw new AppException("No id recieved", HttpStatusCode.BadRequest);
-            var account = await unitOfWork.Accounts.GetById(accountId);
+            var account = await unitOfWork.Accounts.GetById(accountId) ?? throw new AppException($"No account with id {accountId}", HttpStatusCode.NotFound);
             
-            if(account == null) throw new AppException($"No account with id {accountId}", HttpStatusCode.NotFound);
-
             var user = await unitOfWork.UserRepository.GetById(account.UserId);
 
             var isAdmin = await unitOfWork.UserRepository.IsAdmin(user);
@@ -148,7 +145,6 @@ namespace PrimatesWallet.Application.Services
             unitOfWork.Accounts.Update(account);
             unitOfWork.Save();
 
-            
             return account;
         }
 
@@ -164,7 +160,7 @@ namespace PrimatesWallet.Application.Services
         {
             var existingAccount = await unitOfWork.Accounts.CheckAccountByUserId(userId);
 
-            if (existingAccount == true) throw new AppException("There is an account for this user.", HttpStatusCode.BadRequest);
+            if (existingAccount) throw new AppException("There is an account for this user.", HttpStatusCode.BadRequest);
 
             var newAccount = new Account() { CreationDate = DateTime.Now, Money = 0, IsBlocked = false, UserId = userId };
             await unitOfWork.Accounts.Add(newAccount);

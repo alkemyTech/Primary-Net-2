@@ -29,24 +29,18 @@ namespace PrimatesWallet.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetFixedTermDepositById(int id)
         {
-            try
-            {
+            // Obtener un plazo fijo espescifico por id
                 var userRequestId =  userContextService.GetCurrentUser();
                 var fixedTermDeposit = await _fixedTermDeposit.GetFixedTermDepositDetails(userRequestId, id);
-                if ( fixedTermDeposit == null) { return NotFound("No se encontró el plazo fijo"); }
-
-                return Ok(fixedTermDeposit);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+                var response = new BaseResponse<FixedTermDepositDetailDTO>(ReplyMessage.MESSAGE_QUERY, fixedTermDeposit, (int)HttpStatusCode.OK);
+                return Ok(response);
 
         }
 
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetByUser()
+            //Obtener todos los Plazos fijos de un usuario
         {
             try
             {
@@ -89,9 +83,5 @@ namespace PrimatesWallet.Api.Controllers
             };
             return Ok(response);
         }
-
-
-
-
     }
 }
