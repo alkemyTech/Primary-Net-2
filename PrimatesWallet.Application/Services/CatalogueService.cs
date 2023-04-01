@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using PrimatesWallet.Application.DTOS;
 
 namespace PrimatesWallet.Application.Services
 {
@@ -49,6 +50,18 @@ namespace PrimatesWallet.Application.Services
 
                 throw new Exception(ex.Message);
             }
+        }
+
+        public async Task<Catalogue> CreateProduct(CatalogueProductDTO productdto, int userId)
+        {
+            var user = await _unitOfWork.UserRepository.GetById(userId);
+            var isAdmin = await _unitOfWork.UserRepository.IsAdmin(user); 
+            if ( !isAdmin ) throw new AppException("Invalid credentials", HttpStatusCode.Unauthorized);
+            if (productdto.Image == null || productdto.Points == null || productdto.ProductDescription == null)
+            { throw new AppException("Missing required fields", HttpStatusCode.BadRequest); }
+            var product = new Catalogue() { Image = productdto.Image, Points=productdto.Points, ProductDescription=productdto.ProductDescription  };
+            await _unitOfWork.Catalogues.Add(product);
+            return product;
         }
     }
 }
