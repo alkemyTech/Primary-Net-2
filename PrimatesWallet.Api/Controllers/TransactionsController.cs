@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Exceptions;
@@ -6,6 +7,7 @@ using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
 using PrimatesWallet.Core.Models;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 
 namespace PrimatesWallet.Api.Controllers
 {
@@ -29,7 +31,7 @@ namespace PrimatesWallet.Api.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetTransactions()
+        public async Task<IActionResult> GetTransactionsByUserId()
         {
             try
             {
@@ -51,11 +53,25 @@ namespace PrimatesWallet.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// this endpoint returns all transactions in the database, it can only be accessed by the administrator
+        /// </summary>
+        [Authorize(Roles = "Admin")]
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAll()
+        {
+            var transactions = await transactionService.GetAllTransactions();
+
+            var response = new BaseResponse<IEnumerable<TransactionDTO>>("Ok", transactions, (int)HttpStatusCode.OK);
+
+            return Ok(response);
+        }
+
         [HttpGet("{id}")]
         [Authorize]
         public async Task<IActionResult> GetTransactionById(int id)
         {
-            Transaction transaction = await transactionService.GetTransactionById(id);
+            TransactionDTO transaction = await transactionService.GetTransactionById(id);
             if (transaction == null)
             {
                 return StatusCode(StatusCodes.Status204NoContent, $"No transaction found by id{id}");
@@ -71,6 +87,23 @@ namespace PrimatesWallet.Api.Controllers
             var response = await transactionService.DeleteTransaction(transactionId, requestedUser);
             if( !response ) { return NotFound(); }
             return Ok($"Transaction {transactionId} deleted.");
+        }
+
+        /// <summary>
+        /// this endpoint is to reverse a payment, it is only accessible by the administrator
+        /// </summary>
+        /// <param name="transactionId">id of the transaction</param>
+        /// <param name="concept">concept of the transaction, extrated from the body</param>
+        /// <returns>if all goes well, it returns a 200 status code; otherwise, the middleware detects the error and returns the same</returns>
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{transactionId}")]
+        public async Task<IActionResult> UpdateTransaction(int transactionId, [FromBody]string concept = "repayment")
+        {
+            var repayment = await transactionService.UpdateTransaction(transactionId, concept);
+
+            var response = new BaseResponse<bool>("successful repayment", repayment, (int)HttpStatusCode.OK);
+
+            return Ok(response);
         }
 
 

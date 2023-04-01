@@ -6,7 +6,10 @@ using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
 using PrimatesWallet.Core.Models;
 using PrimatesWallet.Infrastructure.Repositories;
+using System;
 using System.Net;
+using System.Runtime.InteropServices.ObjectiveC;
+using System.Security.Principal;
 
 namespace PrimatesWallet.Api.Controllers
 {
@@ -107,27 +110,28 @@ namespace PrimatesWallet.Api.Controllers
 
         }
 
-        [HttpPost("{accountId}")]
+        /// <summary>
+        /// this endpoint is to make a transfer from one account to another
+        /// </summary>
+        /// <param name="accountId">sender account id</param>
+        /// <param name="transferDTO">a DTO with the transaction information(receiver user email, amount, type of transaction, concept)</param>
+        [HttpPost("transfer/{accountId}")]
         [Authorize]
         public async Task<IActionResult> Transfer(int accountId, [FromBody] TransferDTO transferDTO)
         {
             var userId = _userContextService.GetCurrentUser();
-            try
-            {
-                if (transferDTO.Amount <= 0) return StatusCode(StatusCodes.Status400BadRequest, "Amount must be positive");
-                
-                var isValidAccount = await _account.ValidateAccount(userId, accountId);
 
-                if (!isValidAccount) return StatusCode(StatusCodes.Status401Unauthorized, "Invalid credentials");
-              
-                var transaction = await _account.Transfer(transferDTO.Amount, userId, transferDTO.Email, transferDTO.Concept);
-                return Ok(transaction);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
+            if (transferDTO.Amount <= 0) return StatusCode(StatusCodes.Status400BadRequest, "Amount must be positive");
 
-            }
+            var isValidAccount = await _account.ValidateAccount(userId, accountId);
+
+            if (!isValidAccount) return StatusCode(StatusCodes.Status401Unauthorized, "Invalid credentials");
+
+            var transaction = await _account.Transfer(userId, transferDTO);
+
+            var response = new BaseResponse<TransferDetailDTO>("Tranferencia exitosa!", transaction, (int)HttpStatusCode.OK);
+
+            return Ok(response);
         }
 
 

@@ -11,9 +11,6 @@ namespace PrimatesWallet.Application.DTOS
         public string Concept { get; set; }
         public decimal Amount { get; set; }
         public string RecieverEmail { get; set; }
-
         public string RecieverFullname { get; set; }
-
-
     }
 }

@@ -84,51 +84,48 @@ namespace PrimatesWallet.Application.Services
             return false;
         }
 
-
-        public async Task<TransferDetailDTO > Transfer(decimal amount, int remitentId, string recieverEmail, string concept = "Some")
+        /// <summary>
+        /// This method receives a user identification extracted from the token and a DTO with the data of the recipient of the transfer.
+        /// then verifies the existence of both accounts and finally updates the amounts of the same.
+        /// </summary>
+        /// <param name="remitentId">id of the remitent, extracted from the token</param>
+        /// <param name="transferDTO">a DTO with the data of the receiver</param>
+        /// <returns>a DTO with the confirmation of the transaction</returns>
+        public async Task<TransferDetailDTO > Transfer(int remitentId, TransferDTO transferDTO)
         {
-            try
-            {
-                var remitent = await unitOfWork.Accounts.GetById(remitentId);
-                if (remitent == null) { throw new Exception("Cant find remitent account"); }
 
-                var reciever = await unitOfWork.UserRepository.GetAccountByUserEmail(recieverEmail);
-                if (reciever == null) { throw new Exception("The email provided is invalid"); }
+            var remitent = await unitOfWork.Accounts.GetById(remitentId);
+            if (remitent == null) throw new AppException("Cant find remitent account", HttpStatusCode.NotFound);
+
+            var reciever = await unitOfWork.UserRepository.GetAccountByUserEmail(transferDTO.Email);
+            if (reciever == null) throw new AppException("The email provided is invalid", HttpStatusCode.BadRequest);
 
                 
-                if (remitent.Money < amount) { throw new Exception("Insufficient balance to do this transaction"); }
+            if (remitent.Money < transferDTO.Amount) throw new AppException("Insufficient balance to do this transaction", HttpStatusCode.BadRequest);
 
-                remitent.Money -= amount;
+            remitent.Money -= transferDTO.Amount;
 
-                reciever.Account.Money += amount;
+            reciever.Account.Money += transferDTO.Amount;
 
-                unitOfWork.Accounts.Update(remitent);
-                unitOfWork.Accounts.Update(reciever.Account);
+            unitOfWork.Accounts.Update(remitent);
+            unitOfWork.Accounts.Update(reciever.Account);
 
-                var transaction = new Core.Models.Transaction() { Amount = amount, Concept = concept, Date = DateTime.Now, Type = TransactionType.payment, Account_Id = remitentId, To_Account_Id = reciever.Account.Id };
+            var transaction = new Core.Models.Transaction() { Amount = transferDTO.Amount, Concept = transferDTO.Concept, Date = DateTime.Now, Type = transferDTO.Type, Account_Id = remitentId, To_Account_Id = reciever.Account.Id };
 
-                var transferDetail = new TransferDetailDTO()
-                {
-                    Amount = amount,
-                    Concept = concept,
-                    RecieverEmail = recieverEmail,
-                    RecieverFullname = $"{reciever.First_Name} {reciever.Last_Name}"
-                };
-
-                await unitOfWork.Transactions.Add(transaction);
-                var response = unitOfWork.Save();
-
-                if (response > 0)
-                {
-                    return transferDetail;
-
-                }
-                throw new Exception("An error ocurred");
-            }
-            catch (Exception ex)
+            var transferDetail = new TransferDetailDTO()
             {
-                throw new Exception(ex.Message);
-            }
+                Amount = transferDTO.Amount,
+                Concept = transferDTO.Concept,
+                RecieverEmail = transferDTO.Email,
+                RecieverFullname = $"{reciever.First_Name} {reciever.Last_Name}"
+            };
+
+            await unitOfWork.Transactions.Add(transaction);
+            var response = unitOfWork.Save();
+
+            if (response > 0) return transferDetail;
+
+            throw new Exception("An error ocurred");
         }
 
 

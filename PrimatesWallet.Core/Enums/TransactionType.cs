@@ -9,6 +9,7 @@ namespace PrimatesWallet.Core.Enums
     public enum TransactionType
     {
         topup,
-        payment
+        payment,
+        repayment
     }
 }

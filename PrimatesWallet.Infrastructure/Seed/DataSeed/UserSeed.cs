@@ -20,7 +20,7 @@ namespace PrimatesWallet.Infrastructure.Seed.DataSeed
                     First_Name = "Samuel",
                     Last_Name = "Tribulo",
                     Email = "samueltribulo@hotmail.com",
-                    Password = BCrypt.Net.BCrypt.HashPassword( "Password",10),
+                    Password = BCrypt.Net.BCrypt.HashPassword("Password",10),
                     Points = 0,
                     Rol_Id = 1,
                 },
