@@ -15,10 +15,12 @@ namespace PrimatesWallet.Api.Controllers
     public class UserController : ControllerBase
     {
         public readonly IUserService userService;
+        private readonly IAccountService accountService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IAccountService accountService)
         {
             this.userService = userService;
+            this.accountService = accountService;
         }
 
         [HttpGet("{id}")]
@@ -72,10 +74,11 @@ namespace PrimatesWallet.Api.Controllers
         public async Task<IActionResult> RegisterUser([FromBody] RegisterUserDTO user)
         {
             var newUser = await userService.Signup(user);
-                if (newUser == null) return BadRequest();
-            
+                if (newUser == 0) return BadRequest();
+            var account = accountService.Create(newUser);
             var userDTO = new RegisterUserDTO() { First_Name = user.First_Name, Last_Name = user.Last_Name, Email = user.Email, Password = user.Password };
             var response = new BaseResponse<RegisterUserDTO>(ReplyMessage.MESSAGE_QUERY, userDTO, (int)HttpStatusCode.Created);
+            
 
             return StatusCode(response.StatusCode, response);
         }
