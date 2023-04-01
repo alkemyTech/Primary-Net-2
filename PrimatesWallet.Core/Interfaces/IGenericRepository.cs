@@ -13,6 +13,5 @@ namespace PrimatesWallet.Core.Interfaces
         Task Add(T entity);
         void Delete(T entity);
         void Update(T entity);
-        Task<int> GetCount();
     }
 }

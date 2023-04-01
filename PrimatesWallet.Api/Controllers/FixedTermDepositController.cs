@@ -26,7 +26,7 @@ namespace PrimatesWallet.Api.Controllers
         }
 
         [Authorize]
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name ="Get one FixedTermDeposit")]
         public async Task<IActionResult> GetFixedTermDepositById(int id)
         {
             // Obtener un plazo fijo espescifico por id
@@ -37,8 +37,8 @@ namespace PrimatesWallet.Api.Controllers
 
         }
 
-        [HttpGet]
         [Authorize]
+        [HttpGet("User Deposits")]
         public async Task<IActionResult> GetByUser()
             //Obtener todos los Plazos fijos de un usuario
         {
@@ -63,7 +63,7 @@ namespace PrimatesWallet.Api.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet ( Name = "Get All")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetFixedTermDeposits([FromQuery] int page = 1, int pageSize = 10)
         {
