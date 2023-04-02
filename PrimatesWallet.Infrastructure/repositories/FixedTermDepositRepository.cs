@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PrimatesWallet.Core.Interfaces;
 using PrimatesWallet.Core.Models;
+using System.Net;
 
 namespace PrimatesWallet.Infrastructure.repositories
 {
@@ -13,9 +14,11 @@ namespace PrimatesWallet.Infrastructure.repositories
         }
 
 
-        public async Task<FixedTermDeposit> GetFixedTermByIdAndUserId(int userId, int fixedId)
+        public async Task<FixedTermDeposit> GetFixedTermDepositById(int userId, int fixedId)
         {
+            // Selecciona un Plazo fijo espescífico para el usuario que lo requiere
             var accountDeposits = await _dbContext.Accounts.Where(x => x.UserId == userId).Include(x => x.FixedTermDeposit).FirstOrDefaultAsync();
+            if (accountDeposits == null) throw new Exception("This user does not have Fixed Term Deposits");
             var fixedTermDeposit = accountDeposits.FixedTermDeposit.FirstOrDefault(x => x.Id == fixedId);
             return fixedTermDeposit;
 

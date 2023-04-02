@@ -47,8 +47,17 @@ namespace PrimatesWallet.Application.Services
 
         public async Task<FixedTermDepositDetailDTO> GetFixedTermDepositDetails(int id, int userId)
         {
-                var fixedTermDeposit = await unitOfWotk.FixedTermDeposits.GetFixedTermByIdAndUserId(id, userId);
-                if (fixedTermDeposit == null) throw new AppException("User/Deposit not found", HttpStatusCode.NotFound);
+            // Para obtener el Plazo fijo requerido tomamos en cuenta las siguentes validaciones:
+            
+            // Si no existe el Id proveído , cortar la ejecucion para optimizar recursos.
+                var fixedTermDeposit = await unitOfWotk.FixedTermDeposits.GetFixedTermDepositById(id, userId);
+                if (fixedTermDeposit == null) throw new AppException("Fixed Term Deposit not found", HttpStatusCode.NotFound);
+
+            // Si el cliente que envia la peticion no es el propietario del plazo fijo no deberá tener acceso al mismo.
+                var requestUser = await unitOfWotk.UserRepository.GetById(userId);
+                if (requestUser.Account.Id != fixedTermDeposit.AccountId) throw new AppException("Invalid Credentials", HttpStatusCode.Forbidden);
+               
+            
                 var response = new FixedTermDepositDetailDTO()
                 { Amount= fixedTermDeposit.Amount , Closing_Date=fixedTermDeposit.Closing_Date, Creation_Date=fixedTermDeposit.Creation_Date };
                 return response;
@@ -65,6 +74,8 @@ namespace PrimatesWallet.Application.Services
 
         public async Task<IEnumerable<FixedTermDepositDetailDTO>> GetDeposits(int page, int pageSize)
         {
+
+        // Listado de todos los plazos fijos para el desarrollador con paginacion ya incluida
             var allDeposits = await unitOfWotk.FixedTermDeposits.GetAll(page, pageSize)
                  ?? throw new AppException(ReplyMessage.MESSAGE_QUERY_EMPTY, HttpStatusCode.NotFound);
 
