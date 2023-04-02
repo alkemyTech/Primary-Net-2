@@ -2,6 +2,7 @@
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
+using PrimatesWallet.Application.Mapping.User;
 using PrimatesWallet.Core.Interfaces;
 using PrimatesWallet.Core.Models;
 using System;
@@ -39,32 +40,38 @@ namespace PrimatesWallet.Application.Services
 
         public async Task<FixedTermDeposit> GetFixedTermDepositById(int id)
         {
-            try
-            {
                 var fixedTermDeposit = await unitOfWotk.FixedTermDeposits.GetById(id);
+                if (fixedTermDeposit == null) throw new AppException("Deposit not found", HttpStatusCode.NotFound);
                 return fixedTermDeposit;
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
         }
 
         public async Task<FixedTermDepositDetailDTO> GetFixedTermDepositDetails(int id, int userId)
         {
-            try
-            {
                 var fixedTermDeposit = await unitOfWotk.FixedTermDeposits.GetFixedTermByIdAndUserId(id, userId);
-                var response = new FixedTermDepositDetailDTO() { Amount= fixedTermDeposit.Amount , Closing_Date=fixedTermDeposit.Closing_Date, Creation_Date=fixedTermDeposit.Creation_Date };
-                
+                if (fixedTermDeposit == null) throw new AppException("User/Deposit not found", HttpStatusCode.NotFound);
+                var response = new FixedTermDepositDetailDTO()
+                { Amount= fixedTermDeposit.Amount , Closing_Date=fixedTermDeposit.Closing_Date, Creation_Date=fixedTermDeposit.Creation_Date };
                 return response;
+        }
 
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+     
+        public async Task<int> TotalPageDeposits(int pageSize)
+        {
+            var totalUsers = await unitOfWotk.FixedTermDeposits.GetCount();
+            //contamos el total de Plazos fijos y calculamos cuantas paginas hay en total
+            return (int)Math.Ceiling((double)totalUsers / pageSize);
+        }
+
+
+        public async Task<IEnumerable<FixedTermDepositDetailDTO>> GetDeposits(int page, int pageSize)
+        {
+            var allDeposits = await unitOfWotk.FixedTermDeposits.GetAll(page, pageSize)
+                 ?? throw new AppException(ReplyMessage.MESSAGE_QUERY_EMPTY, HttpStatusCode.NotFound);
+
+            var deposits = allDeposits.Select(x =>
+                new FixedTermDepositDetailDTO() { Amount = x.Amount , Creation_Date = x.Creation_Date, Closing_Date = x.Closing_Date });
+                
+            return deposits;
         }
 
         public DateTime oneMonth = DateTime.Now.AddMonths(1);
