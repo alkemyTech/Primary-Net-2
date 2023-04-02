@@ -82,6 +82,14 @@ namespace PrimatesWallet.Api.Controllers
 
             return StatusCode(response.StatusCode, response);
         }
+
+        [HttpDelete("{userId}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteUser(int userId)
+        {
+            await userService.DeleteUser(userId);
+            return Ok($"user {userId} deleted.");
+        }
    
 
     }

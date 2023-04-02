@@ -100,5 +100,15 @@ namespace PrimatesWallet.Application.Services
 
         }
 
+
+        public async Task <bool> DeleteUser(int userId)
+        {
+            var user = await unitOfWork.UserRepository.GetById(userId);
+            if (user == null) throw new AppException("User not found", HttpStatusCode.NotFound);
+            unitOfWork.UserRepository.Delete(user);
+            unitOfWork.Save();
+            return true;
+        }
+
     }
 }
