@@ -61,6 +61,24 @@ namespace PrimatesWallet.Infrastructure.Seed.DataSeed
                     Image = "https://samsungar.vtexassets.com/arquivos/ids/168470/UN32T4300AGCZB.jpg?v=637527893225330000",
                     Points = 3000
                 },
+                new Catalogue()
+                {
+                    ProductDescription = "Reloj de pulsera",
+                    Image = "https://images.pexels.com/photos/2113994/pexels-photo-2113994.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                    Points = 888
+                },
+                new Catalogue()
+                {
+                    ProductDescription = "Pelota de fútbol",
+                    Image = "https://images.pexels.com/photos/39362/the-ball-stadion-football-the-pitch-39362.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                    Points = 665
+                },
+                new Catalogue()
+                {
+                    ProductDescription = "Pelota de básquet",
+                    Image = "https://images.pexels.com/photos/1089087/pexels-photo-1089087.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                    Points = 900
+                },
             };
         }
     }
