@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
@@ -13,11 +14,16 @@ namespace PrimatesWallet.Api.Controllers
     {
         private readonly IAuthService authService;
         private readonly IJwtJervice jwtJervice;
+        private readonly IUserContextService userContextService;
+        private readonly IUserService userService;
 
-        public AuthController(IAuthService authService, IJwtJervice jwtJervice)
+        public AuthController(IAuthService authService, IJwtJervice jwtJervice, IUserContextService userContextService, IUserService userService)
         {
             this.authService = authService;
             this.jwtJervice = jwtJervice;
+            this.userContextService = userContextService;
+            this.userService = userService;
+
         }
 
         [HttpPost("login")]
@@ -47,6 +53,26 @@ namespace PrimatesWallet.Api.Controllers
                 var response = new BaseResponse<object>(ex.Message, null, (int)HttpStatusCode.InternalServerError);
                 return StatusCode(response.StatusCode, response);
             }
+
+        }
+
+
+        [HttpGet("me")]
+        [Authorize]
+        public async Task<IActionResult> GetMe()
+        {
+        //Devuelve los datos del usuario logueado
+            var userId = userContextService.GetCurrentUser();
+            var user =await userService.GetUserById(userId);
+            if (user == null) throw new AppException("User not found", HttpStatusCode.NotFound);
+            var userResponse = new UserResponseDTO()
+            {
+                First_Name = user.First_Name,
+                Last_Name = user.Last_Name,
+                Email = user.Email,
+                Points = user.Points
+            };
+            return Ok(userResponse);
 
         }
     }
