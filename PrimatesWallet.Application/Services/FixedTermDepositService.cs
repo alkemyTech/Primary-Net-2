@@ -85,5 +85,40 @@ namespace PrimatesWallet.Application.Services
             return deposits;
         }
 
+        public DateTime oneMonth = DateTime.Now.AddMonths(1);
+        public DateTime treeMonths = DateTime.Now.AddMonths(3);
+        public DateTime oneYear = DateTime.Now.AddYears(1);
+
+
+        /// <summary>
+        /// This method verifies if there is a fixed-term deposit, if it exists and it is not closed, the money is returned without interest to the client's account and finally the fixed-term deposit is eliminated.
+        /// </summary>
+        /// <param name="id">fixed-term deposit id</param>
+        /// <returns>boolean indicating if the operation went well or not</returns>
+        /// <exception cref="AppException">if the fixed term does not exist, an error is thrown</exception>
+        /// <exception cref="AppException">if the closing date of the fixed term is less than the current one, an error is thrown indicating that the fixed term is closed </exception>
+        public async Task<bool> DeleteFixedtermDeposit(int id)
+        {
+            var fixedTermDeposit = await unitOfWotk.FixedTermDeposits.GetById(id);
+
+            if ( fixedTermDeposit is null ) throw new AppException( "Fixed term deposit not found", HttpStatusCode.NotFound );
+
+            if ( fixedTermDeposit.Closing_Date < DateTime.Now ) throw new AppException("This fixed term deposit is closed", HttpStatusCode.BadRequest);
+
+            // Return of money without interest.
+
+            var userAccount = await unitOfWotk.Accounts.GetById(fixedTermDeposit.AccountId);
+
+            userAccount.Money += fixedTermDeposit.Amount;
+
+            unitOfWotk.Accounts.Update(userAccount);
+            unitOfWotk.FixedTermDeposits.Delete(fixedTermDeposit);
+
+            var response = unitOfWotk.Save();
+
+            if ( response > 0 ) return true;
+            else return false;
+        }
+
     }
 }

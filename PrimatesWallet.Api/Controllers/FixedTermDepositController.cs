@@ -63,6 +63,25 @@ namespace PrimatesWallet.Api.Controllers
             }
         }
 
+
+
+        /// <summary>
+        /// This endpoint is to delete a fixed-term deposit, only users with Admin role can access it.
+        /// </summary>
+        /// <param name="id">Fixed-term deposit id</param>
+        /// <returns>if everything goes well, it returns a status code 200 indicating that it was deleted correctly</returns>
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteFixedTermDeposit(int id)
+        {
+            var response = await _fixedTermDeposit.DeleteFixedtermDeposit(id);
+
+            var result = new BaseResponse<bool>("Fixed term deposit eliminated", response, (int)HttpStatusCode.OK);
+
+            return Ok(result);
+        }
+
+
         [HttpGet ( Name = "Get All")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetFixedTermDeposits([FromQuery] int page = 1, int pageSize = 10)
@@ -83,5 +102,6 @@ namespace PrimatesWallet.Api.Controllers
             };
             return Ok(response);
         }
+
     }
 }
