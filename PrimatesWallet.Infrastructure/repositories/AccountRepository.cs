@@ -22,7 +22,7 @@ namespace PrimatesWallet.Infrastructure.repositories
             return account;
         }
 
-        public async Task<Account>Get_Transaccion(int Id)
+        public async Task<Account> Get_Transaccion(int Id)
         {
             return await base._dbContext.Accounts
                 .Where(a => a.UserId == Id)
@@ -48,7 +48,7 @@ namespace PrimatesWallet.Infrastructure.repositories
         {
             var existingAccount = base._dbContext.Accounts.Where(a => a.UserId == userId).FirstOrDefault();
 
-            return ( existingAccount == null ) ? false: true;
+            return (existingAccount == null) ? false : true;
         }
 
         public void UpdateAccountRepository(Account account)
@@ -56,7 +56,17 @@ namespace PrimatesWallet.Infrastructure.repositories
             _dbContext.Accounts.Update(account);
         }
 
+        public async Task<IEnumerable<Account>> GetAll(int page, int pageSize)
+        {
+            return await base._dbContext.Accounts
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
 
-
+        public async Task<int> GetCount()
+        {
+            return await base._dbContext.Accounts.CountAsync();
+        }
     }
 }
