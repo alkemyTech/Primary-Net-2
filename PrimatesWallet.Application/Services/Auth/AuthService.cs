@@ -29,14 +29,14 @@ namespace PrimatesWallet.Application.Services.Auth
 
             int hash = 12;
 
-            bool isValidPassword = BCrypt.Net.BCrypt.Verify(login.Password, currentUSer.Password);
+            //bool isValidPassword = BCrypt.Net.BCrypt.Verify(login.Password, currentUSer.Password);
             
-            if( isValidPassword ) return currentUSer;
+            //if( isValidPassword ) return currentUSer;
 
-            return null;
+            //return null;
 
-            //if(currentUSer.Password != login.Password) throw new AppException("Credenciales invalidas", HttpStatusCode.Unauthorized);
-            //return currentUSer;
+            if (currentUSer.Password != login.Password) throw new AppException("Credenciales invalidas", HttpStatusCode.Unauthorized);
+            return currentUSer;
         }
 
 
