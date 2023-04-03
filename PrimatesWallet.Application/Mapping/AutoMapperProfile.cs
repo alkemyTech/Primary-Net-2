@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Routing.Constraints;
 using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Core.Models;
 using System;
@@ -13,7 +14,7 @@ namespace PrimatesWallet.Application.Mapping
     {
         public AutoMapperProfile()
         {
-
+            CreateMap<CatalogueDTO, Catalogue>();
         }
     }
 }

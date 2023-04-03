@@ -17,6 +17,7 @@ namespace PrimatesWallet.Application.Interfaces
         Task<IEnumerable<FixedTermDeposit>> GetByUser(int userId);
         Task<FixedTermDepositDetailDto> GetFixedTermDepositDetails(int id, int userId);
         Task<bool> DeleteFixedtermDeposit(int id);
+        //Task<IQueryable<FixedTermDeposit>> GetAllDepositsQueryable();
         Task<int> TotalPageDeposits(int pageSize);
         Task<IEnumerable<FixedTermDepositDetailDto>> GetDeposits(int page, int pageSize);
 
