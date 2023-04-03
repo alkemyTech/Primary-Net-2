@@ -25,6 +25,6 @@ namespace PrimatesWallet.Application.DTOS
 
         [Required]
         [Column("password", TypeName = "VARCHAR(max)")]
-        public string Password { get; set; }
+        public string? Password { get; set; }
     }
 }

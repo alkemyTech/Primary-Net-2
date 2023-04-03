@@ -37,7 +37,7 @@ namespace PrimatesWallet.Application.Services
             return product;
         }
 
-        public async Task<Catalogue> CreateProduct(CatalogueProductDto productdto, int userId)
+        public async Task<CatalogueProductDto> CreateProduct(CatalogueProductDto productdto, int userId)
         {
             var user = await _unitOfWork.Users.GetById(userId);
             var isAdmin = _unitOfWork.Users.IsAdmin(user); 
@@ -46,8 +46,10 @@ namespace PrimatesWallet.Application.Services
             if (productdto.Image == null || productdto.ProductDescription == null)
             { throw new AppException("Missing required fields", HttpStatusCode.BadRequest); }
             var product = new Catalogue() { Image = productdto.Image, Points=productdto.Points, ProductDescription=productdto.ProductDescription  };
+            var response = new CatalogueProductDto() { Image = productdto.Image, Points=productdto.Points, ProductDescription=productdto.ProductDescription  };
             await _unitOfWork.Catalogues.Add(product);
-            return product;
+            _unitOfWork.Save();
+            return response;
         }
     }
 }

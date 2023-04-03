@@ -40,18 +40,10 @@ namespace PrimatesWallet.Api.Controllers
         [HttpGet("{id}")]
         [Authorize]
         public async Task<IActionResult> GetById(int id)
-        {
-            try
-            {
-                var product = await _catalogueService.GetProductById(id);
-
-                if (product is null) return NotFound();
-                return Ok(product);
-            }
-            catch
-            {
-                return StatusCode(500);
-            }
+        { 
+            var product = await _catalogueService.GetProductById(id);
+            if (product is null) return NotFound();
+            return Ok(product);
         }
 
         [HttpPost]

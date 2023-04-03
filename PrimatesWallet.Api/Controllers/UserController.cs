@@ -76,7 +76,7 @@ namespace PrimatesWallet.Api.Controllers
             var newUser = await userService.Signup(user);
                 if (newUser == 0) return BadRequest();
             var account = accountService.Create(newUser);
-            var userDTO = new RegisterUserDto() { First_Name = user.First_Name, Last_Name = user.Last_Name, Email = user.Email, Password = user.Password };
+            var userDTO = new RegisterUserDto() { First_Name = user.First_Name, Last_Name = user.Last_Name, Email = user.Email };
             var response = new BaseResponse<RegisterUserDto>(ReplyMessage.MESSAGE_QUERY, userDTO, (int)HttpStatusCode.Created);
             
 

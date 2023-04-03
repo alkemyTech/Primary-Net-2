@@ -44,22 +44,9 @@ namespace PrimatesWallet.Api.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAccountDetails(int id)
         {
-
-            try
-            {
-                var account = await _account.GetAccountById(id);
-
-                if (account is null) return NotFound($"The account with id: {id} does not exist");
-
-                return Ok(account);
-
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-
-
+            var account = await _account.GetAccountById(id);
+            if (account is null) throw new AppException($"The account with id: {id} does not exist", HttpStatusCode.NotFound);
+            return Ok(account);
         }
 
         /// <summary>
@@ -78,36 +65,17 @@ namespace PrimatesWallet.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPost("{id}")]
+        [HttpPost("deposit/{id}")]
         [Authorize]
-        public async Task<IActionResult> Depositar([FromRoute] int id, [FromBody] TopUpDto topUpDTO)
+        public async Task<IActionResult> Deposit([FromRoute] int id, [FromBody] TopUpDto topUpDTO)
         {
-            try
-            {
-                var idUser = _userContextService.GetCurrentUser();
-                if (idUser != id)
-                {
-                    throw new AppException("User not authorized", HttpStatusCode.Unauthorized);
+            var idUser = _userContextService.GetCurrentUser();
+            if (idUser != id) throw new AppException("User not authorized", HttpStatusCode.Unauthorized);
 
-                }
-
-                var Response = await _account.DepositToAccount(id, topUpDTO);
-                var result = new BaseResponse<bool>("Operacion Exitosa!",Response,(int)HttpStatusCode.OK);
-                return Ok(result);
-
-            }
-            catch (AppException ex)
-            {
-                var response = new BaseResponse<object>(ex.Message, null, (int)ex.StatusCode);
-                return StatusCode(response.StatusCode, response);
-
-            }
-            catch (Exception ex)
-            {
-                var response = new BaseResponse<object>(ex.Message, null, (int)HttpStatusCode.InternalServerError);
-                return StatusCode(response.StatusCode, response);
-            }
-
+            var response = await _account.DepositToAccount(id, topUpDTO);
+            var result = new BaseResponse<bool>("Operation succeded!", response ,(int)HttpStatusCode.OK);
+                
+            return Ok(result);
         }
 
         /// <summary>
@@ -129,7 +97,7 @@ namespace PrimatesWallet.Api.Controllers
 
             var transaction = await _account.Transfer(userId, transferDTO);
 
-            var response = new BaseResponse<TransferDetailDto>("Tranferencia exitosa!", transaction, (int)HttpStatusCode.OK);
+            var response = new BaseResponse<TransferDetailDto>("Operation succeded!", transaction, (int)HttpStatusCode.OK);
 
             return Ok(response);
         }

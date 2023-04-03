@@ -97,9 +97,9 @@ namespace PrimatesWallet.Api.Controllers
         /// <returns>if all goes well, it returns a 200 status code; otherwise, the middleware detects the error and returns the same</returns>
         [Authorize(Roles = "Admin")]
         [HttpPut("{transactionId}")]
-        public async Task<IActionResult> UpdateTransaction(int transactionId, [FromBody]string concept = "repayment")
+        public async Task<IActionResult> UpdateTransaction(int transactionId, [FromBody] RepaymentResponseDto repaymentResponse)
         {
-            var repayment = await transactionService.UpdateTransaction(transactionId, concept);
+            var repayment = await transactionService.UpdateTransaction(transactionId, repaymentResponse.Concept );
 
             var response = new BaseResponse<bool>("successful repayment", repayment, (int)HttpStatusCode.OK);
 
