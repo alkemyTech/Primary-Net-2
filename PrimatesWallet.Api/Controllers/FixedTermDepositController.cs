@@ -32,7 +32,7 @@ namespace PrimatesWallet.Api.Controllers
             // Obtener un plazo fijo espescifico por id
                 var userRequestId =  userContextService.GetCurrentUser();
                 var fixedTermDeposit = await _fixedTermDeposit.GetFixedTermDepositDetails(userRequestId, id);
-                var response = new BaseResponse<FixedTermDepositDetailDTO>(ReplyMessage.MESSAGE_QUERY, fixedTermDeposit, (int)HttpStatusCode.OK);
+                var response = new BaseResponse<FixedTermDepositDetailDto>(ReplyMessage.MESSAGE_QUERY, fixedTermDeposit, (int)HttpStatusCode.OK);
                 return Ok(response);
 
         }
@@ -91,7 +91,7 @@ namespace PrimatesWallet.Api.Controllers
             string url = CurrentURL.Get(HttpContext.Request); //Clase estatica en helpers para obtener la url como string
 
 
-            var response = new BasePaginateResponse<IEnumerable<FixedTermDepositDetailDTO>>()
+            var response = new BasePaginateResponse<IEnumerable<FixedTermDepositDetailDto>>()
             {
                 Message = ReplyMessage.MESSAGE_QUERY,
                 Result = allDeposits,

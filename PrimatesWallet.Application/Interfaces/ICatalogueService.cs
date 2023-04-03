@@ -12,8 +12,10 @@ namespace PrimatesWallet.Application.Interfaces
 {
     public interface ICatalogueService
     {
+
+        Task<CatalogueProductDto> CreateProduct(CatalogueProductDto productdto, int userId);
+
         Task<BasePaginateResponse<IEnumerable<Catalogue>>> CataloguePagination(int page, string url, int pageSize);
-        Task<Catalogue> CreateProduct(CatalogueProductDTO productdto, int userId);
         Task<List<Catalogue>> GetAllProducts();
         Task<Catalogue> GetProductById(int id);
     }

@@ -38,7 +38,7 @@ namespace PrimatesWallet.Api.Controllers
                 var userId = UserContextService.GetCurrentUser(); //buscamos el id del usuario que se logeo
                 var transactions = await transactionService.GetAllByUser(userId); //buscamos las transacciones solo de ese user
 
-                var response = new BaseResponse<IEnumerable<TransactionDTO>>(ReplyMessage.MESSAGE_QUERY, transactions, (int)HttpStatusCode.OK);
+                var response = new BaseResponse<IEnumerable<TransactionDto>>(ReplyMessage.MESSAGE_QUERY, transactions, (int)HttpStatusCode.OK);
                 return Ok(response);
             }
             catch (AppException ex)
@@ -62,7 +62,7 @@ namespace PrimatesWallet.Api.Controllers
         {
             var transactions = await transactionService.GetAllTransactions();
 
-            var response = new BaseResponse<IEnumerable<TransactionDTO>>("Ok", transactions, (int)HttpStatusCode.OK);
+            var response = new BaseResponse<IEnumerable<TransactionDto>>("Ok", transactions, (int)HttpStatusCode.OK);
 
             return Ok(response);
         }
@@ -71,7 +71,7 @@ namespace PrimatesWallet.Api.Controllers
         [Authorize]
         public async Task<IActionResult> GetTransactionById(int id)
         {
-            TransactionDTO transaction = await transactionService.GetTransactionById(id);
+            TransactionDto transaction = await transactionService.GetTransactionById(id);
             if (transaction == null)
             {
                 return StatusCode(StatusCodes.Status204NoContent, $"No transaction found by id{id}");
@@ -97,10 +97,10 @@ namespace PrimatesWallet.Api.Controllers
         /// <returns>if all goes well, it returns a 200 status code; otherwise, the middleware detects the error and returns the same</returns>
         [Authorize(Roles = "Admin")]
         [HttpPut("{transactionId}")]
-        public async Task<IActionResult> UpdateTransaction(int transactionId, [FromBody] string concept = "repayment")
-        {
-            var repayment = await transactionService.UpdateTransaction(transactionId, concept);
+        public async Task<IActionResult> UpdateTransaction(int transactionId, [FromBody] RepaymentResponseDto repaymentResponse)
 
+        {
+            var repayment = await transactionService.UpdateTransaction(transactionId, repaymentResponse.Concept );
             var response = new BaseResponse<bool>("successful repayment", repayment, (int)HttpStatusCode.OK);
 
             return Ok(response);
@@ -112,7 +112,7 @@ namespace PrimatesWallet.Api.Controllers
         /// <param name="transactionDTO">The DTO object containing the transaction information.</param>
         /// <returns>The result of the transaction creation.</returns
         [HttpPost]
-        public async Task<IActionResult> CreateTransaction([FromBody] TransactionRequestDTO transactionDTO)
+        public async Task<IActionResult> CreateTransaction([FromBody] TransactionRequestDto transactionDTO)
         {
             var transaction = await transactionService.Insert(transactionDTO);
             var response = new BaseResponse<bool>(ReplyMessage.MESSAGE_CREATE_SUCCESS, transaction, (int)HttpStatusCode.Created);

@@ -43,23 +43,15 @@ namespace PrimatesWallet.Api.Controllers
         [HttpGet("{id}")]
         [Authorize]
         public async Task<IActionResult> GetById(int id)
-        {
-            try
-            {
-                var product = await _catalogueService.GetProductById(id);
-
-                if (product is null) return NotFound();
-                return Ok(product);
-            }
-            catch
-            {
-                return StatusCode(500);
-            }
+        { 
+            var product = await _catalogueService.GetProductById(id);
+            if (product is null) return NotFound();
+            return Ok(product);
         }
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> CreateProduct(CatalogueProductDTO catalogueProductDTO)
+        public async Task<IActionResult> CreateProduct(CatalogueProductDto catalogueProductDTO)
         {
             var userId =  _userContextService.GetCurrentUser();
             var response = await _catalogueService.CreateProduct(catalogueProductDTO, userId);
