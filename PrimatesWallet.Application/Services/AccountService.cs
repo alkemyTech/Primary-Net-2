@@ -11,7 +11,7 @@ using PrimatesWallet.Core.Models;
 using System.Net;
 using System.Transactions;
 using System.Security.Principal;
-
+using PrimatesWallet.Application.Mapping.Account;
 
 namespace PrimatesWallet.Application.Services
 {
@@ -149,5 +149,27 @@ namespace PrimatesWallet.Application.Services
             return false;
         }
 
+        public async Task<IEnumerable<AccountResponseDTO>> GetAccounts(int page, int pageSize)
+        {
+            var accounts = await unitOfWork.Accounts.GetAll(page, pageSize)
+                 ?? throw new AppException(ReplyMessage.MESSAGE_QUERY_EMPTY, HttpStatusCode.NotFound);
+
+            var accountsDTO = accounts.Select(x =>
+              new AccountDTOBuilder()
+              .WithId(x.Id)
+              .WithCreationDate(x.CreationDate)
+              .WithMoney((decimal)x.Money!)
+              .WithIsBlocked(x.IsBlocked)
+              .WithUserId(x.UserId)
+              .Build()).ToList();
+
+            return accountsDTO;
+        }
+
+        public async Task<int> TotalPageAccounts(int PageSize)
+        {
+            var totalAccounts = await unitOfWork.Accounts.GetCount();
+            return (int)Math.Ceiling((double)totalAccounts / PageSize);
+        }
     }
 }

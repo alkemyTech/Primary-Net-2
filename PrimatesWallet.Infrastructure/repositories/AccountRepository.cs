@@ -22,7 +22,7 @@ namespace PrimatesWallet.Infrastructure.repositories
             return account;
         }
 
-        public async Task<Account>Get_Transaccion(int Id)
+        public async Task<Account> Get_Transaccion(int Id)
         {
             var transaction = await base._dbContext.Accounts
                 .Where(a => a.UserId == Id)
@@ -40,10 +40,10 @@ namespace PrimatesWallet.Infrastructure.repositories
                 .FirstOrDefaultAsync();
         }
         /// <summary>
-        ///     Este método valida si exista una cuenta con el id del usuario.
+        ///     Este mï¿½todo valida si exista una cuenta con el id del usuario.
         /// </summary>
         /// <param name="userId">
-        ///     El valor de userId es extraido del token de autenticación.
+        ///     El valor de userId es extraido del token de autenticaciï¿½n.
         /// </param>
         public async Task<bool> CheckAccountByUserId(int userId)
         {
@@ -56,7 +56,17 @@ namespace PrimatesWallet.Infrastructure.repositories
             _dbContext.Accounts.Update(account);
         }
 
+        public async Task<IEnumerable<Account>> GetAll(int page, int pageSize)
+        {
+            return await base._dbContext.Accounts
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
 
-
+        public async Task<int> GetCount()
+        {
+            return await base._dbContext.Accounts.CountAsync();
+        }
     }
 }
