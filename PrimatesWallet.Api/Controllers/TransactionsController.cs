@@ -81,11 +81,11 @@ namespace PrimatesWallet.Api.Controllers
 
         [HttpDelete("{transactionId}")]
         [Authorize]
-        public async Task<IActionResult> DeleteTransaction (int transactionId)
+        public async Task<IActionResult> DeleteTransaction(int transactionId)
         {
             var requestedUser = UserContextService.GetCurrentUser();
             var response = await transactionService.DeleteTransaction(transactionId, requestedUser);
-            if( !response ) { return NotFound(); }
+            if (!response) { return NotFound(); }
             return Ok($"Transaction {transactionId} deleted.");
         }
 
@@ -98,14 +98,25 @@ namespace PrimatesWallet.Api.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPut("{transactionId}")]
         public async Task<IActionResult> UpdateTransaction(int transactionId, [FromBody] RepaymentResponseDto repaymentResponse)
+
         {
             var repayment = await transactionService.UpdateTransaction(transactionId, repaymentResponse.Concept );
-
             var response = new BaseResponse<bool>("successful repayment", repayment, (int)HttpStatusCode.OK);
 
             return Ok(response);
         }
 
-
+        /// <summary>
+        /// Creates a new transaction from the information provided in the <paramref name="transactionDTO"/> parameter.
+        /// </summary>
+        /// <param name="transactionDTO">The DTO object containing the transaction information.</param>
+        /// <returns>The result of the transaction creation.</returns
+        [HttpPost]
+        public async Task<IActionResult> CreateTransaction([FromBody] TransactionRequestDto transactionDTO)
+        {
+            var transaction = await transactionService.Insert(transactionDTO);
+            var response = new BaseResponse<bool>(ReplyMessage.MESSAGE_CREATE_SUCCESS, transaction, (int)HttpStatusCode.Created);
+            return Ok(response);
+        }
     }
 }

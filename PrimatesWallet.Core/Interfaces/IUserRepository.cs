@@ -30,5 +30,6 @@ namespace PrimatesWallet.Core.Interfaces
         /// </summary>
         /// <returns>The total number of users.</returns>
         Task<int> GetCount();
+        void UpdateUser(User user);
     }
 }

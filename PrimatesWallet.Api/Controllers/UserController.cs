@@ -93,6 +93,14 @@ namespace PrimatesWallet.Api.Controllers
             return Ok($"user {user.First_Name} {user.Last_Name} deleted.");
         }
    
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{UserId}")]
+        public async Task<IActionResult> UpdateUser(int UserId, [FromBody] UserUpdateDto userUpdateDTO)
+        {
+            var updatedUser = await userService.UpdateUser(UserId, userUpdateDTO);
+
+            return Ok(updatedUser);
+        }
 
     }
 }

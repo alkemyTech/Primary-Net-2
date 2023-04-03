@@ -31,6 +31,7 @@ namespace PrimatesWallet.Application.Services.Auth
 
             if (!isValidPassword) throw new AppException("Invalid Username/Password", HttpStatusCode.Forbidden);
 
+            if (currentUSer.Password != login.Password) throw new AppException("Credenciales invalidas", HttpStatusCode.Unauthorized);
             return currentUSer;
         }
     }

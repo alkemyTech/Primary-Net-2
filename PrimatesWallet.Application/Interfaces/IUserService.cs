@@ -27,7 +27,10 @@ namespace PrimatesWallet.Application.Interfaces
         /// <param name="pageSize">The number of items per page.</param>
         /// <returns>A task that returns the total number of pages.</returns>
         Task<int> TotalPageUsers(int PageSize);
+
         Task<bool> DeleteUser(int userId);
         Task<UserResponseDto> GetUserById(int id);
+
+        Task<bool> UpdateUser(int UserId, UserUpdateDto userUpdateDTO);
     }
 }

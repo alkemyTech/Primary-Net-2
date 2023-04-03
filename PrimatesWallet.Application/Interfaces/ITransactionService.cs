@@ -21,5 +21,14 @@ namespace PrimatesWallet.Application.Interfaces
         Task<bool> DeleteTransaction(int transactionId , int userId);
         Task<bool> UpdateTransaction(int transactionId, string concept = "repayment");
         Task<IEnumerable<TransactionDto>> GetAllTransactions();
+
+
+        /// <summary>
+        /// Inserts a transaction based on the given transaction DTO.
+        /// </summary>
+        /// <param name="transactionDTO">The transaction request DTO to use for creating the transaction.</param>
+        /// <returns>A boolean indicating whether the transaction was successfully inserted or not.</returns>
+        /// <exception cref="AppException">Thrown when the transaction violates business rules.</exception>
+        Task<bool> Insert(TransactionRequestDto transactionDTO);
     }
 }

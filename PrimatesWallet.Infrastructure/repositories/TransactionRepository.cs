@@ -1,8 +1,10 @@
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using PrimatesWallet.Core.Enums;
 using PrimatesWallet.Core.Interfaces;
 using PrimatesWallet.Core.Models;
 using PrimatesWallet.Infrastructure.repositories;
+using System.Data;
 
 namespace PrimatesWallet.Infrastructure.Repositories
 {
@@ -22,5 +24,47 @@ namespace PrimatesWallet.Infrastructure.Repositories
                      .ToListAsync();
         }
 
+        public async Task InsertWithStoredProcedure(Transaction transaction)
+        {
+            //asignamos los parametros
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@Amount", transaction.Amount),
+                new SqlParameter("@Concept", transaction.Concept),
+                new SqlParameter("@Date", transaction.Date),
+                new SqlParameter("@Type", ConvertTransactionTypeToString(transaction.Type)),
+                new SqlParameter("@Account_Id", transaction.Account_Id),
+                new SqlParameter("@To_Account_Id", transaction.To_Account_Id),
+            };
+
+            // Ejecuta el procedimiento almacenado
+            await base._dbContext.Database.ExecuteSqlRawAsync("EXEC InsertTransactionWithValidation"
+                + " @Amount, @Concept, @Date, @Type, @Account_Id, @To_Account_Id", 
+                parameters.ToArray());
+        }
+
+        /// <summary>
+        /// Converts a TransactionType enumeration value to its corresponding string representation.
+        /// </summary>
+        /// <param name="type">The TransactionType value to convert.</param>
+        /// <returns>A string representation of the TransactionType value.</returns>
+        private string ConvertTransactionTypeToString(TransactionType type)
+        {
+            /*
+            en model builder definimos para que se guarde como string el enum, cuando trate de usar el stored lo guardaba como numero
+            asi que cree esta clase para que se guarde tambien como string
+            */
+            switch (type)
+            {
+                case TransactionType.topup:
+                    return "topup";
+                case TransactionType.payment:
+                    return "payment";
+                case TransactionType.repayment:
+                    return "repayment";
+                default:
+                    throw new ArgumentException("Invalid Transaction type.", nameof(type));
+            }
+        }
     }
 }
