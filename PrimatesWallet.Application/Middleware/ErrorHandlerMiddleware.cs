@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using PrimatesWallet.Application.Exceptions;
+using System.Data.Common;
 using System.Net;
 
 namespace PrimatesWallet.Application.Middleware
@@ -31,7 +32,15 @@ namespace PrimatesWallet.Application.Middleware
 
                 await SendPayload(context, EnvelopeError, exception.StatusCode);
             }
-
+            catch (DbException exception) 
+            {
+                var listErrors = new List<ErrorMessage>
+                {
+                    new ErrorMessage(exception.Message)
+                };
+                var EnvelopeError = new Envelope(404, listErrors);
+                await SendPayload(context, EnvelopeError, HttpStatusCode.NotFound);
+            }
             catch (Exception exception)
             {
                 var listErrors = new List<ErrorMessage>

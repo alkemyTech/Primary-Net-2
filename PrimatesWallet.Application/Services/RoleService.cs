@@ -2,6 +2,7 @@
 using PrimatesWallet.Application.Interfaces;
 using PrimatesWallet.Core.Interfaces;
 using PrimatesWallet.Core.Models;
+using System.Net;
 
 namespace PrimatesWallet.Application.Services
 {
@@ -21,32 +22,19 @@ namespace PrimatesWallet.Application.Services
         /// <exception cref="Exception"></exception>
         public async Task<IEnumerable<Role>> GetRoles()
         {
-            try
-            {
-                var roles = await unitOfWork.Roles.GetAll();
-                return roles;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            var roles = await unitOfWork.Roles.GetAll();
+            return roles;  
         }
 
         /// <summary>
         /// This method searches for a specific ID and returns the requested role. 
         /// </summary>
-        /// <param name="roleId"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<Role> GetRoleById(int roleId)
+        public async Task<Role> GetRoleById(int id)
         {
-            try
-            {
-                return await unitOfWork.Roles.GetById(roleId);
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
+            var role =  await unitOfWork.Roles.GetById(id);
+            return role;
         }
     }
 }

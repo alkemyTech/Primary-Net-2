@@ -17,11 +17,11 @@ namespace PrimatesWallet.Application.Services
     public class FixedTermDepositService : IFixedTermDepositService
     {
 
-        public readonly IUnitOfWork unitOfWotk;
+        public readonly IUnitOfWork unitOfWork;
 
-        public FixedTermDepositService(IUnitOfWork unitOfWotk)
+        public FixedTermDepositService(IUnitOfWork unitOfWork)
         {
-            this.unitOfWotk = unitOfWotk;
+            this.unitOfWork = unitOfWork;
         }
 
         public async Task<IEnumerable<FixedTermDeposit>> GetByUser(int userId)
@@ -30,7 +30,7 @@ namespace PrimatesWallet.Application.Services
              *  1 para obtener el accountId mediante el userId y otro para hacer la consulta en la tabla fixed,
              *  es mas eficiente realizar una sola consulta a la base con la tabla de account y hacer un join con fixed
              */
-            var account = await unitOfWotk.Accounts.GetByUserId_FixedTerm(userId);
+            var account = await unitOfWork.Accounts.GetByUserId_FixedTerm(userId);
             var fixedTermDeposit = account.FixedTermDeposit;
 
             return fixedTermDeposit is null
@@ -40,25 +40,25 @@ namespace PrimatesWallet.Application.Services
 
         public async Task<FixedTermDeposit> GetFixedTermDepositById(int id)
         {
-                var fixedTermDeposit = await unitOfWotk.FixedTermDeposits.GetById(id);
+                var fixedTermDeposit = await unitOfWork.FixedTermDeposits.GetById(id);
                 if (fixedTermDeposit == null) throw new AppException("Deposit not found", HttpStatusCode.NotFound);
                 return fixedTermDeposit;
         }
 
-        public async Task<FixedTermDepositDetailDTO> GetFixedTermDepositDetails(int id, int userId)
+        public async Task<FixedTermDepositDetailDto> GetFixedTermDepositDetails(int id, int userId)
         {
             // Para obtener el Plazo fijo requerido tomamos en cuenta las siguentes validaciones:
             
             // Si no existe el Id proveído , cortar la ejecucion para optimizar recursos.
-                var fixedTermDeposit = await unitOfWotk.FixedTermDeposits.GetFixedTermDepositById(id, userId);
+                var fixedTermDeposit = await unitOfWork.FixedTermDeposits.GetFixedTermDepositById(id, userId);
                 if (fixedTermDeposit == null) throw new AppException("Fixed Term Deposit not found", HttpStatusCode.NotFound);
 
             // Si el cliente que envia la peticion no es el propietario del plazo fijo no deberá tener acceso al mismo.
-                var requestUser = await unitOfWotk.UserRepository.GetById(userId);
+                var requestUser = await unitOfWork.Users.GetById(userId);
                 if (requestUser.Account.Id != fixedTermDeposit.AccountId) throw new AppException("Invalid Credentials", HttpStatusCode.Forbidden);
                
             
-                var response = new FixedTermDepositDetailDTO()
+                var response = new FixedTermDepositDetailDto()
                 { Amount= fixedTermDeposit.Amount , Closing_Date=fixedTermDeposit.Closing_Date, Creation_Date=fixedTermDeposit.Creation_Date };
                 return response;
         }
@@ -66,21 +66,21 @@ namespace PrimatesWallet.Application.Services
      
         public async Task<int> TotalPageDeposits(int pageSize)
         {
-            var totalUsers = await unitOfWotk.FixedTermDeposits.GetCount();
+            var totalUsers = await unitOfWork.FixedTermDeposits.GetCount();
             //contamos el total de Plazos fijos y calculamos cuantas paginas hay en total
             return (int)Math.Ceiling((double)totalUsers / pageSize);
         }
 
 
-        public async Task<IEnumerable<FixedTermDepositDetailDTO>> GetDeposits(int page, int pageSize)
+        public async Task<IEnumerable<FixedTermDepositDetailDto>> GetDeposits(int page, int pageSize)
         {
 
         // Listado de todos los plazos fijos para el desarrollador con paginacion ya incluida
-            var allDeposits = await unitOfWotk.FixedTermDeposits.GetAll(page, pageSize)
+            var allDeposits = await unitOfWork.FixedTermDeposits.GetAll(page, pageSize)
                  ?? throw new AppException(ReplyMessage.MESSAGE_QUERY_EMPTY, HttpStatusCode.NotFound);
 
             var deposits = allDeposits.Select(x =>
-                new FixedTermDepositDetailDTO() { Amount = x.Amount , Creation_Date = x.Creation_Date, Closing_Date = x.Closing_Date });
+                new FixedTermDepositDetailDto() { Amount = x.Amount , Creation_Date = x.Creation_Date, Closing_Date = x.Closing_Date });
                 
             return deposits;
         }
@@ -99,7 +99,7 @@ namespace PrimatesWallet.Application.Services
         /// <exception cref="AppException">if the closing date of the fixed term is less than the current one, an error is thrown indicating that the fixed term is closed </exception>
         public async Task<bool> DeleteFixedtermDeposit(int id)
         {
-            var fixedTermDeposit = await unitOfWotk.FixedTermDeposits.GetById(id);
+            var fixedTermDeposit = await unitOfWork.FixedTermDeposits.GetById(id);
 
             if ( fixedTermDeposit is null ) throw new AppException( "Fixed term deposit not found", HttpStatusCode.NotFound );
 
@@ -107,18 +107,22 @@ namespace PrimatesWallet.Application.Services
 
             // Return of money without interest.
 
-            var userAccount = await unitOfWotk.Accounts.GetById(fixedTermDeposit.AccountId);
+            var userAccount = await unitOfWork.Accounts.GetById(fixedTermDeposit.AccountId);
 
             userAccount.Money += fixedTermDeposit.Amount;
 
-            unitOfWotk.Accounts.Update(userAccount);
-            unitOfWotk.FixedTermDeposits.Delete(fixedTermDeposit);
+            unitOfWork.Accounts.Update(userAccount);
+            unitOfWork.FixedTermDeposits.Delete(fixedTermDeposit);
 
-            var response = unitOfWotk.Save();
+            var response = unitOfWork.Save();
 
             if ( response > 0 ) return true;
             else return false;
         }
 
+        public Task<IQueryable<FixedTermDeposit>> GetAllDepositsQueryable()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
