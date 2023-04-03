@@ -4,8 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using PrimatesWallet.Api.Helpers;
 using PrimatesWallet.Application.DTOS;
+using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
 using PrimatesWallet.Application.Services.Auth;
+using PrimatesWallet.Core.Models;
+using System.Net;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace PrimatesWallet.Api.Controllers
@@ -82,5 +85,23 @@ namespace PrimatesWallet.Api.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// This endpoint is for updating a product, only users with the "Admin" role can access it.
+        /// </summary>
+        /// <param name="id">Product ID obtained from the request URL</param>
+        /// <param name="catalogue">Product model obtained from the request body</param>
+        /// <returns>HTTP 200 OK response with the BaseResponse object</returns>
+        
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCatalogue(int id, [FromBody] CatalogueDTO catalogue)
+        {
+
+            var result = await _catalogueService.UpdateProduct(id, catalogue);
+
+            var response = new BaseResponse<bool>(ReplyMessage.MESSAGE_QUERY, result, (int)HttpStatusCode.NoContent);
+
+            return Ok(response);
+        }
     }
 }

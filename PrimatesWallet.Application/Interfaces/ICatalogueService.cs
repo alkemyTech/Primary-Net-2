@@ -1,5 +1,4 @@
 ﻿using PrimatesWallet.Application.DTOS;
-using PrimatesWallet.Application.DTOS.Pagination;
 using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Core.Models;
 using System;
@@ -16,5 +15,6 @@ namespace PrimatesWallet.Application.Interfaces
         Task<Catalogue> CreateProduct(CatalogueProductDTO productdto, int userId);
         Task<List<Catalogue>> GetAllProducts();
         Task<Catalogue> GetProductById(int id);
+        Task<bool> UpdateProduct(int id, CatalogueDTO productDTO);
     }
 }

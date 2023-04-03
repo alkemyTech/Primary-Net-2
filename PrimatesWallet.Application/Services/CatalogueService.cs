@@ -10,18 +10,20 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using PrimatesWallet.Application.DTOS;
-using PrimatesWallet.Application.DTOS.Pagination;
 using AutoMapper.Configuration.Conventions;
+using AutoMapper;
 
 namespace PrimatesWallet.Application.Services
 {
     public class CatalogueService : ICatalogueService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public CatalogueService(IUnitOfWork unitOfWork) 
+        public CatalogueService(IUnitOfWork unitOfWork, IMapper mapper) 
 		{
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
         public async Task<List<Catalogue>> GetAllProducts()
         {
@@ -102,6 +104,33 @@ namespace PrimatesWallet.Application.Services
                 NextPage = ( page < numberOfPages ) ? $"{url}?page={page + 1}" : null,
                 StatusCode = (int)HttpStatusCode.OK
             };
+        }
+
+
+        /// <summary>
+        /// Updates an existing product in the database.
+        /// </summary>
+        /// <param name="id">The ID of the product to be updated.</param>
+        /// <param name="product">An instance of Catalogue containing the updated properties of the product.</param>
+        /// <returns>True if the update operation was completed successfully, otherwise false.</returns>
+        /// <exception cref="AppException">Thrown when the provided ID does not match the ID of the product sent or the product with the specified ID cannot be found.</exception>
+        public async Task<bool> UpdateProduct(int id, CatalogueDTO productDTO)
+        {
+            if (id != productDTO.Id) throw new AppException("The ID provided in the request does not match the ID of the product sent.", HttpStatusCode.BadRequest);
+
+            var dbProduct = await _unitOfWork.Catalogues.GetById(id);
+
+            if (dbProduct is null) throw new AppException("The product with the specified ID could not be found.", HttpStatusCode.NotFound);
+
+            _mapper.Map(productDTO, dbProduct);
+
+            _unitOfWork.Catalogues.Update(dbProduct);
+
+            var result = _unitOfWork.Save();
+
+            if (result > 0) return true;
+
+            return false;
         }
     }
 }
