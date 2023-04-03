@@ -83,7 +83,6 @@ namespace PrimatesWallet.Api.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpPut("{UserId}")]
         public async Task<IActionResult> UpdateUser(int UserId, [FromBody] UserUpdateDTO userUpdateDTO)
         {
