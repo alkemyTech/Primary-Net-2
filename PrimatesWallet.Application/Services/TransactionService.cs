@@ -35,16 +35,16 @@ namespace PrimatesWallet.Application.Services
             var transactions = await _unitOfWork.Transactions.GetAllByAccount(accountId)
                 ?? throw new AppException(ReplyMessage.MESSAGE_QUERY_EMPTY, HttpStatusCode.NotFound);
 
-                var transactionsDTO = transactions.Select(x =>
-                    new TransactionDTOBuilder()
-                    .WithId(x.Id)
-                    .WithAmount(x.Amount)
-                    .WithConcept(x.Concept)
-                    .WithDate(x.Date)
-                    .WithType(x.Type)
-                    .WithAccountId(x.Account_Id)
-                    .WithToAccountId((int)x.To_Account_Id)
-                    .Build()).ToList();
+            var transactionsDTO = transactions.Select(x =>
+                new TransactionDTOBuilder()
+                .WithId(x.Id)
+                .WithAmount(x.Amount)
+                .WithConcept(x.Concept)
+                .WithDate(x.Date)
+                .WithType(x.Type)
+                .WithAccountId(x.Account_Id)
+                .WithToAccountId((int)x.To_Account_Id)
+                .Build()).ToList();
 
             return transactionsDTO;
         }
@@ -100,7 +100,7 @@ namespace PrimatesWallet.Application.Services
             var dbTransaction = await _unitOfWork.Transactions.GetById(transactionId);
             if (dbTransaction == null) throw new AppException("Transaction not found", HttpStatusCode.NotFound);
             if (dbTransaction.Type == TransactionType.repayment) throw new AppException("This transaction has already been reversed", HttpStatusCode.BadRequest);
-            
+
             //Account of the client who received the payment.
             var remitentAccount = await _unitOfWork.Accounts.GetById((int)dbTransaction.To_Account_Id);
 
@@ -131,13 +131,13 @@ namespace PrimatesWallet.Application.Services
 
             var user = await _unitOfWork.UserRepository.GetById(userId);
             var isAdmin = await _unitOfWork.UserRepository.IsAdmin(user);
-            if (!isAdmin) 
+            if (!isAdmin)
             {
                 throw new AppException("Invalid Credentials", HttpStatusCode.Forbidden);
             }
             var transaction = await _unitOfWork.Transactions.GetById(transactionId);
-            
-            if(transaction == null)
+
+            if (transaction == null)
             {
                 throw new AppException($"Transaction {transactionId} not found", HttpStatusCode.NotFound);
             }
@@ -146,5 +146,47 @@ namespace PrimatesWallet.Application.Services
             return true;
 
         }
+
+
+        public async Task<bool> Insert(TransactionRequestDTO transactionDTO)
+        {
+            /*
+             Verificamos si la logica de emisor receptor de una transaccion es correcta
+             */
+            bool isTopup = transactionDTO.Type is TransactionType.topup;
+            bool isPaymentOrRepayment = transactionDTO.Type is (TransactionType.payment or TransactionType.repayment);
+            bool isSameAccount = transactionDTO.Account_Id == transactionDTO.To_Account_Id;
+
+            if (!isSameAccount && isTopup) throw new AppException("Deposits to other accounts are not allowed", HttpStatusCode.BadRequest);
+
+            if (isSameAccount && isPaymentOrRepayment) throw new AppException("Payments between the same accounts are not allowed", HttpStatusCode.BadRequest);
+
+            var transaction = new Transaction()
+            {
+                Amount = transactionDTO.Amount,
+                Type = transactionDTO.Type,
+                Concept = transactionDTO.Concept,
+                Date = DateTime.Now,
+                Account_Id = transactionDTO.Account_Id,
+                To_Account_Id = transactionDTO.To_Account_Id
+            };
+
+            /*
+                Aca se me ocurrio 2 formas de poder validar si las cuentas existen,
+                primero estaba por crear un servicio ExistAccount(TransactionDTO.Account_Id)
+                que compruebe en base de datos si existe esa id pero me di cuenta que entonces
+                tenia que realizar 3 operaciones I/O:
+                    1- existe la cuenta emisora ?
+                    2- existe la cuenta receptora ?
+                    3- si existen ambas el insert en base de datos
+                Entonces decidi crear un StoredProcedure que compruebe si existen las cuentas y si existe hace el insert
+                para los select del id, si alguna cuenta no existe arroja un error
+                ahora se hacen las 3 operaciones pero en 1 sola operacion I/O
+             */
+            await _unitOfWork.Transactions.InsertWithStoredProcedure(transaction);
+            _unitOfWork.Save();
+            return true; //el stored tiene validaciones si falla y las excepciones son atrapadas por el middleware
+        }
+
     }
 }

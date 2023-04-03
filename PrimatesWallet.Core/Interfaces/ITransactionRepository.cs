@@ -11,5 +11,13 @@ namespace PrimatesWallet.Core.Interfaces
         /// <returns>Una colección de objetos <c>Transaction</c> que representan las transacciones encontradas.</returns>
         /// <exception cref="AppException">Si no se encuentran transacciones asociadas a la cuenta especificada.</exception>
         Task<IEnumerable<Transaction>> GetAllByAccount(int id);
+
+
+        /// <summary>
+        /// Inserts a new Transaction into the database using a stored procedure.
+        /// </summary>
+        /// <param name="transaction">The Transaction to insert.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        Task InsertWithStoredProcedure(Transaction transaction);
     }
 }
