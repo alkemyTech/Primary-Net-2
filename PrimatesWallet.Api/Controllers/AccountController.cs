@@ -80,7 +80,7 @@ namespace PrimatesWallet.Api.Controllers
 
         [HttpPost("{id}")]
         [Authorize]
-        public async Task<IActionResult> Depositar([FromRoute] int id, [FromBody] TopUpDTO topUpDTO)
+        public async Task<IActionResult> Depositar([FromRoute] int id, [FromBody] TopUpDto topUpDTO)
         {
             try
             {
@@ -117,7 +117,7 @@ namespace PrimatesWallet.Api.Controllers
         /// <param name="transferDTO">a DTO with the transaction information(receiver user email, amount, type of transaction, concept)</param>
         [HttpPost("transfer/{accountId}")]
         [Authorize]
-        public async Task<IActionResult> Transfer(int accountId, [FromBody] TransferDTO transferDTO)
+        public async Task<IActionResult> Transfer(int accountId, [FromBody] TransferDto transferDTO)
         {
             var userId = _userContextService.GetCurrentUser();
 
@@ -129,7 +129,7 @@ namespace PrimatesWallet.Api.Controllers
 
             var transaction = await _account.Transfer(userId, transferDTO);
 
-            var response = new BaseResponse<TransferDetailDTO>("Tranferencia exitosa!", transaction, (int)HttpStatusCode.OK);
+            var response = new BaseResponse<TransferDetailDto>("Tranferencia exitosa!", transaction, (int)HttpStatusCode.OK);
 
             return Ok(response);
         }
@@ -137,17 +137,11 @@ namespace PrimatesWallet.Api.Controllers
 
 
         [HttpPut("{accountId}")]
-        public async Task<IActionResult> UpdateAccount(int accountId, [FromBody] AccountUpdateDTO accountUpdateDTO) 
+        public async Task<IActionResult> UpdateAccount(int accountId, [FromBody] AccountUpdateDto accountUpdateDTO) 
         {
           var updatedAccount =  await _account.UpdateAccountAdmin( accountId, accountUpdateDTO);
-            return Ok(updatedAccount);
+          return Ok(updatedAccount);
            
-
         }
-
-
-
-
-
     }
 }

@@ -56,7 +56,7 @@ namespace PrimatesWallet.Api.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> CreateProduct(CatalogueProductDTO catalogueProductDTO)
+        public async Task<IActionResult> CreateProduct(CatalogueProductDto catalogueProductDTO)
         {
             var userId =  _userContextService.GetCurrentUser();
             var response = await _catalogueService.CreateProduct(catalogueProductDTO, userId);

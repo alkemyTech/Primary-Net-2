@@ -10,7 +10,7 @@ namespace PrimatesWallet.Application.Interfaces
 {
     public interface ICatalogueService
     {
-        Task<Catalogue> CreateProduct(CatalogueProductDTO productdto, int userId);
+        Task<Catalogue> CreateProduct(CatalogueProductDto productdto, int userId);
         Task<List<Catalogue>> GetAllProducts();
         Task<Catalogue> GetProductById(int id);
     }

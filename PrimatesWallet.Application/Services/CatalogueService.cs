@@ -23,41 +23,27 @@ namespace PrimatesWallet.Application.Services
         }
         public async Task<List<Catalogue>> GetAllProducts()
         {
-			try
-			{
-                var allProducts = await _unitOfWork.Catalogues.GetAll();
-
-                return allProducts
-                        .OrderBy(p => p.Points)
-                        .ToList();
-			}
-			catch (Exception ex)
-			{
-                throw new Exception(ex.Message);
-			}
+            var allProducts = await _unitOfWork.Catalogues.GetAll();
+            if ( allProducts == null) throw new AppException("Cant find Catalogue", HttpStatusCode.NotFound);
+            return allProducts
+                   .OrderBy(p => p.Points)
+                   .ToList();
         }
 
         public async Task<Catalogue> GetProductById(int id)
         {
-            try
-            {
-                var product = await _unitOfWork.Catalogues.GetById(id);
-
-                return product;
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception(ex.Message);
-            }
+            var product = await _unitOfWork.Catalogues.GetById(id);
+            if (product == null) throw new AppException("Cant find Product", HttpStatusCode.NotFound);
+            return product;
         }
 
-        public async Task<Catalogue> CreateProduct(CatalogueProductDTO productdto, int userId)
+        public async Task<Catalogue> CreateProduct(CatalogueProductDto productdto, int userId)
         {
-            var user = await _unitOfWork.UserRepository.GetById(userId);
-            var isAdmin = await _unitOfWork.UserRepository.IsAdmin(user); 
+            var user = await _unitOfWork.Users.GetById(userId);
+            var isAdmin = _unitOfWork.Users.IsAdmin(user); 
+            
             if ( !isAdmin ) throw new AppException("Invalid credentials", HttpStatusCode.Unauthorized);
-            if (productdto.Image == null || productdto.Points == null || productdto.ProductDescription == null)
+            if (productdto.Image == null || productdto.ProductDescription == null)
             { throw new AppException("Missing required fields", HttpStatusCode.BadRequest); }
             var product = new Catalogue() { Image = productdto.Image, Points=productdto.Points, ProductDescription=productdto.ProductDescription  };
             await _unitOfWork.Catalogues.Add(product);

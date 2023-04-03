@@ -2,7 +2,7 @@
 {
     public interface IUnitOfWork : IDisposable
     {
-        IUserRepository UserRepository { get; }
+        IUserRepository Users { get; }
         ITransactionRepository Transactions { get; }
         IFixedTermDepositRepository FixedTermDeposits { get; }
         ICatalogueRepository Catalogues { get; }

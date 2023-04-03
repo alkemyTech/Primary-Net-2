@@ -20,7 +20,6 @@ namespace PrimatesWallet.Infrastructure.Seed.DataSeed
                     Money= 173419180,
                     IsBlocked= false,
                     UserId= 1
-
                 },
 
                new Account()

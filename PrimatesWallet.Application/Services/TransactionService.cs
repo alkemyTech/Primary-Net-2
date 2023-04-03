@@ -5,7 +5,6 @@ using PrimatesWallet.Core.Interfaces;
 using PrimatesWallet.Core.Models;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
-using PrimatesWallet.Application.Interfaces;
 using PrimatesWallet.Application.Mapping.Transaction;
 using System.Net;
 
@@ -17,14 +16,14 @@ namespace PrimatesWallet.Application.Services
 
     public class TransactionService : ITransactionService
     {
-        public IUnitOfWork _unitOfWork;
+        public readonly IUnitOfWork _unitOfWork;
 
         public TransactionService(IUnitOfWork unitOfWork)
         {
-            _unitOfWork = unitOfWork;
+            this._unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<TransactionDTO>> GetAllByUser(int userId)
+        public async Task<IEnumerable<TransactionDto>> GetAllByUser(int userId)
         {
 
             //con el id del usuario buscamos el id de su cuenta
@@ -36,7 +35,7 @@ namespace PrimatesWallet.Application.Services
                 ?? throw new AppException(ReplyMessage.MESSAGE_QUERY_EMPTY, HttpStatusCode.NotFound);
 
                 var transactionsDTO = transactions.Select(x =>
-                    new TransactionDTOBuilder()
+                    new TransactionDtoBuilder()
                     .WithId(x.Id)
                     .WithAmount(x.Amount)
                     .WithConcept(x.Concept)
@@ -49,12 +48,12 @@ namespace PrimatesWallet.Application.Services
             return transactionsDTO;
         }
 
-        public async Task<TransactionDTO> GetTransactionById(int transactionId)
+        public async Task<TransactionDto> GetTransactionById(int id)
         {
 
-            var transaction = await _unitOfWork.Transactions.GetById(transactionId);
+            var transaction = await _unitOfWork.Transactions.GetById(id);
 
-            var transactionDTO = new TransactionDTOBuilder()
+            var transactionDTO = new TransactionDtoBuilder()
                     .WithId(transaction.Id)
                     .WithAmount(transaction.Amount)
                     .WithConcept(transaction.Concept)
@@ -68,12 +67,12 @@ namespace PrimatesWallet.Application.Services
 
         }
 
-        public async Task<IEnumerable<TransactionDTO>> GetAllTransactions()
+        public async Task<IEnumerable<TransactionDto>> GetAllTransactions()
         {
             var transactions = await _unitOfWork.Transactions.GetAll();
 
             var transactionsDTO = transactions.Select(x =>
-                                    new TransactionDTOBuilder()
+                                    new TransactionDtoBuilder()
                                     .WithId(x.Id)
                                     .WithAmount(x.Amount)
                                     .WithConcept(x.Concept)
@@ -129,22 +128,19 @@ namespace PrimatesWallet.Application.Services
         public async Task<bool> DeleteTransaction(int transactionId, int userId)
         {
 
-            var user = await _unitOfWork.UserRepository.GetById(userId);
-            var isAdmin = await _unitOfWork.UserRepository.IsAdmin(user);
-            if (!isAdmin) 
-            {
-                throw new AppException("Invalid Credentials", HttpStatusCode.Forbidden);
-            }
+            var user = await _unitOfWork.Users.GetById(userId);
+            var isAdmin = _unitOfWork.Users.IsAdmin(user);
+            
+            if (!isAdmin) throw new AppException("Invalid Credentials", HttpStatusCode.Forbidden);
+            
             var transaction = await _unitOfWork.Transactions.GetById(transactionId);
             
-            if(transaction == null)
-            {
-                throw new AppException($"Transaction {transactionId} not found", HttpStatusCode.NotFound);
-            }
+            if(transaction == null) throw new AppException($"Transaction {transactionId} not found", HttpStatusCode.NotFound);
+            
             _unitOfWork.Transactions.Delete(transaction);
             _unitOfWork.Save();
+           
             return true;
-
         }
     }
 }

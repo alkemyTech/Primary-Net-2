@@ -17,11 +17,11 @@ namespace PrimatesWallet.Core.Models
 
         [Required]
         [Column("product_description", TypeName = "VARCHAR(500)")]
-        public string ProductDescription { get; set; }
+        public string? ProductDescription { get; set; }
 
         [Required]
         [Column("image", TypeName = "VARCHAR(500)")]
-        public string Image { get; set; }
+        public string? Image { get; set; }
 
         [Required]
         [Column("points")]

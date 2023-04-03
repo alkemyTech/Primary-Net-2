@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PrimatesWallet.Application.DTOS
 {
-    public class TopUpDTO
+    public class TopUpDto
     {
         [Required]
         public decimal Money { get; set; }

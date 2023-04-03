@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PrimatesWallet.Application.DTOS
 {
-    public class RegisterUserDTO
+    public class RegisterUserDto
     {
         [Required]
         [Column("first_name", TypeName = "VARCHAR(50)")]

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PrimatesWallet.Application.DTOS
 {
-    public class CatalogueProductDTO
+    public class CatalogueProductDto
     {
         [Required]
         [Column("product_description", TypeName = "VARCHAR(500)")]

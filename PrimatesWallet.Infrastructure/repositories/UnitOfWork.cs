@@ -8,7 +8,7 @@ namespace PrimatesWallet.Infrastructure.Repositories
         private readonly ApplicationDbContext _dbContext;
         public IFixedTermDepositRepository FixedTermDeposits { get; }
         public ITransactionRepository Transactions { get; }
-        public IUserRepository UserRepository { get; }
+        public IUserRepository Users { get; }
         public IRoleRepository Roles { get; }
         public IAccountRepository Accounts { get; }
         public ICatalogueRepository Catalogues { get; }
@@ -24,7 +24,7 @@ namespace PrimatesWallet.Infrastructure.Repositories
         {
             _dbContext = dbContext;
             Transactions = transactionRepository;
-            UserRepository = userRepository;
+            Users = userRepository;
             FixedTermDeposits = fixedTermDepositRepository;
             Roles = roleRepository;
             Accounts = accountRepository;

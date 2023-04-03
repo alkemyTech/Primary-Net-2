@@ -16,7 +16,7 @@ namespace PrimatesWallet.Infrastructure.repositories
             var account = await base._dbContext.Accounts
                 .Where(a => a.UserId == userId)
                 .Include(b => b.FixedTermDeposit //join con fixedTermc
-                    .OrderBy(c => c.Closing_Date)) //ordenamos en base de datos para mejor rendimiento
+                .OrderBy(c => c.Closing_Date)) //ordenamos en base de datos para mejor rendimiento
                 .FirstOrDefaultAsync();
 
             return account;
@@ -24,10 +24,12 @@ namespace PrimatesWallet.Infrastructure.repositories
 
         public async Task<Account>Get_Transaccion(int Id)
         {
-            return await base._dbContext.Accounts
+            var transaction = await base._dbContext.Accounts
                 .Where(a => a.UserId == Id)
                 .Include(x => x.Transactions)
                 .FirstOrDefaultAsync();
+
+            return transaction;
         }
 
         public async Task<int?> GetIdAccount(int userId)
@@ -38,16 +40,14 @@ namespace PrimatesWallet.Infrastructure.repositories
                 .FirstOrDefaultAsync();
         }
         /// <summary>
-        ///     This method checks if an account exists with a specific user id.
-        ///     If there is an account with this id, return true else return false.
+        ///     Este método valida si exista una cuenta con el id del usuario.
         /// </summary>
         /// <param name="userId">
-        ///     user id value, extracted from token.
+        ///     El valor de userId es extraido del token de autenticación.
         /// </param>
         public async Task<bool> CheckAccountByUserId(int userId)
         {
-            var existingAccount = base._dbContext.Accounts.Where(a => a.UserId == userId).FirstOrDefault();
-
+            var existingAccount =await base._dbContext.Accounts.Where(a => a.UserId == userId).FirstOrDefaultAsync();
             return ( existingAccount == null ) ? false: true;
         }
 

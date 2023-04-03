@@ -27,7 +27,7 @@ namespace PrimatesWallet.Api.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginUser loginUser)
+        public async Task<IActionResult> Login(LoginUserDto loginUser)
         {
             try
             {
@@ -65,7 +65,7 @@ namespace PrimatesWallet.Api.Controllers
             var userId = userContextService.GetCurrentUser();
             var user =await userService.GetUserById(userId);
             if (user == null) throw new AppException("User not found", HttpStatusCode.NotFound);
-            var userResponse = new UserResponseDTO()
+            var userResponse = new UserResponseDto()
             {
                 First_Name = user.First_Name,
                 Last_Name = user.Last_Name,

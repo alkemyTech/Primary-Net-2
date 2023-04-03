@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PrimatesWallet.Application.DTOS
 {
-    public class AccountUpdateDTO
+    public class AccountUpdateDto
     {
         [Column("money", TypeName = "DECIMAL")]
         [Range(0, Double.PositiveInfinity)]
