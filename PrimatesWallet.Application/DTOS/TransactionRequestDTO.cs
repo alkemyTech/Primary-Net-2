@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PrimatesWallet.Application.DTOS
 {
-    public class TransactionRequestDTO
+    public class TransactionRequestDto
     {
         [Required]
         [Range(100, (double)decimal.MaxValue, ErrorMessage = "Amount must be greater than 100.")]

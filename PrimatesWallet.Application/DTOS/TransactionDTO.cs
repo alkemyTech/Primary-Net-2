@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace PrimatesWallet.Application.DTOS
 {
-    public class TransactionDTO
+    public class TransactionDto
     {
         public int? Id { get; set; }
         public decimal? Amount { get; set; }

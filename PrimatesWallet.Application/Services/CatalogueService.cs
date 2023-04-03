@@ -10,60 +10,50 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using PrimatesWallet.Application.DTOS;
-using PrimatesWallet.Application.DTOS.Pagination;
 using AutoMapper.Configuration.Conventions;
+using AutoMapper;
 
 namespace PrimatesWallet.Application.Services
 {
     public class CatalogueService : ICatalogueService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public CatalogueService(IUnitOfWork unitOfWork) 
+        public CatalogueService(IUnitOfWork unitOfWork, IMapper mapper) 
 		{
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
         public async Task<List<Catalogue>> GetAllProducts()
         {
-			try
-			{
-                var allProducts = await _unitOfWork.Catalogues.GetAll();
-
-                return allProducts
-                        .OrderBy(p => p.Points)
-                        .ToList();
-			}
-			catch (Exception ex)
-			{
-                throw new Exception(ex.Message);
-			}
+            var allProducts = await _unitOfWork.Catalogues.GetAll();
+            if ( allProducts == null) throw new AppException("Cant find Catalogue", HttpStatusCode.NotFound);
+            return allProducts
+                   .OrderBy(p => p.Points)
+                   .ToList();
         }
 
         public async Task<Catalogue> GetProductById(int id)
         {
-            try
-            {
-                var product = await _unitOfWork.Catalogues.GetById(id);
-
-                return product;
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception(ex.Message);
-            }
+            var product = await _unitOfWork.Catalogues.GetById(id);
+            if (product == null) throw new AppException("Cant find Product", HttpStatusCode.NotFound);
+            return product;
         }
 
-        public async Task<Catalogue> CreateProduct(CatalogueProductDTO productdto, int userId)
+        public async Task<CatalogueProductDto> CreateProduct(CatalogueProductDto productdto, int userId)
         {
-            var user = await _unitOfWork.UserRepository.GetById(userId);
-            var isAdmin = await _unitOfWork.UserRepository.IsAdmin(user); 
+            var user = await _unitOfWork.Users.GetById(userId);
+            var isAdmin = _unitOfWork.Users.IsAdmin(user); 
+            
             if ( !isAdmin ) throw new AppException("Invalid credentials", HttpStatusCode.Unauthorized);
-            if (productdto.Image == null || productdto.Points == null || productdto.ProductDescription == null)
+            if (productdto.Image == null || productdto.ProductDescription == null)
             { throw new AppException("Missing required fields", HttpStatusCode.BadRequest); }
             var product = new Catalogue() { Image = productdto.Image, Points=productdto.Points, ProductDescription=productdto.ProductDescription  };
+            var response = new CatalogueProductDto() { Image = productdto.Image, Points=productdto.Points, ProductDescription=productdto.ProductDescription  };
             await _unitOfWork.Catalogues.Add(product);
-            return product;
+            _unitOfWork.Save();
+            return response;
         }
 
         /// <summary>
@@ -102,6 +92,33 @@ namespace PrimatesWallet.Application.Services
                 NextPage = ( page < numberOfPages ) ? $"{url}?page={page + 1}" : null,
                 StatusCode = (int)HttpStatusCode.OK
             };
+        }
+
+
+        /// <summary>
+        /// Updates an existing product in the database.
+        /// </summary>
+        /// <param name="id">The ID of the product to be updated.</param>
+        /// <param name="product">An instance of Catalogue containing the updated properties of the product.</param>
+        /// <returns>True if the update operation was completed successfully, otherwise false.</returns>
+        /// <exception cref="AppException">Thrown when the provided ID does not match the ID of the product sent or the product with the specified ID cannot be found.</exception>
+        public async Task<bool> UpdateProduct(int id, CatalogueDTO productDTO)
+        {
+            if (id != productDTO.Id) throw new AppException("The ID provided in the request does not match the ID of the product sent.", HttpStatusCode.BadRequest);
+
+            var dbProduct = await _unitOfWork.Catalogues.GetById(id);
+
+            if (dbProduct is null) throw new AppException("The product with the specified ID could not be found.", HttpStatusCode.NotFound);
+
+            _mapper.Map(productDTO, dbProduct);
+
+            _unitOfWork.Catalogues.Update(dbProduct);
+
+            var result = _unitOfWork.Save();
+
+            if (result > 0) return true;
+
+            return false;
         }
     }
 }

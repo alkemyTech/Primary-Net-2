@@ -1,10 +1,8 @@
 using Microsoft.OpenApi.Models;
-using PrimatesWallet.Application.ServiceExtension;
 using PrimatesWallet.Infrastructure.Seed;
 using PrimatesWallet.Infrastructure.ServiceExtension;
 using System.Reflection;
 using PrimatesWallet.Application.ServiceExtension;
-using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
 using PrimatesWallet.Application.Middleware;
 

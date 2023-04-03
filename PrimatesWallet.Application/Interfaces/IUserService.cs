@@ -10,8 +10,7 @@ namespace PrimatesWallet.Application.Interfaces
 {
     public interface IUserService
     {
-        Task<User> GetUserById(int id);
-        Task<int> Signup(RegisterUserDTO user);
+        Task<int> Signup(RegisterUserDto user);
         
         /// <summary>
         /// Service to retrieve a paged list of users.
@@ -20,7 +19,7 @@ namespace PrimatesWallet.Application.Interfaces
         /// <param name="pageSize">The number of items per page.</param>
         /// <returns>A task that returns a list of users.</returns>
         /// <exception cref="AppException">Thrown if no users are found.</exception>
-        Task<IEnumerable<UserResponseDTO>> GetUsers(int page,int pageSize);
+        Task<IEnumerable<UserResponseDto>> GetUsers(int page,int pageSize);
 
         /// <summary>
         /// Obtains the total number of pages of users for a paged list.
@@ -28,5 +27,10 @@ namespace PrimatesWallet.Application.Interfaces
         /// <param name="pageSize">The number of items per page.</param>
         /// <returns>A task that returns the total number of pages.</returns>
         Task<int> TotalPageUsers(int PageSize);
+
+        Task<bool> DeleteUser(int userId);
+        Task<UserResponseDto> GetUserById(int id);
+
+        Task<string> UpdateUser(int UserId, UserUpdateDto userUpdateDTO);
     }
 }

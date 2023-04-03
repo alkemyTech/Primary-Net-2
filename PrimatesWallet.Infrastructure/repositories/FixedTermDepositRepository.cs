@@ -18,7 +18,6 @@ namespace PrimatesWallet.Infrastructure.repositories
         {
             // Selecciona un Plazo fijo espescífico para el usuario que lo requiere
             var accountDeposits = await _dbContext.Accounts.Where(x => x.UserId == userId).Include(x => x.FixedTermDeposit).FirstOrDefaultAsync();
-            if (accountDeposits == null) throw new Exception("This user does not have Fixed Term Deposits");
             var fixedTermDeposit = accountDeposits.FixedTermDeposit.FirstOrDefault(x => x.Id == fixedId);
             return fixedTermDeposit;
 

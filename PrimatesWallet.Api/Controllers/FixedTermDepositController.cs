@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PrimatesWallet.Api.Helpers;
 using PrimatesWallet.Application.DTOS;
@@ -32,11 +32,10 @@ namespace PrimatesWallet.Api.Controllers
         public async Task<IActionResult> GetFixedTermDepositById(int id)
         {
             // Obtener un plazo fijo espescifico por id
-            var userRequestId = userContextService.GetCurrentUser();
-            var fixedTermDeposit = await _fixedTermDeposit.GetFixedTermDepositDetails(userRequestId, id);
-            var response = new BaseResponse<FixedTermDepositDetailDTO>(ReplyMessage.MESSAGE_QUERY, fixedTermDeposit, (int)HttpStatusCode.OK);
-            return Ok(response);
-
+                var userRequestId =  userContextService.GetCurrentUser();
+                var fixedTermDeposit = await _fixedTermDeposit.GetFixedTermDepositDetails(userRequestId, id);
+                var response = new BaseResponse<FixedTermDepositDetailDto>(ReplyMessage.MESSAGE_QUERY, fixedTermDeposit, (int)HttpStatusCode.OK);
+                return Ok(response);
         }
 
         [Authorize]
@@ -92,7 +91,8 @@ namespace PrimatesWallet.Api.Controllers
             var totalPages = await _fixedTermDeposit.TotalPageDeposits(pageSize); //obtenemos el total de paginas
             string url = CurrentURL.Get(HttpContext.Request); //Clase estatica en helpers para obtener la url como string
 
-            var response = new BasePaginateResponse<IEnumerable<FixedTermDepositDetailDTO>>()
+
+            var response = new BasePaginateResponse<IEnumerable<FixedTermDepositDetailDto>>()
             {
                 Message = ReplyMessage.MESSAGE_QUERY,
                 Result = allDeposits,

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PrimatesWallet.Application.DTOS
 {
-    public class UserResponseDTO
+    public class UserResponseDto
     {
         public int? UserId { get; set; }
         public string? First_Name { get; set; }

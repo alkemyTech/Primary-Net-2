@@ -11,52 +11,52 @@ namespace PrimatesWallet.Application.Mapping.User
     /// <summary>
     /// Builder class to construct instances of UserResponseDTO.
     /// </summary>
-    public class UserResponseDTOBuilder
+    public class UserResponseDtoBuilder
     {
-        private readonly UserResponseDTO _userDTO;
+        private readonly UserResponseDto _userDTO;
 
-        public UserResponseDTOBuilder()
+        public UserResponseDtoBuilder()
         {
-            _userDTO = new UserResponseDTO();
+            _userDTO = new UserResponseDto();
         }
 
-        public UserResponseDTOBuilder WithUserId(int userId)
+        public UserResponseDtoBuilder WithUserId(int userId)
         {
             this._userDTO.UserId = userId;
             return this;
         }
 
-        public UserResponseDTOBuilder WithFirstName(string firstName)
+        public UserResponseDtoBuilder WithFirstName(string firstName)
         {
             this._userDTO.First_Name = firstName;
             return this;
         }
 
-        public UserResponseDTOBuilder WithLastName(string lastName)
+        public UserResponseDtoBuilder WithLastName(string lastName)
         {
             this._userDTO.Last_Name = lastName;
             return this;
         }
 
-        public UserResponseDTOBuilder WithEmail(string email)
+        public UserResponseDtoBuilder WithEmail(string email)
         {
             this._userDTO.Email = email;
             return this;
         }
 
-        public UserResponseDTOBuilder WithPoints(int points)
+        public UserResponseDtoBuilder WithPoints(int points)
         {
             this._userDTO.Points = points;
             return this;
         }
 
-        public UserResponseDTOBuilder WithRolId(int rolId)
+        public UserResponseDtoBuilder WithRolId(int rolId)
         {
             this._userDTO.Rol_Id = rolId == 1 ? "Regular" : "Admin";
             return this;
         }
 
-        public UserResponseDTO Build()
+        public UserResponseDto Build()
         {
             return _userDTO;
         }
