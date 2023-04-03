@@ -31,6 +31,6 @@ namespace PrimatesWallet.Application.Interfaces
         Task<bool> DeleteUser(int userId);
         Task<UserResponseDto> GetUserById(int id);
 
-        Task<bool> UpdateUser(int UserId, UserUpdateDto userUpdateDTO);
+        Task<string> UpdateUser(int UserId, UserUpdateDto userUpdateDTO);
     }
 }

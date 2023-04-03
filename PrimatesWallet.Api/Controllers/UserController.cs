@@ -98,6 +98,7 @@ namespace PrimatesWallet.Api.Controllers
         public async Task<IActionResult> UpdateUser(int UserId, [FromBody] UserUpdateDto userUpdateDTO)
         {
             var updatedUser = await userService.UpdateUser(UserId, userUpdateDTO);
+            
 
             return Ok(updatedUser);
         }
