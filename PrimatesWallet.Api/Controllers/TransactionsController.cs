@@ -81,11 +81,11 @@ namespace PrimatesWallet.Api.Controllers
 
         [HttpDelete("{transactionId}")]
         [Authorize]
-        public async Task<IActionResult> DeleteTransaction (int transactionId)
+        public async Task<IActionResult> DeleteTransaction(int transactionId)
         {
             var requestedUser = UserContextService.GetCurrentUser();
             var response = await transactionService.DeleteTransaction(transactionId, requestedUser);
-            if( !response ) { return NotFound(); }
+            if (!response) { return NotFound(); }
             return Ok($"Transaction {transactionId} deleted.");
         }
 
@@ -97,7 +97,7 @@ namespace PrimatesWallet.Api.Controllers
         /// <returns>if all goes well, it returns a 200 status code; otherwise, the middleware detects the error and returns the same</returns>
         [Authorize(Roles = "Admin")]
         [HttpPut("{transactionId}")]
-        public async Task<IActionResult> UpdateTransaction(int transactionId, [FromBody]string concept = "repayment")
+        public async Task<IActionResult> UpdateTransaction(int transactionId, [FromBody] string concept = "repayment")
         {
             var repayment = await transactionService.UpdateTransaction(transactionId, concept);
 
@@ -106,6 +106,17 @@ namespace PrimatesWallet.Api.Controllers
             return Ok(response);
         }
 
-
+        /// <summary>
+        /// Creates a new transaction from the information provided in the <paramref name="transactionDTO"/> parameter.
+        /// </summary>
+        /// <param name="transactionDTO">The DTO object containing the transaction information.</param>
+        /// <returns>The result of the transaction creation.</returns
+        [HttpPost]
+        public async Task<IActionResult> CreateTransaction([FromBody] TransactionRequestDTO transactionDTO)
+        {
+            var transaction = await transactionService.Insert(transactionDTO);
+            var response = new BaseResponse<bool>(ReplyMessage.MESSAGE_CREATE_SUCCESS, transaction, (int)HttpStatusCode.Created);
+            return Ok(response);
+        }
     }
 }

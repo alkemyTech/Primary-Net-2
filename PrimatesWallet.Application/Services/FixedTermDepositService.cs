@@ -120,5 +120,9 @@ namespace PrimatesWallet.Application.Services
             else return false;
         }
 
+        public Task<IQueryable<FixedTermDeposit>> GetAllDepositsQueryable()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
