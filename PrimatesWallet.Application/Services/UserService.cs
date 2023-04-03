@@ -99,6 +99,32 @@ namespace PrimatesWallet.Application.Services
             return 0;
 
         }
+        public async Task<bool> UpdateUser(int UserId, UserUpdateDTO userUpdateDTO)
+        {
+            var user = await unitOfWork.UserRepository.GetById(UserId);
+            if (user == null) throw new AppException("User not found", HttpStatusCode.NotFound);
+
+            var isAdmin = await unitOfWork.UserRepository.IsAdmin(user);
+            if (!isAdmin)
+            {
+                throw new AppException("Invalid Credentials", HttpStatusCode.Forbidden);
+            }
+
+            user.First_Name = userUpdateDTO.First_Name;
+            user.Last_Name = userUpdateDTO.Last_Name;
+            user.Email = userUpdateDTO.Email;
+            user.Password = userUpdateDTO.Password;
+            user.Points = userUpdateDTO.Points;
+            user.Rol_Id = userUpdateDTO.Rol_Id;
+
+
+
+
+            unitOfWork.UserRepository.Update(user);
+            unitOfWork.Save();
+
+            return true;
+        }
 
     }
 }

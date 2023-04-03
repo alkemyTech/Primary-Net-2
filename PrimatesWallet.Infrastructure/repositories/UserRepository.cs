@@ -74,5 +74,9 @@ namespace PrimatesWallet.Infrastructure.repositories
             //la cuenta se hace en base de datos para eficiencia
             return await base._dbContext.Users.CountAsync();
         }
+        public void UpdateUser(User user)
+        {
+            _dbContext.Users.Update(user);
+        }
     }
 }
