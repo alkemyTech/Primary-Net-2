@@ -110,7 +110,7 @@ namespace PrimatesWallet.Api.Controllers
         /// Creates a new transaction from the information provided in the <paramref name="transactionDTO"/> parameter.
         /// </summary>
         /// <param name="transactionDTO">The DTO object containing the transaction information.</param>
-        /// <returns>The result of the transaction creation.</returns
+        /// <returns>The result of the transaction creation.</returns>
         [HttpPost]
         public async Task<IActionResult> CreateTransaction([FromBody] TransactionRequestDTO transactionDTO)
         {
