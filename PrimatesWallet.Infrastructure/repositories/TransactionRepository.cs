@@ -20,8 +20,11 @@ namespace PrimatesWallet.Infrastructure.Repositories
             return await base._dbContext.Transactions
                  .Where(t => (t.Type == TransactionType.topup && t.Account_Id == id) //depositos
                      || (t.Type == TransactionType.payment && t.Account_Id == id) //transferencia realizadas
-                     || (t.Type == TransactionType.payment && t.To_Account_Id == id)) //transferencias recibidas
-                     .ToListAsync();
+                     || (t.Type == TransactionType.payment && t.To_Account_Id == id)//transferencias recibidas
+                     || (t.Type == TransactionType.repayment && t.To_Account_Id == id) //reembolso recibido
+                     || (t.Type == TransactionType.repayment && t.Account_Id == id)) // reembolsos realizados (solo admins)
+                 .Where(x => x.IsDeleted == false)   
+                 .ToListAsync();
         }
 
         public async Task InsertWithStoredProcedure(Transaction transaction)

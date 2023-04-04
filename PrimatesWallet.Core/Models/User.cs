@@ -45,6 +45,8 @@ namespace PrimatesWallet.Core.Models
 
         public Account Account { get; set; }
 
+        [Column("idDeleted", TypeName = "BIT")]
+        public bool IsDeleted { get; set; }
     }
 
 }
