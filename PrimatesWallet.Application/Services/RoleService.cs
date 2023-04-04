@@ -1,4 +1,6 @@
 
+using PrimatesWallet.Application.Exceptions;
+using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
 using PrimatesWallet.Core.Interfaces;
 using PrimatesWallet.Core.Models;
@@ -35,6 +37,17 @@ namespace PrimatesWallet.Application.Services
         {
             var role =  await unitOfWork.Roles.GetById(id);
             return role;
+        }
+
+        public async Task<bool> DeleteRol(int id)
+        {
+            var role = await unitOfWork.Roles.GetById(id) 
+                ?? throw new AppException(ReplyMessage.MESSAGE_QUERY_EMPTY, HttpStatusCode.NotFound);
+
+            unitOfWork.Roles.Delete(role);
+            var response = unitOfWork.Save();
+
+            return response > 0;
         }
     }
 }

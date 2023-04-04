@@ -17,7 +17,6 @@ namespace PrimatesWallet.Application.DTOS
 
         [Required]
         [RegularExpression(@"^[a-zA-Z0-9]+$")]
-        [StringLength(255, MinimumLength = 10, ErrorMessage = "Concept length cannot exceed 255 characters.")]
         public string Concept { get; set; }
 
         [Required]
