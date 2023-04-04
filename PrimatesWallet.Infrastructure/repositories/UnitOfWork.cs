@@ -1,24 +1,34 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PrimatesWallet.Core.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using PrimatesWallet.Core.Interfaces;
+using PrimatesWallet.Infrastructure.repositories;
 
 namespace PrimatesWallet.Infrastructure.Repositories
 {
-    public class UnitOfWork : IUnitOfWotk
+    public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _dbContext;
+        public IFixedTermDepositRepository FixedTermDeposits { get; }
+        public ITransactionRepository Transactions { get; }
+        public IUserRepository Users { get; }
+        public IRoleRepository Roles { get; }
+        public IAccountRepository Accounts { get; }
+        public ICatalogueRepository Catalogues { get; }
 
-        //EJ: public IUserRepository Users { get; }
-
-        public UnitOfWork(ApplicationDbContext dbContext/* EJ: IUserRepository userRepository*/ )
+        public UnitOfWork(ApplicationDbContext dbContext,
+            ITransactionRepository transactionRepository,
+            IFixedTermDepositRepository fixedTermDepositRepository,
+            IUserRepository userRepository,
+            IRoleRepository roleRepository,
+            ICatalogueRepository catalogueRepository,
+            IAccountRepository accountRepository
+            )
         {
             _dbContext = dbContext;
-            //EJ: Users = userRepository; 
-
+            Transactions = transactionRepository;
+            Users = userRepository;
+            FixedTermDeposits = fixedTermDepositRepository;
+            Roles = roleRepository;
+            Accounts = accountRepository;
+            Catalogues = catalogueRepository;
         }
 
         public int Save()
@@ -38,6 +48,6 @@ namespace PrimatesWallet.Infrastructure.Repositories
             {
                 _dbContext.Dispose();
             }
-        }         
+        }
     }
 }
