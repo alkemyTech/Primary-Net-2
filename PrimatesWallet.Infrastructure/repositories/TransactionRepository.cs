@@ -14,16 +14,16 @@ namespace PrimatesWallet.Infrastructure.Repositories
         {
 
         }
-        //public override async Task<IEnumerable<Transaction>> GetAll()
-        //{
-        //    return await _dbContext.Transactions.Where(x => !x.IsDeleted).ToListAsync();
-        //}
+        
+        public override async Task<IEnumerable<Transaction>> GetAll()
+        {
+            return await _dbContext.Transactions.Where(x => !x.IsDeleted).ToListAsync();
+        }
 
-        //public override async Task<Transaction> GetById(int id)
-        //{
-        //    //return await _dbContext.Transactions.Where(x => x.Id == id && !x.IsDeleted).FirstOrDefaultAsync();
-
-        //}
+        public override async Task<Transaction> GetById(int id)
+        {
+            return await _dbContext.Transactions.Where(x => x.Id == id && !x.IsDeleted).FirstOrDefaultAsync();
+        }
 
         public async Task<IEnumerable<Transaction>> GetAllByAccount(int id)
         {
