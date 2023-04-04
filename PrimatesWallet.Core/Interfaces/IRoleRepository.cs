@@ -9,5 +9,6 @@ namespace PrimatesWallet.Core.Interfaces
 {
     public interface IRoleRepository : IGenericRepository<Role>
     {
+        Task<bool> AlreadyExistsName(string roleName);
     }
 }

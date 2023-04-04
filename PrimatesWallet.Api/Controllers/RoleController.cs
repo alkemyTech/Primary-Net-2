@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Interfaces;
 using PrimatesWallet.Core.Models;
@@ -71,6 +72,16 @@ namespace PrimatesWallet.Api.Controllers
             var roles = await _roleService.GetRoles();
             if (roles == null) { return NotFound(); }
             return Ok(roles);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+
+        public async Task<IActionResult> CreateRole(RoleCreationDto roleCreationDto)
+        {
+            if(roleCreationDto.Name == null || roleCreationDto.Description == null) throw new AppException("Missing required parameters", HttpStatusCode.BadRequest);
+            var response = await _roleService.CreateRole(roleCreationDto);
+            return Ok(response);
         }
     }
 }
