@@ -120,7 +120,7 @@ namespace PrimatesWallet.Api.Controllers
         }
 
 
-        [HttpPut("{transactionId}")]
+        [HttpPut("activate/{transactionId}")]
         public async Task <IActionResult> ActivateTransaction(int transactionId)
         {
             var transaction = await transactionService.ActivateTransaction(transactionId);

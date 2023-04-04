@@ -143,7 +143,7 @@ namespace PrimatesWallet.Api.Controllers
         }
 
 
-        [HttpPut("{depositId}")]
+        [HttpPut("activate/{depositId}")]
         public async Task<IActionResult> ActivateFixedDeposit( int depositId)
         {
             var deposit = await _fixedTermDeposit.ActivateFixedTermDeposit(depositId);

@@ -113,7 +113,7 @@ namespace PrimatesWallet.Api.Controllers
         }
 
 
-        [HttpPut("{roleId}")]
+        [HttpPut("activate/{roleId}")]
         public async Task<IActionResult> ActivateFixedDeposit(int roleId)
         {
             var role = await _roleService.ActivateRole(roleId);
