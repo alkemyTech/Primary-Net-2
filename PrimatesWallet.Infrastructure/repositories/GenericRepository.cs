@@ -32,6 +32,11 @@ namespace PrimatesWallet.Infrastructure.repositories
             _dbContext.Set<T>().Update(entity).Property("IsDeleted").CurrentValue = true;    
         }
 
+        public void RealDelete(T entity)
+        {
+            _dbContext.Set<T>().Remove(entity);
+        }
+
         public void Update(T entity)
         {
             _dbContext.Set<T>().Update(entity);
