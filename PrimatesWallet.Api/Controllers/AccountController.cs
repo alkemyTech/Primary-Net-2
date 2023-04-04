@@ -121,7 +121,17 @@ namespace PrimatesWallet.Api.Controllers
             return Ok(updatedAccount);
 
         }
-        
+
+
+
+        [HttpPut("{accountId}")]
+        public async Task<IActionResult> ActivateAccount(int accountId)
+        {
+            var account = await _account.ActivateAccount(accountId);
+            return Ok(account);
+
+        }
+
     }
 
 }

@@ -68,5 +68,13 @@ namespace PrimatesWallet.Application.Services
 
             return response > 0;
         }
+
+        public async Task<string> ActivateRole(int roleId)
+        {
+            var role = await unitOfWork.Roles.GetByIdDeleted(roleId);
+            unitOfWork.Roles.Activate(role);
+            unitOfWork.Save();
+            return $"Role {roleId} activated";
+        }
     }
 }

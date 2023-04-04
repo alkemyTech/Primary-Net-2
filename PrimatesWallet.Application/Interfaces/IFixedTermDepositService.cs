@@ -30,6 +30,6 @@ namespace PrimatesWallet.Application.Interfaces
         /// <returns>True if the deposit was successfully inserted, false otherwise.</returns>
         /// <exception cref="AppException">Thrown when there are insufficient funds or the deposit dates are invalid.</exception>
         Task<bool> Insert(int id, FixedTermDepositRequestDTO fixedTermDTO);
-
+        Task<string> ActivateFixedTermDeposit(int depositId);
     }
 }

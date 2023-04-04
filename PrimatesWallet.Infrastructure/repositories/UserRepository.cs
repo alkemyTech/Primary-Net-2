@@ -23,6 +23,11 @@ namespace PrimatesWallet.Infrastructure.repositories
 
         }
 
+        public override async Task<User> GetByIdDeleted(int id)
+        {
+            return await _dbContext.Users.Where(x => x.UserId == id && x.IsDeleted).FirstOrDefaultAsync();
+        }
+
 
 
         //Metodo para obtener un usuario vía email y hacer un inner join con la tabla Role.

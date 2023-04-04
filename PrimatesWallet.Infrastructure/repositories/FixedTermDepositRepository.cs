@@ -23,6 +23,11 @@ namespace PrimatesWallet.Infrastructure.repositories
             return await _dbContext.FixedTermDeposits.Where(x => x.Id == id && !x.IsDeleted).FirstOrDefaultAsync();
         }
 
+        public override async Task<FixedTermDeposit> GetByIdDeleted(int id)
+        {
+            return await _dbContext.FixedTermDeposits.Where(x => x.Id == id && x.IsDeleted).FirstOrDefaultAsync();
+        }
+
 
         public async Task<FixedTermDeposit> GetFixedTermDepositById(int userId, int fixedId)
         {

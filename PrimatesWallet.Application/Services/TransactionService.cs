@@ -7,7 +7,7 @@ using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Mapping.Transaction;
 using System.Net;
-
+using Microsoft.AspNetCore.Mvc;
 
 namespace PrimatesWallet.Application.Services
 {
@@ -182,6 +182,15 @@ namespace PrimatesWallet.Application.Services
             await _unitOfWork.Transactions.InsertWithStoredProcedure(transaction);
             _unitOfWork.Save();
             return true; //el stored tiene validaciones si falla y las excepciones son atrapadas por el middleware
+        }
+
+
+        public async Task<string> ActivateTransaction(int transactionId)
+        {
+            var transaction = await _unitOfWork.Transactions.GetByIdDeleted(transactionId);
+            _unitOfWork.Transactions.Activate(transaction);
+            _unitOfWork.Save();
+            return $"Transaction {transactionId} activated";
         }
 
     }

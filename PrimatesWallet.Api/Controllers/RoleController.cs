@@ -111,5 +111,14 @@ namespace PrimatesWallet.Api.Controllers
             return StatusCode((int)statusCode, result);
 
         }
+
+
+        [HttpPut("{roleId}")]
+        public async Task<IActionResult> ActivateFixedDeposit(int roleId)
+        {
+            var role = await _roleService.ActivateRole(roleId);
+            return Ok(role);
+
+        }
     }
 }

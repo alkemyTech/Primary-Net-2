@@ -122,5 +122,14 @@ namespace PrimatesWallet.Application.Services
             return $"User {UserId} updated.";
         }
 
+
+        public async Task<string> ActivateUser(int userId)
+        {
+            var user = await unitOfWork.Users.GetByIdDeleted(userId);
+            unitOfWork.Users.Activate(user);
+            unitOfWork.Save();
+            return $"User {userId} activated";
+        }
+
     }
 }

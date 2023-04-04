@@ -10,6 +10,7 @@ using PrimatesWallet.Application.Services.Auth;
 using PrimatesWallet.Core.Models;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
+using System.Security.Principal;
 
 namespace PrimatesWallet.Api.Controllers
 {
@@ -38,10 +39,10 @@ namespace PrimatesWallet.Api.Controllers
         public async Task<IActionResult> GetFixedTermDepositById(int id)
         {
             // Obtener un plazo fijo espescifico por id
-                var userRequestId =  userContextService.GetCurrentUser();
-                var fixedTermDeposit = await _fixedTermDeposit.GetFixedTermDepositDetails(userRequestId, id);
-                var response = new BaseResponse<FixedTermDepositDetailDto>(ReplyMessage.MESSAGE_QUERY, fixedTermDeposit, (int)HttpStatusCode.OK);
-                return Ok(response);
+            var userRequestId = userContextService.GetCurrentUser();
+            var fixedTermDeposit = await _fixedTermDeposit.GetFixedTermDepositDetails(userRequestId, id);
+            var response = new BaseResponse<FixedTermDepositDetailDto>(ReplyMessage.MESSAGE_QUERY, fixedTermDeposit, (int)HttpStatusCode.OK);
+            return Ok(response);
         }
         /// <summary>
         /// This endpoint is to get all fixed-term deposits from one user, using own user token to validate it.
@@ -139,6 +140,15 @@ namespace PrimatesWallet.Api.Controllers
             var fixedTerm = await _fixedTermDeposit.Insert(idUser, fixedTermDTO);
             var response = new BaseResponse<bool>(ReplyMessage.MESSAGE_CREATE_SUCCESS, fixedTerm, (int)HttpStatusCode.OK);
             return Ok(response);
+        }
+
+
+        [HttpPut("{depositId}")]
+        public async Task<IActionResult> ActivateFixedDeposit( int depositId)
+        {
+            var deposit = await _fixedTermDeposit.ActivateFixedTermDeposit(depositId);
+            return Ok(deposit);
+
         }
     }
 }

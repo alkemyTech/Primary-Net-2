@@ -171,5 +171,14 @@ namespace PrimatesWallet.Application.Services
             var totalAccounts = await unitOfWork.Accounts.GetCount();
             return (int)Math.Ceiling((double)totalAccounts / PageSize);
         }
+
+
+        public async Task<string> ActivateAccount(int accountId)
+        {
+            var account  = await unitOfWork.Accounts.GetByIdDeleted(accountId);
+            unitOfWork.Accounts.Activate(account);
+            unitOfWork.Save();
+            return $"{accountId} activated";
+        }
     }
 }

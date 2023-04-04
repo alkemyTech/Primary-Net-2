@@ -21,6 +21,11 @@ namespace PrimatesWallet.Infrastructure.repositories
             return await _dbContext.Accounts.Where(x => x.Id == id && !x.IsDeleted).FirstOrDefaultAsync();
         }
 
+        public override async Task<Account> GetByIdDeleted(int id)
+        {
+            return await _dbContext.Accounts.Where(x => x.Id == id && x.IsDeleted).FirstOrDefaultAsync();
+        }
+
         public async Task<Account> GetByUserId_FixedTerm(int userId)
         {
             var account = await base._dbContext.Accounts

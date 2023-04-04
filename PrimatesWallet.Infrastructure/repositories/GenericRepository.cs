@@ -41,5 +41,15 @@ namespace PrimatesWallet.Infrastructure.repositories
         {
             _dbContext.Set<T>().Update(entity);
         }
+
+        public void Activate(T entity)
+        {
+            _dbContext.Set<T>().Update(entity).Property("IsDeleted").CurrentValue = false;
+        }
+
+        public virtual async Task<T> GetByIdDeleted(int id)
+        {
+            return await _dbContext.Set<T>().FindAsync(id);
+        }
     }
 }
