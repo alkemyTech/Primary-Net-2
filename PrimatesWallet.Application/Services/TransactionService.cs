@@ -144,6 +144,12 @@ namespace PrimatesWallet.Application.Services
             return false;
         }
 
+        /// <summary>
+        /// Deletes a transaction by its ID
+        /// </summary>
+        /// <param name="transactionId">The ID of the transaction to be deleted</param>
+        /// <returns>A boolean indicating if the deletion was successful or not</returns>
+        /// <exception cref="AppException">Thrown when the transaction with the given ID is not found</exception>
         public async Task<bool> DeleteTransaction(int transactionId)
         {                        
             var transaction = await _unitOfWork.Transactions.GetById(transactionId);
@@ -158,12 +164,20 @@ namespace PrimatesWallet.Application.Services
             return false;
         }
 
-
+        /// <summary>
+        /// Inserts a new transaction into the database and updates the corresponding accounts' balances.
+        /// </summary>
+        /// <param name="transactionDTO">The transaction data transfer object.</param>
+        /// <returns>Returns a boolean indicating whether the operation was successful.</returns>
+        /// <exception cref="AppException">Throws an exception when trying to perform invalid transactions (e.g. payments between the same account, deposits to other accounts, insufficient balance, etc).</exception>
         public async Task<bool> Insert(TransactionRequestDto transactionDTO)
         {
             /*
-             Verificamos si la logica de emisor receptor de una transaccion es correcta
-             */
+                public async Task<bool> Insert(TransactionRequestDto transactionDTO)
+                {
+                    /*
+                     Verificamos si la logica de emisor receptor de una transaccion es correcta
+                     */
             bool isTopup = transactionDTO.Type == TransactionType.topup.ToString();
             bool isPaymentOrRepayment = transactionDTO.Type == TransactionType.payment.ToString() || transactionDTO.Type == TransactionType.repayment.ToString();
             bool isSameAccount = transactionDTO.Account_Id == transactionDTO.To_Account_Id;
@@ -171,18 +185,47 @@ namespace PrimatesWallet.Application.Services
             if (!isSameAccount && isTopup) throw new AppException("Deposits to other accounts are not allowed", HttpStatusCode.BadRequest);
 
             if (isSameAccount && isPaymentOrRepayment) throw new AppException("Payments between the same accounts are not allowed", HttpStatusCode.BadRequest);
+            
 
-            var transactionType = transactionDTO.Type == ;
+            if (isPaymentOrRepayment)
+            {
+                var senderAccount = await _unitOfWork.Accounts.GetById(transactionDTO.Account_Id);
+                if( senderAccount == null ) throw new AppException("Sender account not fount", HttpStatusCode.NotFound);
+
+                var receivertAccount = await _unitOfWork.Accounts.GetById(transactionDTO.To_Account_Id);
+                if ( receivertAccount == null ) throw new AppException("Receiver account not fount", HttpStatusCode.NotFound);
+
+                if ( senderAccount.Money < transactionDTO.Amount) throw new AppException("The sending account does not have enough balance", HttpStatusCode.BadRequest);
+
+                senderAccount.Money -= transactionDTO.Amount;
+                receivertAccount.Money += transactionDTO.Amount;
+
+                _unitOfWork.Accounts.Update(senderAccount);
+                _unitOfWork.Accounts.Update(receivertAccount);
+            }
+
+            if (isTopup)
+            {
+                var account = await _unitOfWork.Accounts.GetById(transactionDTO.Account_Id);
+
+                account.Money += transactionDTO.Amount;
+
+                _unitOfWork.Accounts.Update(account);
+            }
+
+            var transactionType = (TransactionType)Enum.Parse(typeof(TransactionType), transactionDTO.Type);
 
             var transaction = new Core.Models.Transaction()
             {
                 Amount = transactionDTO.Amount,
-                Type = (TransactionType)Enum.Parse(typeof()),
+                Type = transactionType,
                 Concept = transactionDTO.Concept,
                 Date = DateTime.Now,
                 Account_Id = transactionDTO.Account_Id,
                 To_Account_Id = transactionDTO.To_Account_Id
             };
+
+
 
             /*
                 Aca se me ocurrio 2 formas de poder validar si las cuentas existen,

@@ -79,7 +79,7 @@ namespace PrimatesWallet.Api.Controllers
         }
 
         /// <summary>
-        /// Gets a transaction by its ID.
+        /// Gets a transaction by its ID for the currently logged-in user.
         /// </summary>
         /// <param name="id">The ID of the transaction.</param>
         /// <returns>An IActionResult containing a BaseResponse object with a TransactionDto and metadata about the response.</returns>
@@ -135,7 +135,7 @@ namespace PrimatesWallet.Api.Controllers
         /// </summary>
         /// <param name="transactionId">id of the transaction</param>
         /// <param name="concept">concept of the transaction (by default is repayment), extrated from the body</param>
-        /// <returns>if all goes well, it returns a 200 status code; otherwise, the middleware detects the error and returns the same</returns>
+        /// <returns>if all goes well, it returns a 200 status code with a BaseResponse object; otherwise, the middleware detects the error and returns the same</returns>
         /// <response code="200">Returns the requested transaction.</response>
         /// <response code="401">Returns if the user is unauthorized for this operation.</response>
         /// <response code="404">Returns if the requested transaction was not found.</response>
