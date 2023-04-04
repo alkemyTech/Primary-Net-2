@@ -106,6 +106,10 @@ namespace PrimatesWallet.Infrastructure.Migrations
                     b.Property<DateTime>("Creation_Date")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("BIT")
+                        .HasColumnName("isDeleted");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
@@ -127,6 +131,10 @@ namespace PrimatesWallet.Infrastructure.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("VARCHAR(255)")
                         .HasColumnName("description");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("BIT")
+                        .HasColumnName("isDeleted");
 
                     b.Property<string>("Name")
                         .IsRequired()

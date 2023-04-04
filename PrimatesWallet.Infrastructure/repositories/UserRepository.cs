@@ -11,6 +11,7 @@ namespace PrimatesWallet.Infrastructure.repositories
         public UserRepository(ApplicationDbContext context) : base(context) 
         {
         }
+        
 
         //Metodo para obtener un usuario vía email y hacer un inner join con la tabla Role.
         public async Task<User> GetByEmail(string email)

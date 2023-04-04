@@ -48,5 +48,8 @@ namespace PrimatesWallet.Core.Models
         [Required]
         public DateTime Closing_Date { get; set; }
 
+        [Column("isDeleted", TypeName = "BIT")]
+        public bool IsDeleted { get; set; } = false;
+
     }
 }

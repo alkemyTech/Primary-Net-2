@@ -120,7 +120,6 @@ namespace PrimatesWallet.Api.Controllers
             var updatedAccount = await _account.UpdateAccountAdmin(accountId, accountUpdateDTO);
             return Ok(updatedAccount);
 
-
         }
         
     }

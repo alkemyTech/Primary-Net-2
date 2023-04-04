@@ -17,7 +17,7 @@ namespace PrimatesWallet.Infrastructure.repositories
             return await _dbContext.Set<T>().FindAsync(id);
         }
 
-        public async Task<IEnumerable<T>> GetAll()
+        public virtual async Task<IEnumerable<T>> GetAll()
         {
             return await _dbContext.Set<T>().ToListAsync();
         }
@@ -29,7 +29,7 @@ namespace PrimatesWallet.Infrastructure.repositories
 
         public void Delete(T entity)
         {
-            _dbContext.Set<T>().Remove(entity);
+            _dbContext.Set<T>().Update(entity).Property("IsDeleted").CurrentValue = true;    
         }
 
         public void Update(T entity)
