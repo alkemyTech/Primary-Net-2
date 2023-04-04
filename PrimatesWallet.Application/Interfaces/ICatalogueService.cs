@@ -18,5 +18,6 @@ namespace PrimatesWallet.Application.Interfaces
         Task<List<Catalogue>> GetAllProducts();
         Task<Catalogue> GetProductById(int id);
         Task<bool> UpdateProduct(int id, CatalogueDTO productDTO);
+        Task<string> DeleteCatalogue(int catalogueId, int currentUser);
     }
 }

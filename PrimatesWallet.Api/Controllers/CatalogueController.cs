@@ -95,5 +95,13 @@ namespace PrimatesWallet.Api.Controllers
 
             return Ok(response);
         }
+
+        [HttpDelete("{catalogueId}")]
+        public async Task<IActionResult> DeleteCatalogue(int catalogueId)
+        {
+            var currentUser = _userContextService.GetCurrentUser();
+            var deleteCatalogue = await _catalogueService.DeleteCatalogue(catalogueId, currentUser);
+            return Ok(deleteCatalogue);
+        }
     }
 }

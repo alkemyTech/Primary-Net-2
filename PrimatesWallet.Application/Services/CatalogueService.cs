@@ -120,5 +120,20 @@ namespace PrimatesWallet.Application.Services
 
             return false;
         }
+        public async Task<string> DeleteCatalogue(int catalogueId, int currentUser)
+        {
+            var user = await _unitOfWork.Users.GetById(currentUser);
+            var isAdmin = _unitOfWork.Users.IsAdmin(user);
+            if (!isAdmin) throw new AppException("Invalid Credentials", HttpStatusCode.Forbidden);
+
+            var catalogue = await _unitOfWork.Catalogues.GetById(catalogueId);
+            if (catalogue == null) throw new AppException($"Catalogue {catalogueId} not found", HttpStatusCode.NotFound);
+
+            _unitOfWork.Catalogues.Delete(catalogue);
+            _unitOfWork.Save();
+
+            return $"Catalogue {catalogueId} deleted.";
+
+        }
     }
 }
