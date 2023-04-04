@@ -68,5 +68,9 @@ namespace PrimatesWallet.Infrastructure.repositories
         {
             return await base._dbContext.Accounts.CountAsync();
         }
+        public void DeleteAccount(Account account)
+        {
+            _dbContext.Accounts.Remove(account);
+        }
     }
 }
