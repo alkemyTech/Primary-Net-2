@@ -13,7 +13,13 @@ namespace PrimatesWallet.Infrastructure.repositories
 
         public override async Task<IEnumerable<Role>> GetAll()
         {
-            return await _dbContext.Roles.Where(x => !x.IsDeleted).ToListAsync();
+            return  await _dbContext.Roles.Where(x => !x.IsDeleted).ToListAsync();
+        }
+
+        public override async Task<Role> GetById(int id)
+        {
+            return await _dbContext.Roles.Where(x => x.Id == id && !x.IsDeleted).FirstOrDefaultAsync();
+
         }
 
         public async Task<bool> AlreadyExistsName(string roleName)

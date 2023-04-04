@@ -12,7 +12,7 @@ namespace PrimatesWallet.Infrastructure.repositories
             _dbContext = context;
         }
 
-        public async Task<T> GetById(int id)
+        public virtual async Task<T> GetById(int id)
         {
             return await _dbContext.Set<T>().FindAsync(id);
         }

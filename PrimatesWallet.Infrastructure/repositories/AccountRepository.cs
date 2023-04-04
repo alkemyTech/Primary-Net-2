@@ -11,6 +11,16 @@ namespace PrimatesWallet.Infrastructure.repositories
 
         }
 
+        //public override async Task<IEnumerable<Account>> GetAll()
+        //{
+        //    return await _dbContext.Accounts.Where(x => !x.IsDeleted).ToListAsync();
+        //}
+
+        //public override async Task<Account> GetById(int id)
+        //{
+        //    //return await _dbContext.Accounts.Where(x => x.Id == id && !x.IsDeleted).FirstOrDefaultAsync();
+        //}
+
         public async Task<Account> GetByUserId_FixedTerm(int userId)
         {
             var account = await base._dbContext.Accounts

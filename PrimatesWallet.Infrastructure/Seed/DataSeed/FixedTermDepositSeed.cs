@@ -42,7 +42,21 @@ namespace PrimatesWallet.Infrastructure.Seed.DataSeed
                    AccountId=5,
                    Amount=200000,
                    Creation_Date=new DateTime(2023,2, 25),
-                   Closing_Date=new DateTime(2023,3, 24),
+                   Closing_Date=new DateTime(2028,3, 24),
+                },
+                    new FixedTermDeposit()
+                {
+                   AccountId=5,
+                   Amount=200000,
+                   Creation_Date=new DateTime(2023,2, 25),
+                   Closing_Date=new DateTime(2024,3, 24),
+                },
+                      new FixedTermDeposit()
+                {
+                   AccountId=5,
+                   Amount=200000,
+                   Creation_Date=new DateTime(2023,2, 25),
+                   Closing_Date=new DateTime(2023,5, 24),
                 }
             };
         }

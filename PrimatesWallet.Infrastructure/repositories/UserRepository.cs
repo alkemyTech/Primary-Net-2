@@ -11,7 +11,19 @@ namespace PrimatesWallet.Infrastructure.repositories
         public UserRepository(ApplicationDbContext context) : base(context) 
         {
         }
-        
+
+        //public override async Task<IEnumerable<User>> GetAll()
+        //{
+        //    return await _dbContext.Users.Where(x => !x.IsDeleted).ToListAsync();
+        //}
+
+        //public override async Task<User> GetById(int id)
+        //{
+        //    //return await _dbContext.Users.Where(x => x.Id == id && !x.IsDeleted).FirstOrDefaultAsync();
+
+        //}
+
+
 
         //Metodo para obtener un usuario vía email y hacer un inner join con la tabla Role.
         public async Task<User> GetByEmail(string email)
