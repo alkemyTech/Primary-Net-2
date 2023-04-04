@@ -6,6 +6,7 @@ using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
 using PrimatesWallet.Core.Models;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 
@@ -16,8 +17,6 @@ namespace PrimatesWallet.Api.Controllers
 
     public class TransactionsController : ControllerBase
     {
-        //Se deja preparado el controlador de Transacciones con la DI de servicios
-        //Se deja pendiente el desarrollo de los endpoints asignados.
         private readonly ITransactionService transactionService;
         private readonly IUserContextService UserContextService;
 
@@ -29,74 +28,124 @@ namespace PrimatesWallet.Api.Controllers
             UserContextService = userContextService;
         }
 
+        /// <summary>
+        /// Retrieves all transactions for the currently logged-in user.
+        /// </summary>
+        /// <returns>An IActionResult representing the response containing the user's transactions.</returns>
+        /// <response code="200">Returns the requested transaction.</response>
+        /// <response code="401">Returns if the user is unauthorized for this operation.</response>
+        /// <response code="404">Returns if the requested transaction was not found.</response>
+        /// <response code="500">Returns if there was an internal server error.</response>
         [HttpGet]
         [Authorize]
+        [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "NotFound. The requested operation was not found.")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
         public async Task<IActionResult> GetTransactionsByUserId()
         {
-            try
-            {
-                var userId = UserContextService.GetCurrentUser(); //buscamos el id del usuario que se logeo
-                var transactions = await transactionService.GetAllByUser(userId); //buscamos las transacciones solo de ese user
+            var userId = UserContextService.GetCurrentUser(); // Gets the ID of the currently logged-in user.
+            var transactions = await transactionService.GetAllByUser(userId); // Retrieves all transactions for the user.
 
-                var response = new BaseResponse<IEnumerable<TransactionDto>>(ReplyMessage.MESSAGE_QUERY, transactions, (int)HttpStatusCode.OK);
-                return Ok(response);
-            }
-            catch (AppException ex)
-            {
-                var response = new BaseResponse<object>(ex.Message, null, (int)ex.StatusCode);
-                return StatusCode(response.StatusCode, response);
-            }
-            catch (Exception ex)
-            {
-                var response = new BaseResponse<object>(ex.Message, null, (int)HttpStatusCode.InternalServerError);
-                return StatusCode(response.StatusCode, response);
-            }
+            // Builds a BaseResponse object containing the user's transactions and returns an Ok response.
+            var response = new BaseResponse<IEnumerable<TransactionDto>>(ReplyMessage.MESSAGE_QUERY, transactions, (int)HttpStatusCode.OK);
+            return Ok(response);
         }
 
         /// <summary>
-        /// this endpoint returns all transactions in the database, it can only be accessed by the administrator
+        /// Get all transactions in the database. This operation can only be accessed by an administrator.
         /// </summary>
+        /// <returns>A list of all transactions in the database.</returns>
+        /// <response code="200">Returns the requested transaction.</response>
+        /// <response code="401">Returns if the user is unauthorized for this operation.</response>
+        /// <response code="404">Returns if the requested transaction was not found.</response>
+        /// <response code="500">Returns if there was an internal server error.</response>
+        [HttpGet("All")]
         [Authorize(Roles = "Admin")]
-        [HttpGet("all")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "NotFound. The requested operation was not found.")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
         public async Task<IActionResult> GetAll()
         {
+            // Retrieve all transactions from the database
             var transactions = await transactionService.GetAllTransactions();
 
-            var response = new BaseResponse<IEnumerable<TransactionDto>>("Ok", transactions, (int)HttpStatusCode.OK);
+            // Build a new BaseResponse object with a success message, the retrieved transactions, and a success status code
+            var response = new BaseResponse<IEnumerable<TransactionDto>>(ReplyMessage.MESSAGE_QUERY, transactions, (int)HttpStatusCode.OK);
+
+            // Return a success response with the BaseResponse object as the response body
+            return Ok(response);
+        }
+
+        /// <summary>
+        /// Gets a transaction by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the transaction.</param>
+        /// <returns>An IActionResult containing a BaseResponse object with a TransactionDto and metadata about the response.</returns>
+        /// <response code="200">Returns the requested transaction.</response>
+        /// <response code="401">Returns if the user is unauthorized for this operation.</response>
+        /// <response code="404">Returns if the requested transaction was not found.</response>
+        /// <response code="500">Returns if there was an internal server error.</response>
+        [HttpGet("{id}")]
+        [Authorize]
+        [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "NotFound. The requested operation was not found.")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
+        public async Task<IActionResult> GetTransactionById(int id)
+        {
+            // Get the transaction with the given ID.
+            var transaction = await transactionService.GetTransactionById(id);
+
+            // Create a BaseResponse object with the transaction and metadata about the response.
+            var response = new BaseResponse<TransactionDto>(ReplyMessage.MESSAGE_QUERY, transaction, (int)HttpStatusCode.OK);
+
+            // Return the response as an IActionResult.
+            return Ok(response);
+        }
+
+        /// <summary>
+        /// Deletes a transaction by its Id. This operation can only be accessed by an administrator.
+        /// </summary>
+        /// <param name="transactionId">The Id of the transaction to delete.</param>
+        /// <returns>An IActionResult containing a BaseResponse object indicating if the transaction was deleted or not; otherwise, the middleware detects the error and returns the same
+        /// </returns>
+        /// <response code="200">Returns the requested transaction.</response>
+        /// <response code="401">Returns if the user is unauthorized for this operation.</response>
+        /// <response code="404">Returns if the requested transaction was not found.</response>
+        /// <response code="500">Returns if there was an internal server error.</response>
+        [HttpDelete("{transactionId}")]
+        [Authorize(Roles = "Admin")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "NotFound. The requested operation was not found.")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
+        public async Task<IActionResult> DeleteTransaction(int transactionId)
+        {
+            var result = await transactionService.DeleteTransaction(transactionId);
+
+            var response = new BaseResponse<bool>($"Transaction deleted.", result, (int)HttpStatusCode.OK);
 
             return Ok(response);
         }
 
-        [HttpGet("{id}")]
-        [Authorize]
-        public async Task<IActionResult> GetTransactionById(int id)
-        {
-            TransactionDto transaction = await transactionService.GetTransactionById(id);
-            if (transaction == null)
-            {
-                return StatusCode(StatusCodes.Status204NoContent, $"No transaction found by id{id}");
-            }
-            return StatusCode(StatusCodes.Status200OK, transaction);
-        }
-
-        [HttpDelete("{transactionId}")]
-        [Authorize]
-        public async Task<IActionResult> DeleteTransaction(int transactionId)
-        {
-            var requestedUser = UserContextService.GetCurrentUser();
-            var response = await transactionService.DeleteTransaction(transactionId, requestedUser);
-            if (!response) { return NotFound(); }
-            return Ok($"Transaction {transactionId} deleted.");
-        }
-
         /// <summary>
-        /// this endpoint is to reverse a payment, it is only accessible by the administrator
+        /// Endpoint to reverse a payment. This operation can only be accessed by an administrator.
         /// </summary>
         /// <param name="transactionId">id of the transaction</param>
-        /// <param name="concept">concept of the transaction, extrated from the body</param>
+        /// <param name="concept">concept of the transaction (by default is repayment), extrated from the body</param>
         /// <returns>if all goes well, it returns a 200 status code; otherwise, the middleware detects the error and returns the same</returns>
-        [Authorize(Roles = "Admin")]
+        /// <response code="200">Returns the requested transaction.</response>
+        /// <response code="401">Returns if the user is unauthorized for this operation.</response>
+        /// <response code="404">Returns if the requested transaction was not found.</response>
+        /// <response code="500">Returns if there was an internal server error.</response>
         [HttpPut("{transactionId}")]
+        [Authorize(Roles = "Admin")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "NotFound. The requested operation was not found.")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
         public async Task<IActionResult> UpdateTransaction(int transactionId, [FromBody] RepaymentResponseDto repaymentResponse)
 
         {
@@ -107,14 +156,26 @@ namespace PrimatesWallet.Api.Controllers
         }
 
         /// <summary>
-        /// Creates a new transaction from the information provided in the <paramref name="transactionDTO"/> parameter.
+        /// Creates a new transaction in the database. This operation can only be accessed by an administrator.
         /// </summary>
-        /// <param name="transactionDTO">The DTO object containing the transaction information.</param>
-        /// <returns>The result of the transaction creation.</returns
+        /// <param name="transactionDTO">The TransactionRequestDto object containing the transaction data to be created.</param>
+        /// <returns>Returns a BaseResponse object with a boolean value indicating if the transaction was created successfully or not.</returns>
+        /// <response code="200">Returns the requested transaction.</response>
+        /// <response code="401">Returns if the user is unauthorized for this operation.</response>
+        /// <response code="404">Returns if the requested transaction was not found.</response>
+        /// <response code="500">Returns if there was an internal server error.</response>
+
         [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "NotFound. The requested operation was not found.")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
         public async Task<IActionResult> CreateTransaction([FromBody] TransactionRequestDto transactionDTO)
         {
             var transaction = await transactionService.Insert(transactionDTO);
+
+            // Builds a new BaseResponse object using a boolean value indicating if the transaction was created successfully or not, and the corresponding HTTP status code.
             var response = new BaseResponse<bool>(ReplyMessage.MESSAGE_CREATE_SUCCESS, transaction, (int)HttpStatusCode.Created);
             return Ok(response);
         }
