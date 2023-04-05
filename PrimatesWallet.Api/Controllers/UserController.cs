@@ -99,9 +99,14 @@ namespace PrimatesWallet.Api.Controllers
         {
             var updatedUser = await userService.UpdateUser(UserId, userUpdateDTO);
             
-
             return Ok(updatedUser);
         }
 
+        [HttpPut("activate/{userId}")]
+        public async Task<IActionResult>ActivateUser(int userId)
+        {
+            var user = await userService.ActivateUser(userId);
+            return Ok(user);
+        }
     }
 }

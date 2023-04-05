@@ -17,12 +17,11 @@ namespace PrimatesWallet.Application.DTOS
 
         [Required]
         [RegularExpression(@"^[a-zA-Z0-9]+$")]
-        [StringLength(255, MinimumLength = 10, ErrorMessage = "Concept length cannot exceed 255 characters.")]
         public string Concept { get; set; }
 
         [Required]
-        [EnumDataType(typeof(TransactionType), ErrorMessage = "Invalid transaction type.")]
-        public TransactionType Type { get; set; }
+        //[EnumDataType(typeof(TransactionType), ErrorMessage = "Invalid transaction type.")]
+        public string Type { get; set; }
 
         [Required]
         public int Account_Id { get; set; }

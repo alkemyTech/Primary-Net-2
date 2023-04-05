@@ -27,5 +27,8 @@ namespace PrimatesWallet.Core.Models
         [Column("points")]
         public int Points { get; set; }
 
+        [Column(TypeName = "BIT")]
+        public bool IsDeleted { get; set; } = false;
+
     }
 }

@@ -1,4 +1,8 @@
 
+using PrimatesWallet.Application.DTOS;
+using PrimatesWallet.Application.Exceptions;
+using PrimatesWallet.Application.Helpers;
+using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Interfaces;
 using PrimatesWallet.Core.Interfaces;
 using PrimatesWallet.Core.Models;
@@ -35,6 +39,58 @@ namespace PrimatesWallet.Application.Services
         {
             var role =  await unitOfWork.Roles.GetById(id);
             return role;
+        }
+
+        /// <summary>
+        /// This method creates a new Role validating if the name is already in the db and returns the confirmation if it is created. 
+        /// </summary>
+        /// <param name="roleCreationDto"></param>
+        /// <returns></returns>
+        public async Task<string> CreateRole(RoleCreationDto roleCreationDto)
+        {
+            var nameExists = await unitOfWork.Roles.AlreadyExistsName(roleCreationDto.Name);
+            if (nameExists) throw new AppException("Role name already registered", HttpStatusCode.BadRequest);
+            var newRole = new Role() { Description = roleCreationDto.Description, Name = roleCreationDto.Name };
+            await unitOfWork.Roles.Add(newRole);
+            unitOfWork.Save();
+            var response = $"Role {roleCreationDto.Name} created";
+            return response;
+
+        }
+
+
+        public async Task<bool> DeleteRol(int id)
+        {
+            var role = await unitOfWork.Roles.GetById(id) 
+                ?? throw new AppException(ReplyMessage.MESSAGE_QUERY_EMPTY, HttpStatusCode.NotFound);
+
+            unitOfWork.Roles.Delete(role);
+            var response = unitOfWork.Save();
+
+            return response > 0;
+
+        /// <summary>
+        /// This method creates a new Role validating if the name is already in the db and returns the confirmation if it is created. 
+        /// </summary>
+        /// <param name="roleCreationDto"></param>
+        /// <returns></returns>
+        public async Task<string> CreateRole ( RoleCreationDto roleCreationDto)
+        {
+            var nameExists = await unitOfWork.Roles.AlreadyExistsName(roleCreationDto.Name);
+            if (nameExists) throw new AppException("Role name already registered", HttpStatusCode.BadRequest);
+            var newRole = new Role() { Description = roleCreationDto.Description, Name =  roleCreationDto.Name };
+            await unitOfWork.Roles.Add(newRole);
+            unitOfWork.Save();
+            var response = $"Role {roleCreationDto.Name} created";
+            return response;
+        }
+
+        public async Task<string> ActivateRole(int roleId)
+        {
+            var role = await unitOfWork.Roles.GetByIdDeleted(roleId);
+            unitOfWork.Roles.Activate(role);
+            unitOfWork.Save();
+            return $"Role {roleId} activated";
         }
     }
 }

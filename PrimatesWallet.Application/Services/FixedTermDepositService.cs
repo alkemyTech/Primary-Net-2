@@ -242,7 +242,14 @@ namespace PrimatesWallet.Application.Services
             }
 
             unitOfWork.Save();
+        }
 
+        public async Task<string> ActivateFixedTermDeposit(int depositId)
+        {
+            var deposit = await unitOfWork.FixedTermDeposits.GetByIdDeleted(depositId);
+            unitOfWork.FixedTermDeposits.Activate(deposit);
+            unitOfWork.Save();
+            return $"deposit n° {depositId} activated";
         }
     }
 }

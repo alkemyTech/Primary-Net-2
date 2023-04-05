@@ -120,9 +120,27 @@ namespace PrimatesWallet.Api.Controllers
             var updatedAccount = await _account.UpdateAccountAdmin(accountId, accountUpdateDTO);
             return Ok(updatedAccount);
 
+        }
+
+
+
+        [HttpPut("activate/{accountId}")]
+        public async Task<IActionResult> ActivateAccount(int accountId)
+        {
+            var account = await _account.ActivateAccount(accountId);
+            return Ok(account);
 
         }
-        
+
+
+        [HttpDelete("{accountId}")]
+        public async Task<IActionResult> DeleteAccount(int accountId)
+        {
+            var currentUser = _userContextService.GetCurrentUser();
+            var deleteAccount = await _account.DeleteAccount(accountId, currentUser);
+            return Ok(deleteAccount);
+        }
+
     }
 
 }

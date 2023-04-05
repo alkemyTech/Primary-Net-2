@@ -1,17 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace PrimatesWallet.Core.Models
+namespace PrimatesWallet.Application.DTOS
 {
-    public class Role
+    public class RoleCreationDto
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("id")]
-        /// <summary>
-        /// Role id
-        /// </summary>
-        public int Id { get; set; }
 
 
         [Required]
@@ -30,8 +28,5 @@ namespace PrimatesWallet.Core.Models
         /// Role description
         /// </summary>
         public string Description { get; set; }
-
-        [Column("isDeleted", TypeName = "BIT")]
-        public bool IsDeleted { get; set; } = false;
     }
 }

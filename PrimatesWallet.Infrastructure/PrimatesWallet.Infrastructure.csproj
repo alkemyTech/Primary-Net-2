@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PrimatesWallet.Application\PrimatesWallet.Application.csproj" />
     <ProjectReference Include="..\PrimatesWallet.Core\PrimatesWallet.Core.csproj" />
   </ItemGroup>
 

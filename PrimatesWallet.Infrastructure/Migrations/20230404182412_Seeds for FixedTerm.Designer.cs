@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PrimatesWallet.Infrastructure;
 
@@ -11,9 +12,10 @@ using PrimatesWallet.Infrastructure;
 namespace PrimatesWallet.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230404182412_Seeds for FixedTerm")]
+    partial class SeedsforFixedTerm
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,9 +40,6 @@ namespace PrimatesWallet.Infrastructure.Migrations
                     b.Property<bool>("IsBlocked")
                         .HasColumnType("BIT")
                         .HasColumnName("isBlocked");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("BIT");
 
                     b.Property<decimal?>("Money")
                         .HasColumnType("DECIMAL")
@@ -71,9 +70,6 @@ namespace PrimatesWallet.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("VARCHAR(500)")
                         .HasColumnName("image");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("BIT");
 
                     b.Property<int>("Points")
                         .HasColumnType("int")
@@ -179,10 +175,6 @@ namespace PrimatesWallet.Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("date");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("BIT")
-                        .HasColumnName("idDeleted");
-
                     b.Property<int?>("To_Account_Id")
                         .HasColumnType("int")
                         .HasColumnName("to_account_id");
@@ -219,10 +211,6 @@ namespace PrimatesWallet.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("VARCHAR(50)")
                         .HasColumnName("first_name");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("BIT")
-                        .HasColumnName("idDeleted");
 
                     b.Property<string>("Last_Name")
                         .IsRequired()

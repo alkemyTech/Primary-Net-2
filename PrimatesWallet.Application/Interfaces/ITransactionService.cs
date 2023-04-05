@@ -18,7 +18,7 @@ namespace PrimatesWallet.Application.Interfaces
         
         Task<TransactionDto> GetTransactionById(int id);
         
-        Task<bool> DeleteTransaction(int transactionId , int userId);
+        Task<bool> DeleteTransaction(int transactionId);
         Task<bool> UpdateTransaction(int transactionId, string concept = "repayment");
         Task<IEnumerable<TransactionDto>> GetAllTransactions();
 
@@ -30,5 +30,6 @@ namespace PrimatesWallet.Application.Interfaces
         /// <returns>A boolean indicating whether the transaction was successfully inserted or not.</returns>
         /// <exception cref="AppException">Thrown when the transaction violates business rules.</exception>
         Task<bool> Insert(TransactionRequestDto transactionDTO);
+        Task<string> ActivateTransaction(int transactionId);
     }
 }

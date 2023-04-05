@@ -16,6 +16,7 @@ namespace PrimatesWallet.Application.Mapping
         {
             CreateMap<CatalogueDTO, Catalogue>();
             CreateMap<FixedTermDeposit, FixedTermDepositRequestDTO>();
+            CreateMap<Core.Models.Transaction, TransactionDto>();
         }
     }
 }

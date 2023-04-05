@@ -14,14 +14,32 @@ namespace PrimatesWallet.Infrastructure.Repositories
         {
 
         }
+        
+        public override async Task<IEnumerable<Transaction>> GetAll()
+        {
+            return await _dbContext.Transactions.Where(x => !x.IsDeleted).ToListAsync();
+        }
+
+        public override async Task<Transaction> GetById(int id)
+        {
+            return await _dbContext.Transactions.Where(x => x.Id == id && !x.IsDeleted).FirstOrDefaultAsync();
+        }
+
+        public override async Task<Transaction> GetByIdDeleted(int id)
+        {
+            return await _dbContext.Transactions.Where(x => x.Id == id && x.IsDeleted).FirstOrDefaultAsync();
+        }
 
         public async Task<IEnumerable<Transaction>> GetAllByAccount(int id)
         {
             return await base._dbContext.Transactions
                  .Where(t => (t.Type == TransactionType.topup && t.Account_Id == id) //depositos
                      || (t.Type == TransactionType.payment && t.Account_Id == id) //transferencia realizadas
-                     || (t.Type == TransactionType.payment && t.To_Account_Id == id)) //transferencias recibidas
-                     .ToListAsync();
+                     || (t.Type == TransactionType.payment && t.To_Account_Id == id)//transferencias recibidas
+                     || (t.Type == TransactionType.repayment && t.To_Account_Id == id) //reembolso recibido
+                     || (t.Type == TransactionType.repayment && t.Account_Id == id)) // reembolsos realizados (solo admins)
+                 .Where(x => x.IsDeleted == false)   
+                 .ToListAsync();
         }
 
         public async Task InsertWithStoredProcedure(Transaction transaction)

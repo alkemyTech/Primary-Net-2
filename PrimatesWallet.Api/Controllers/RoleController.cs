@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Exceptions;
+using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
 using PrimatesWallet.Core.Models;
 using Swashbuckle.AspNetCore.Annotations;
@@ -71,6 +73,61 @@ namespace PrimatesWallet.Api.Controllers
             var roles = await _roleService.GetRoles();
             if (roles == null) { return NotFound(); }
             return Ok(roles);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+
+        public async Task<IActionResult> CreateRole(RoleCreationDto roleCreationDto)
+        {
+            if (roleCreationDto.Name == null || roleCreationDto.Description == null) throw new AppException("Missing required parameters", HttpStatusCode.BadRequest);
+            var response = await _roleService.CreateRole(roleCreationDto);
+            return Ok(response);
+        }
+
+
+        /// <summary>
+        /// Deletes a role by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the role to be deleted.</param>
+        /// <returns>Returns an HTTP status code and a message indicating the success or failure of the deletion operation.</returns>
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        [SwaggerOperation(Summary = "Deletes a role.", Description = "Deletes a role by its ID.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Successful operation.")]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid data.")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "NotFound. The requested operation was not found.")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
+
+        public async Task<IActionResult> DeleteRole([FromRoute] int id)
+        {
+            var response = await _roleService.DeleteRol(id);
+
+            var message = response is true ? "Deletion successful." : "Resource deletion failed, please contact support.";
+            HttpStatusCode statusCode = response is true ? HttpStatusCode.OK : HttpStatusCode.BadRequest;
+            
+            var result = new BaseResponse<bool>(message, response, (int)statusCode);
+            return StatusCode((int)statusCode, result);
+
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+
+        public async Task<IActionResult> CreateRole(RoleCreationDto roleCreationDto)
+        {
+            if(roleCreationDto.Name == null || roleCreationDto.Description == null) throw new AppException("Missing required parameters", HttpStatusCode.BadRequest);
+            var response = await _roleService.CreateRole(roleCreationDto);
+            return Ok(response);
+        }
+
+
+        [HttpPut("activate/{roleId}")]
+        public async Task<IActionResult> ActivateFixedDeposit(int roleId)
+        {
+            var role = await _roleService.ActivateRole(roleId);
+            return Ok(role);
+
         }
     }
 }

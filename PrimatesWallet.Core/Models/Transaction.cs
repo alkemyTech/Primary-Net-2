@@ -50,5 +50,8 @@ namespace PrimatesWallet.Core.Models
         
         [ForeignKey("To_Account_Id")]
         public Account ToAccount { get; set; }
+
+        [Column("idDeleted", TypeName = "BIT")]
+        public bool IsDeleted { get; set; }
     }
 }
