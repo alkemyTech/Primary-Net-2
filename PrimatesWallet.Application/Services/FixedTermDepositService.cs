@@ -127,7 +127,7 @@ namespace PrimatesWallet.Application.Services
 
         public async Task<bool> Insert(int id, FixedTermDepositRequestDTO fixedTermDTO)
         {
-            var account = await unitOfWotk.Accounts.GetByUserId_FixedTerm(id); //buscamos la cuenta del user logeado
+            var account = await unitOfWork.Accounts.GetByUserId_FixedTerm(id); //buscamos la cuenta del user logeado
 
             //si no hay fondos suficientes se rechaza la operacion
             if(account.Money - fixedTermDTO.Amount < 0) throw new AppException("Insufficient funds: You do not have enough money in your account to make this investment.", HttpStatusCode.BadRequest);
@@ -146,7 +146,7 @@ namespace PrimatesWallet.Application.Services
             };
 
             account.FixedTermDeposit.Add(newFixedTerm);
-            var response = unitOfWotk.Save();
+            var response = unitOfWork.Save();
             return response > 0;
         }
 
