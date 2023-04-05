@@ -150,5 +150,16 @@ namespace PrimatesWallet.Api.Controllers
             return Ok(deposit);
 
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateFixedTerm(int id, [FromBody] FixedTermDepositRequestDTO fixedTermDeposit)
+        {
+            var result = await _fixedTermDeposit.UpdateFixedTermDeposit(id, fixedTermDeposit);
+
+            var response = new BaseResponse<bool>(ReplyMessage.MESSAGE_QUERY, result, (int)HttpStatusCode.OK);
+
+            return Ok(response);
+        }
     }
 }

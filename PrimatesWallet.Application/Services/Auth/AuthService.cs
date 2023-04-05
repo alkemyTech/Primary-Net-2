@@ -23,7 +23,7 @@ namespace PrimatesWallet.Application.Services.Auth
         public async Task<User> Authenticate(LoginUserDto login)
         {
 
-            var currentUSer = await unitOfWork.UserRepository.GetByEmail(login.UserName);
+            var currentUSer = await unitOfWork.Users.GetByEmail(login.UserName);
 
             if (currentUSer is null) throw new AppException("No se encontro el usuario", HttpStatusCode.NotFound);
 

@@ -175,11 +175,11 @@ namespace PrimatesWallet.Application.Services
 
         public async Task<string> ActivateAccount(int accountId)
         {
-            var account  = await unitOfWork.Accounts.GetByIdDeleted(accountId);
+            var account = await unitOfWork.Accounts.GetByIdDeleted(accountId);
             unitOfWork.Accounts.Activate(account);
             unitOfWork.Save();
             return $"{accountId} activated";
-
+        }
       public async Task<string> DeleteAccount(int accountId, int currentUser)
         {
             var user = await unitOfWork.Users.GetById(currentUser);
