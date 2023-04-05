@@ -9,7 +9,6 @@ using PrimatesWallet.Application.Mapping.Transaction;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
-using System.Transactions;
 using System;
 
 namespace PrimatesWallet.Application.Services
@@ -174,59 +173,25 @@ namespace PrimatesWallet.Application.Services
         public async Task<bool> Insert(TransactionRequestDto transactionDTO)
         {
             /*
-                public async Task<bool> Insert(TransactionRequestDto transactionDTO)
-                {
-                    /*
-                     Verificamos si la logica de emisor receptor de una transaccion es correcta
-                     */
-            bool isTopup = transactionDTO.Type == TransactionType.topup.ToString();
-            bool isPaymentOrRepayment = transactionDTO.Type == TransactionType.payment.ToString() || transactionDTO.Type == TransactionType.repayment.ToString();
+             Verificamos si la logica de emisor receptor de una transaccion es correcta
+             */
+            bool isTopup = transactionDTO.Type is TransactionType.topup;
+            bool isPaymentOrRepayment = transactionDTO.Type is (TransactionType.payment or TransactionType.repayment);
             bool isSameAccount = transactionDTO.Account_Id == transactionDTO.To_Account_Id;
 
             if (!isSameAccount && isTopup) throw new AppException("Deposits to other accounts are not allowed", HttpStatusCode.BadRequest);
 
             if (isSameAccount && isPaymentOrRepayment) throw new AppException("Payments between the same accounts are not allowed", HttpStatusCode.BadRequest);
-            
 
-            if (isPaymentOrRepayment)
-            {
-                var senderAccount = await _unitOfWork.Accounts.GetById(transactionDTO.Account_Id);
-                if( senderAccount == null ) throw new AppException("Sender account not fount", HttpStatusCode.NotFound);
-
-                var receivertAccount = await _unitOfWork.Accounts.GetById(transactionDTO.To_Account_Id);
-                if ( receivertAccount == null ) throw new AppException("Receiver account not fount", HttpStatusCode.NotFound);
-
-                if ( senderAccount.Money < transactionDTO.Amount) throw new AppException("The sending account does not have enough balance", HttpStatusCode.BadRequest);
-
-                senderAccount.Money -= transactionDTO.Amount;
-                receivertAccount.Money += transactionDTO.Amount;
-
-                _unitOfWork.Accounts.Update(senderAccount);
-                _unitOfWork.Accounts.Update(receivertAccount);
-            }
-
-            if (isTopup)
-            {
-                var account = await _unitOfWork.Accounts.GetById(transactionDTO.Account_Id);
-
-                account.Money += transactionDTO.Amount;
-
-                _unitOfWork.Accounts.Update(account);
-            }
-
-            var transactionType = (TransactionType)Enum.Parse(typeof(TransactionType), transactionDTO.Type);
-
-            var transaction = new Core.Models.Transaction()
+            var transaction = new Transaction()
             {
                 Amount = transactionDTO.Amount,
-                Type = transactionType,
+                Type = transactionDTO.Type,
                 Concept = transactionDTO.Concept,
                 Date = DateTime.Now,
                 Account_Id = transactionDTO.Account_Id,
                 To_Account_Id = transactionDTO.To_Account_Id
             };
-
-
 
             /*
                 Se creo un stored procedure donde se comprueba si las cuentas existen,
