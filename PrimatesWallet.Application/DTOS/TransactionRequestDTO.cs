@@ -1,11 +1,5 @@
-﻿using PrimatesWallet.Application.Middleware;
-using PrimatesWallet.Core.Enums;
-using System;
-using System.Collections.Generic;
+﻿using PrimatesWallet.Core.Enums;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PrimatesWallet.Application.DTOS
 {
@@ -16,8 +10,7 @@ namespace PrimatesWallet.Application.DTOS
         public decimal Amount { get; set; }
 
         [Required]
-        [RegularExpression(@"^[a-zA-Z0-9]+$")]
-        [StringLength(255, MinimumLength = 10, ErrorMessage = "Concept length cannot exceed 255 characters.")]
+        [RegularExpression(@"^[a-zA-Z0-9 ]+$")]
         public string Concept { get; set; }
 
         [Required]

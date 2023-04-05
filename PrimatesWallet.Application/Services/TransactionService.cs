@@ -172,16 +172,11 @@ namespace PrimatesWallet.Application.Services
             };
 
             /*
-                Aca se me ocurrio 2 formas de poder validar si las cuentas existen,
-                primero estaba por crear un servicio ExistAccount(TransactionDTO.Account_Id)
-                que compruebe en base de datos si existe esa id pero me di cuenta que entonces
-                tenia que realizar 3 operaciones I/O:
-                    1- existe la cuenta emisora ?
-                    2- existe la cuenta receptora ?
-                    3- si existen ambas el insert en base de datos
-                Entonces decidi crear un StoredProcedure que compruebe si existen las cuentas y si existe hace el insert
-                para los select del id, si alguna cuenta no existe arroja un error
-                ahora se hacen las 3 operaciones pero en 1 sola operacion I/O
+                Se creo un stored procedure donde se comprueba si las cuentas existen,
+                dependiendo el tipo de transferencia se ajustan los balances en las cuentas y
+                se registra la transaccion, si alguna validacion es incorrecta el middleware atrapa la DbException
+                con su respectivo mensaje, las operaciones se realizan un una transaccion y
+                en caso de error se hace un rollback
              */
             await _unitOfWork.Transactions.InsertWithStoredProcedure(transaction);
             _unitOfWork.Save();

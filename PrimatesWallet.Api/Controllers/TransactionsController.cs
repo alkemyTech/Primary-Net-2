@@ -107,14 +107,21 @@ namespace PrimatesWallet.Api.Controllers
         }
 
         /// <summary>
-        /// Creates a new transaction from the information provided in the <paramref name="transactionDTO"/> parameter.
+        /// Creates a new transaction in the database. This operation can only be accessed by an administrator.
         /// </summary>
-        /// <param name="transactionDTO">The DTO object containing the transaction information.</param>
-        /// <returns>The result of the transaction creation.</returns
+        /// <param name="transactionDTO">The TransactionRequestDto object containing the transaction data to be created.</param>
+        /// <returns>Returns a BaseResponse object with a boolean value indicating if the transaction was created successfully or not.</returns>
+        /// <response code="200">Returns the requested transaction.</response>
+        /// <response code="401">Returns if the user is unauthorized for this operation.</response>
+        /// <response code="404">Returns if the requested transaction was not found.</response>
+        /// <response code="500">Returns if there was an internal server error.</response>
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateTransaction([FromBody] TransactionRequestDTO transactionDTO)
         {
             var transaction = await transactionService.Insert(transactionDTO);
+
+            // Builds a new BaseResponse object using a boolean value indicating if the transaction was created successfully or not, and the corresponding HTTP status code.
             var response = new BaseResponse<bool>(ReplyMessage.MESSAGE_CREATE_SUCCESS, transaction, (int)HttpStatusCode.Created);
             return Ok(response);
         }

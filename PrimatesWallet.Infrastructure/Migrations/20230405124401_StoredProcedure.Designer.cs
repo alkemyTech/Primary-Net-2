@@ -12,7 +12,7 @@ using PrimatesWallet.Infrastructure;
 namespace PrimatesWallet.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230403140716_StoredProcedure")]
+    [Migration("20230405124401_StoredProcedure")]
     partial class StoredProcedure
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
