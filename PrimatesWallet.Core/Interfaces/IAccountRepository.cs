@@ -34,5 +34,6 @@ namespace PrimatesWallet.Core.Interfaces
         /// </summary>
         /// <returns>The total number of accounts.</returns>
         Task<int> GetCount();
+        void DeleteAccount(Account account);
     }
 }

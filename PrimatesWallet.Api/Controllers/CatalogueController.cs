@@ -137,7 +137,6 @@ namespace PrimatesWallet.Api.Controllers
             return Ok(response);
         }
 
-
         /// <summary>
         /// Deletes a product from the catalogue.
         /// </summary>
@@ -146,16 +145,18 @@ namespace PrimatesWallet.Api.Controllers
         /// <response code="401">Unauthorized user for this operation.</response>
         /// <response code="404">"NotFound. The requested operation was not found.</response>  
         /// <response code="500">Internal Server Error. Something has gone wrong on the Primates Wallet server.</response>
-        [HttpDelete]
+        [HttpDelete("{catalogueId}")]
         [Authorize(Roles = "Admin")]
         [SwaggerOperation(Summary = "Delete a product.", Description = "Deletes a product from the catalogue by its ID.")]
         [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
         [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
         [SwaggerResponse(StatusCodes.Status404NotFound, "NotFound. The requested operation was not found.")]
         [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteCatalogue(int catalogueId)
         {
-            throw new NotImplementedException();
+            var currentUser = _userContextService.GetCurrentUser();
+            var deleteCatalogue = await _catalogueService.DeleteCatalogue(catalogueId, currentUser);
+            return Ok(deleteCatalogue);
         }
     }
 }

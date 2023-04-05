@@ -57,5 +57,6 @@ namespace PrimatesWallet.Application.Interfaces
         /// <returns>True if the update operation was completed successfully, otherwise false.</returns>
         /// <exception cref="AppException">Thrown when the provided ID does not match the ID of the product sent or the product with the specified ID cannot be found.</exception>
         Task<bool> UpdateProduct(int id, CatalogueDTO productDTO);
+        Task<string> DeleteCatalogue(int catalogueId, int currentUser);
     }
 }

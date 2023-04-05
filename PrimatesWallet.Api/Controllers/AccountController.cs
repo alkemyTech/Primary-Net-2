@@ -121,7 +121,16 @@ namespace PrimatesWallet.Api.Controllers
             return Ok(updatedAccount);
 
         }
-        
+
+        [HttpDelete("{accountId}")]
+        public async Task<IActionResult> DeleteAccount(int accountId)
+        {
+            var currentUser = _userContextService.GetCurrentUser();
+            var deleteAccount = await _account.DeleteAccount(accountId, currentUser);
+            return Ok(deleteAccount);
+        }
+
+
     }
 
 }
