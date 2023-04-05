@@ -12,8 +12,8 @@ using PrimatesWallet.Infrastructure;
 namespace PrimatesWallet.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230329152007_First Migration")]
-    partial class FirstMigration
+    [Migration("20230404182821_test")]
+    partial class test
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -108,6 +108,10 @@ namespace PrimatesWallet.Infrastructure.Migrations
                     b.Property<DateTime>("Creation_Date")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("BIT")
+                        .HasColumnName("isDeleted");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
@@ -129,6 +133,10 @@ namespace PrimatesWallet.Infrastructure.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("VARCHAR(255)")
                         .HasColumnName("description");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("BIT")
+                        .HasColumnName("isDeleted");
 
                     b.Property<string>("Name")
                         .IsRequired()

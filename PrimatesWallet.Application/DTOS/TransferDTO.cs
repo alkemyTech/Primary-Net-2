@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PrimatesWallet.Application.DTOS
 {
-    public class TransferDTO
+    public class TransferDto
     {
         public string Concept { get; set; } = "Some";
         public decimal Amount { get; set; } 

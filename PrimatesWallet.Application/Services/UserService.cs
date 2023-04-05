@@ -7,13 +7,7 @@ using PrimatesWallet.Application.Interfaces;
 using PrimatesWallet.Application.Mapping.User;
 using PrimatesWallet.Core.Interfaces;
 using PrimatesWallet.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Transactions;
 
 namespace PrimatesWallet.Application.Services
 {
@@ -26,31 +20,29 @@ namespace PrimatesWallet.Application.Services
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task<User> GetUserById(int id)
+        public async Task<UserResponseDto> GetUserById(int id)
         {
-            try
+            var user = await unitOfWork.Users.GetById(id);
+            if (user == null) throw new AppException("User not found", HttpStatusCode.NotFound);
+             //si no existe el usuario lanzamos un exception personalizada en otra parte del codigo la atrapamos y le damos un formato
+            var response = new UserResponseDto()
             {
-                var user = await unitOfWork.UserRepository.GetById(id);
-                return user is null ?
-                    throw new AppException(ReplyMessage.MESSAGE_QUERY_EMPTY, HttpStatusCode.NotFound)
-                    : user; //OBS: Falta mapping para DTO (configuracion en equipo)
+                First_Name = user.First_Name,
+                Last_Name = user.Last_Name,
+                Email = user.Email,
+                Points = user.Points
+            };
 
-                //si no existe el usuario lanzamos un exception personalizada
-                //en otra parte del codigo la atrapamos y le damos un formato
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
+            return response;
+         }
 
-        public async Task<IEnumerable<UserResponseDTO>> GetUsers(int page, int pageSize)
+        public async Task<IEnumerable<UserResponseDto>> GetUsers(int page, int pageSize)
         {
-            var users = await unitOfWork.UserRepository.GetAll(page, pageSize)
+            var users = await unitOfWork.Users.GetAll(page, pageSize)
                  ?? throw new AppException(ReplyMessage.MESSAGE_QUERY_EMPTY, HttpStatusCode.NotFound);
 
             var usersDTO = users.Select(x => 
-                new UserResponseDTOBuilder()
+                new UserResponseDtoBuilder()
                 .WithUserId(x.UserId)
                 .WithFirstName(x.First_Name)
                 .WithLastName(x.Last_Name)
@@ -62,17 +54,17 @@ namespace PrimatesWallet.Application.Services
             return usersDTO;
         }
 
-        public async Task<int> TotalPageUsers(int pageSize)
+        public async Task<int> TotalPageUsers(int PageSize)
         {
-            var totalUsers = await unitOfWork.UserRepository.GetCount();
+            var totalUsers = await unitOfWork.Users.GetCount();
             //contamos el total de usuarios y calculamos cuantas paginas hay en total
-            return (int)Math.Ceiling((double)totalUsers / pageSize);
+            return (int)Math.Ceiling((double)totalUsers / PageSize);
         }
 
-        public async Task<int> Signup(RegisterUserDTO user)
+        public async Task<int> Signup(RegisterUserDto user)
 
         {
-            var isRegistered = await unitOfWork.UserRepository.IsRegistered(user.Email);
+            var isRegistered = await unitOfWork.Users.IsRegistered(user.Email);
 
             if (isRegistered) throw new AppException("Email already registered.", HttpStatusCode.BadRequest);
 
@@ -88,16 +80,47 @@ namespace PrimatesWallet.Application.Services
                 Password = hashedPassword,
             };
            
-            await unitOfWork.UserRepository.Add(newUser);
+            await unitOfWork.Users.Add(newUser);
             var response = unitOfWork.Save();
 
-            var userId = await unitOfWork.UserRepository.GetUserIdByEmail(newUser.Email);
+            var userId = await unitOfWork.Users.GetUserIdByEmail(newUser.Email);
             if (userId == 0) throw new AppException($"No user with id {userId}", HttpStatusCode.BadRequest);
             
-
             if (response > 0)  return userId;
             return 0;
+        }
 
+
+        public async Task <bool> DeleteUser(int userId)
+        {
+            var user = await unitOfWork.Users.GetById(userId) ?? throw new AppException("User not found", HttpStatusCode.NotFound);
+            unitOfWork.Users.Delete(user);
+            unitOfWork.Save();
+            return true;
+        }
+        
+        public async Task<bool> UpdateUser(int UserId, UserUpdateDTO userUpdateDTO)
+        {
+            var user = await unitOfWork.UserRepository.GetById(UserId);
+            if (user == null) throw new AppException("User not found", HttpStatusCode.NotFound);
+
+            user.First_Name = userUpdateDTO.First_Name;
+            user.Last_Name = userUpdateDTO.Last_Name;
+            user.Email = userUpdateDTO.Email;
+            user.Password = userUpdateDTO.Password;
+
+            unitOfWork.UserRepository.Update(user);
+            unitOfWork.Save();
+            return true;
+        }
+
+
+        public async Task<string> ActivateUser(int userId)
+        {
+            var user = await unitOfWork.Users.GetByIdDeleted(userId);
+            unitOfWork.Users.Activate(user);
+            unitOfWork.Save();
+            return $"User {userId} activated";
         }
 
     }

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PrimatesWallet.Api.Helpers;
 using PrimatesWallet.Application.DTOS;
@@ -6,8 +6,11 @@ using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
 using PrimatesWallet.Application.Services;
+using PrimatesWallet.Application.Services.Auth;
 using PrimatesWallet.Core.Models;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
+using System.Security.Principal;
 
 namespace PrimatesWallet.Api.Controllers
 {
@@ -25,22 +28,33 @@ namespace PrimatesWallet.Api.Controllers
 
         }
 
+
+        /// <summary>
+        /// This endpoint is to get a fixed-term deposit, user must have token to access it
+        /// </summary>
+        /// <param name="id">Fixed-term deposit id</param>
+        /// <returns>if everything goes well, it returns a status code 200 returning the deposit correctly</returns>
         [Authorize]
-        [HttpGet("{id}", Name ="Get one FixedTermDeposit")]
+        [HttpGet("{id}", Name = "Get one FixedTermDeposit")]
         public async Task<IActionResult> GetFixedTermDepositById(int id)
         {
             // Obtener un plazo fijo espescifico por id
-                var userRequestId =  userContextService.GetCurrentUser();
-                var fixedTermDeposit = await _fixedTermDeposit.GetFixedTermDepositDetails(userRequestId, id);
-                var response = new BaseResponse<FixedTermDepositDetailDTO>(ReplyMessage.MESSAGE_QUERY, fixedTermDeposit, (int)HttpStatusCode.OK);
-                return Ok(response);
-
+            var userRequestId = userContextService.GetCurrentUser();
+            var fixedTermDeposit = await _fixedTermDeposit.GetFixedTermDepositDetails(userRequestId, id);
+            var response = new BaseResponse<FixedTermDepositDetailDto>(ReplyMessage.MESSAGE_QUERY, fixedTermDeposit, (int)HttpStatusCode.OK);
+            return Ok(response);
         }
+        /// <summary>
+        /// This endpoint is to get all fixed-term deposits from one user, using own user token to validate it.
+        /// </summary>
+        /// <returns>if everything goes well, it returns a status code 200 and returning user deposits correctly</returns>
 
         [Authorize]
-        [HttpGet("User Deposits")]
+        [HttpGet("UserDeposits")]
         public async Task<IActionResult> GetByUser()
-            //Obtener todos los Plazos fijos de un usuario
+
+
+        //Obtener todos los Plazos fijos de un usuario
         {
             try
             {
@@ -81,8 +95,14 @@ namespace PrimatesWallet.Api.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// This endpoint is to Get all a fixed-term deposits, only users with Admin role can access it.
+        /// </summary>
+        /// <param name="page">Fixed-term deposit page</param>
+        /// <param name="pageSize">Fixed-term deposit items per page</param>
+        /// <returns>if everything goes well, it returns a status code 200 returning all deposits paginated by page size</returns>
 
-        [HttpGet ( Name = "Get All")]
+        [HttpGet(Name = "Get All")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetFixedTermDeposits([FromQuery] int page = 1, int pageSize = 10)
         {
@@ -91,7 +111,7 @@ namespace PrimatesWallet.Api.Controllers
             string url = CurrentURL.Get(HttpContext.Request); //Clase estatica en helpers para obtener la url como string
 
 
-            var response = new BasePaginateResponse<IEnumerable<FixedTermDepositDetailDTO>>()
+            var response = new BasePaginateResponse<IEnumerable<FixedTermDepositDetailDto>>()
             {
                 Message = ReplyMessage.MESSAGE_QUERY,
                 Result = allDeposits,
@@ -103,5 +123,32 @@ namespace PrimatesWallet.Api.Controllers
             return Ok(response);
         }
 
+        /// // POST: api/FixedDeposit
+        /// <remarks>
+        /// Creates a new fixed-term deposit with the specified details.
+        /// The date format must be yyyy-MM-dd and the amount must be greater than 100.
+        /// </remarks>     
+        /// <response code="401">Unauthorized user for this operation.</response>              
+        /// <response code="200">Successful operation.</response>
+        /// <response code="400">Invalid request data.</response>
+        /// <response code="500">Internal Server Error. Something has gone wrong on the Primates Wallet server.</response>
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> CreateFixedTermDeposit([FromBody] FixedTermDepositRequestDTO fixedTermDTO)
+        {
+            var idUser = userContextService.GetCurrentUser();
+            var fixedTerm = await _fixedTermDeposit.Insert(idUser, fixedTermDTO);
+            var response = new BaseResponse<bool>(ReplyMessage.MESSAGE_CREATE_SUCCESS, fixedTerm, (int)HttpStatusCode.OK);
+            return Ok(response);
+        }
+
+
+        [HttpPut("activate/{depositId}")]
+        public async Task<IActionResult> ActivateFixedDeposit( int depositId)
+        {
+            var deposit = await _fixedTermDeposit.ActivateFixedTermDeposit(depositId);
+            return Ok(deposit);
+
+        }
     }
 }

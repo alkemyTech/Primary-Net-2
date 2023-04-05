@@ -12,8 +12,8 @@ using PrimatesWallet.Infrastructure;
 namespace PrimatesWallet.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230331031250_hashed seed passwords")]
-    partial class hashedseedpasswords
+    [Migration("20230404170113_test2")]
+    partial class test2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -107,6 +107,10 @@ namespace PrimatesWallet.Infrastructure.Migrations
 
                     b.Property<DateTime>("Creation_Date")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("BIT")
+                        .HasColumnName("isDeleted");
 
                     b.HasKey("Id");
 

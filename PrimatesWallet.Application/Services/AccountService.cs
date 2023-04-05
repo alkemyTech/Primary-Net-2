@@ -11,7 +11,7 @@ using PrimatesWallet.Core.Models;
 using System.Net;
 using System.Transactions;
 using System.Security.Principal;
-
+using PrimatesWallet.Application.Mapping.Account;
 
 namespace PrimatesWallet.Application.Services
 {
@@ -23,10 +23,9 @@ namespace PrimatesWallet.Application.Services
         public AccountService(IUnitOfWork unitOfWork )
         {
             this.unitOfWork = unitOfWork;
-   
         }
 
-        public async Task<bool> DepositToAccount(int id, TopUpDTO topUpDTO)
+        public async Task<bool> DepositToAccount(int id, TopUpDto topUpDTO)
         {
             var account = await unitOfWork.Accounts.Get_Transaccion(id);
             account.Money += topUpDTO.Money;
@@ -40,40 +39,22 @@ namespace PrimatesWallet.Application.Services
                 To_Account_Id = account.Id,
 
             };
-            account.Transactions.Add(transactions);
+            account.Transactions!.Add(transactions);
+            
             var response = unitOfWork.Save();
-            if (response > 0)
-                return true;
-            else
-                return false;
-
+            if (response > 0) return true;
+            return false;
         }
 
         public async Task<IEnumerable<Account>> GetAccountsList()
         {
-            try
-            {
-                return await unitOfWork.Accounts.GetAll();
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
+             return await unitOfWork.Accounts.GetAll();
         }
 
         public async Task<Account> GetAccountById(int id)
         {
-            try
-            {
-                var account = await unitOfWork.Accounts.GetById(id);
-
-                return account;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-
+            var account = await unitOfWork.Accounts.GetById(id);
+            return account;
         }
 
         public async Task<bool> ValidateAccount(int userId, int accountId)
@@ -91,13 +72,13 @@ namespace PrimatesWallet.Application.Services
         /// <param name="remitentId">id of the remitent, extracted from the token</param>
         /// <param name="transferDTO">a DTO with the data of the receiver</param>
         /// <returns>a DTO with the confirmation of the transaction</returns>
-        public async Task<TransferDetailDTO > Transfer(int remitentId, TransferDTO transferDTO)
+        public async Task<TransferDetailDto> Transfer(int remitentId, TransferDto transferDTO)
         {
 
             var remitent = await unitOfWork.Accounts.GetById(remitentId);
             if (remitent == null) throw new AppException("Cant find remitent account", HttpStatusCode.NotFound);
 
-            var reciever = await unitOfWork.UserRepository.GetAccountByUserEmail(transferDTO.Email);
+            var reciever = await unitOfWork.Users.GetAccountByUserEmail(transferDTO.Email);
             if (reciever == null) throw new AppException("The email provided is invalid", HttpStatusCode.BadRequest);
 
                 
@@ -112,7 +93,7 @@ namespace PrimatesWallet.Application.Services
 
             var transaction = new Core.Models.Transaction() { Amount = transferDTO.Amount, Concept = transferDTO.Concept, Date = DateTime.Now, Type = transferDTO.Type, Account_Id = remitentId, To_Account_Id = reciever.Account.Id };
 
-            var transferDetail = new TransferDetailDTO()
+            var transferDetail = new TransferDetailDto()
             {
                 Amount = transferDTO.Amount,
                 Concept = transferDTO.Concept,
@@ -129,13 +110,11 @@ namespace PrimatesWallet.Application.Services
         }
 
 
-        public async Task<Account> UpdateAccountAdmin(int accountId, AccountUpdateDTO accountUpdateDTO)
+        public async Task<Account> UpdateAccountAdmin(int accountId, AccountUpdateDto accountUpdateDTO)
         {
             var account = await unitOfWork.Accounts.GetById(accountId) ?? throw new AppException($"No account with id {accountId}", HttpStatusCode.NotFound);
-            
-            var user = await unitOfWork.UserRepository.GetById(account.UserId);
-
-            var isAdmin = await unitOfWork.UserRepository.IsAdmin(user);
+            var user = await unitOfWork.Users.GetById(account.UserId);
+            var isAdmin = unitOfWork.Users.IsAdmin(user);
 
             if (!isAdmin) throw new AppException("Invalid credentials", HttpStatusCode.Forbidden);
 
@@ -170,5 +149,51 @@ namespace PrimatesWallet.Application.Services
             return false;
         }
 
+        public async Task<IEnumerable<AccountResponseDTO>> GetAccounts(int page, int pageSize)
+        {
+            var accounts = await unitOfWork.Accounts.GetAll(page, pageSize)
+                 ?? throw new AppException(ReplyMessage.MESSAGE_QUERY_EMPTY, HttpStatusCode.NotFound);
+
+            var accountsDTO = accounts.Select(x =>
+              new AccountDTOBuilder()
+              .WithId(x.Id)
+              .WithCreationDate(x.CreationDate)
+              .WithMoney((decimal)x.Money!)
+              .WithIsBlocked(x.IsBlocked)
+              .WithUserId(x.UserId)
+              .Build()).ToList();
+
+            return accountsDTO;
+        }
+
+        public async Task<int> TotalPageAccounts(int PageSize)
+        {
+            var totalAccounts = await unitOfWork.Accounts.GetCount();
+            return (int)Math.Ceiling((double)totalAccounts / PageSize);
+        }
+
+
+        public async Task<string> ActivateAccount(int accountId)
+        {
+            var account  = await unitOfWork.Accounts.GetByIdDeleted(accountId);
+            unitOfWork.Accounts.Activate(account);
+            unitOfWork.Save();
+            return $"{accountId} activated";
+
+      public async Task<string> DeleteAccount(int accountId, int currentUser)
+        {
+            var user = await unitOfWork.Users.GetById(currentUser);
+            var isAdmin = unitOfWork.Users.IsAdmin(user);
+            if (!isAdmin) throw new AppException("Invalid Credentials", HttpStatusCode.Forbidden);
+
+            var account = await unitOfWork.Accounts.GetById(accountId);
+            if (account == null) throw new AppException($"Account {accountId} not found", HttpStatusCode.NotFound);
+
+            unitOfWork.Accounts.Delete(account);
+            unitOfWork.Save();
+
+            return $"Account {accountId} deleted.";
+
+        }
     }
 }

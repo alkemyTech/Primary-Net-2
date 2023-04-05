@@ -29,8 +29,8 @@ namespace PrimatesWallet.Api.Controllers
         {
             try
             {
-                var Users = await userService.GetUserById(id);
-                var response = new BaseResponse<User>(ReplyMessage.MESSAGE_QUERY, Users, (int)HttpStatusCode.OK);
+                var users = await userService.GetUserById(id);
+                var response = new BaseResponse<UserResponseDto>(ReplyMessage.MESSAGE_QUERY, users, (int)HttpStatusCode.OK);
                 return Ok(response);
 
             }
@@ -58,7 +58,7 @@ namespace PrimatesWallet.Api.Controllers
             string url = CurrentURL.Get(HttpContext.Request); //Clase estatica en helpers para obtener la url como string
 
 
-            var response = new BasePaginateResponse<IEnumerable<UserResponseDTO>>()
+            var response = new BasePaginateResponse<IEnumerable<UserResponseDto>>()
             {
                 Message = ReplyMessage.MESSAGE_QUERY,
                 Result = users,
@@ -71,18 +71,42 @@ namespace PrimatesWallet.Api.Controllers
         }
 
         [HttpPost("signup")]
-        public async Task<IActionResult> RegisterUser([FromBody] RegisterUserDTO user)
+        public async Task<IActionResult> RegisterUser([FromBody] RegisterUserDto user)
         {
             var newUser = await userService.Signup(user);
                 if (newUser == 0) return BadRequest();
             var account = accountService.Create(newUser);
-            var userDTO = new RegisterUserDTO() { First_Name = user.First_Name, Last_Name = user.Last_Name, Email = user.Email, Password = user.Password };
-            var response = new BaseResponse<RegisterUserDTO>(ReplyMessage.MESSAGE_QUERY, userDTO, (int)HttpStatusCode.Created);
+            var userDTO = new RegisterUserDto() { First_Name = user.First_Name, Last_Name = user.Last_Name, Email = user.Email };
+            var response = new BaseResponse<RegisterUserDto>(ReplyMessage.MESSAGE_QUERY, userDTO, (int)HttpStatusCode.Created);
             
 
             return StatusCode(response.StatusCode, response);
         }
-   
 
+        [HttpDelete("{userId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteUser(int userId)
+        {
+            var user = await userService.GetUserById(userId);
+
+            await userService.DeleteUser(userId);
+            return Ok($"user {user.First_Name} {user.Last_Name} deleted.");
+        }
+   
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{UserId}")]
+        public async Task<IActionResult> UpdateUser(int UserId, [FromBody] UserUpdateDto userUpdateDTO)
+        {
+            var updatedUser = await userService.UpdateUser(UserId, userUpdateDTO);
+            
+            return Ok(updatedUser);
+        }
+
+        [HttpPut("activate/{userId}")]
+        public async Task<IActionResult>ActivateUser(int userId)
+        {
+            var user = await userService.ActivateUser(userId);
+            return Ok(user);
+        }
     }
 }

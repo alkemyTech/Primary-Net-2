@@ -1,9 +1,9 @@
-﻿using PrimatesWallet.Core.Enums;
+using PrimatesWallet.Core.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace PrimatesWallet.Application.DTOS
 {
-    public class TransactionRequestDTO
+    public class TransactionRequestDto
     {
         [Required]
         [Range(100, (double)decimal.MaxValue, ErrorMessage = "Amount must be greater than 100.")]

@@ -20,7 +20,7 @@ namespace PrimatesWallet.Application.Services.Auth
         {
             this.unitOfWork = unitOfWork;
         }
-        public async Task<User> Authenticate(LoginUser login)
+        public async Task<User> Authenticate(LoginUserDto login)
         {
 
             var currentUSer = await unitOfWork.UserRepository.GetByEmail(login.UserName);
@@ -30,15 +30,13 @@ namespace PrimatesWallet.Application.Services.Auth
             int hash = 12;
 
             bool isValidPassword = BCrypt.Net.BCrypt.Verify(login.Password, currentUSer.Password);
-            
-            if( isValidPassword ) return currentUSer;
+
+            if (isValidPassword) return currentUSer;
 
             return null;
 
-            //if(currentUSer.Password != login.Password) throw new AppException("Credenciales invalidas", HttpStatusCode.Unauthorized);
+            //if (currentUSer.Password != login.Password) throw new AppException("Credenciales invalidas", HttpStatusCode.Unauthorized);
             //return currentUSer;
         }
-
-
     }
 }

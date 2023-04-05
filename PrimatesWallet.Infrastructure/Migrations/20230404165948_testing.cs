@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PrimatesWallet.Infrastructure.Migrations
 {
-    public partial class FirstMigration : Migration
+    public partial class testing : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -93,7 +93,8 @@ namespace PrimatesWallet.Infrastructure.Migrations
                     account_id = table.Column<int>(type: "int", nullable: false),
                     amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Creation_Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Closing_Date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Closing_Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    isDeleted = table.Column<bool>(type: "BIT", nullable: false)
                 },
                 constraints: table =>
                 {

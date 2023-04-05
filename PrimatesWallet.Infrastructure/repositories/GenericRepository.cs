@@ -12,12 +12,12 @@ namespace PrimatesWallet.Infrastructure.repositories
             _dbContext = context;
         }
 
-        public async Task<T> GetById(int id)
+        public virtual async Task<T> GetById(int id)
         {
             return await _dbContext.Set<T>().FindAsync(id);
         }
 
-        public async Task<IEnumerable<T>> GetAll()
+        public virtual async Task<IEnumerable<T>> GetAll()
         {
             return await _dbContext.Set<T>().ToListAsync();
         }
@@ -29,12 +29,27 @@ namespace PrimatesWallet.Infrastructure.repositories
 
         public void Delete(T entity)
         {
+            _dbContext.Set<T>().Update(entity).Property("IsDeleted").CurrentValue = true;    
+        }
+
+        public void RealDelete(T entity)
+        {
             _dbContext.Set<T>().Remove(entity);
         }
 
         public void Update(T entity)
         {
             _dbContext.Set<T>().Update(entity);
+        }
+
+        public void Activate(T entity)
+        {
+            _dbContext.Set<T>().Update(entity).Property("IsDeleted").CurrentValue = false;
+        }
+
+        public virtual async Task<T> GetByIdDeleted(int id)
+        {
+            return await _dbContext.Set<T>().FindAsync(id);
         }
     }
 }
