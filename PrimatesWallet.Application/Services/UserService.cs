@@ -114,5 +114,14 @@ namespace PrimatesWallet.Application.Services
             return true;
         }
 
+
+        public async Task<string> ActivateUser(int userId)
+        {
+            var user = await unitOfWork.Users.GetByIdDeleted(userId);
+            unitOfWork.Users.Activate(user);
+            unitOfWork.Save();
+            return $"User {userId} activated";
+        }
+
     }
 }

@@ -75,6 +75,16 @@ namespace PrimatesWallet.Api.Controllers
             return Ok(roles);
         }
 
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+
+        public async Task<IActionResult> CreateRole(RoleCreationDto roleCreationDto)
+        {
+            if (roleCreationDto.Name == null || roleCreationDto.Description == null) throw new AppException("Missing required parameters", HttpStatusCode.BadRequest);
+            var response = await _roleService.CreateRole(roleCreationDto);
+            return Ok(response);
+        }
+
 
         /// <summary>
         /// Deletes a role by its ID.
@@ -109,6 +119,15 @@ namespace PrimatesWallet.Api.Controllers
             if(roleCreationDto.Name == null || roleCreationDto.Description == null) throw new AppException("Missing required parameters", HttpStatusCode.BadRequest);
             var response = await _roleService.CreateRole(roleCreationDto);
             return Ok(response);
+        }
+
+
+        [HttpPut("activate/{roleId}")]
+        public async Task<IActionResult> ActivateFixedDeposit(int roleId)
+        {
+            var role = await _roleService.ActivateRole(roleId);
+            return Ok(role);
+
         }
     }
 }

@@ -172,7 +172,15 @@ namespace PrimatesWallet.Application.Services
             return (int)Math.Ceiling((double)totalAccounts / PageSize);
         }
 
-        public async Task<string> DeleteAccount(int accountId, int currentUser)
+
+        public async Task<string> ActivateAccount(int accountId)
+        {
+            var account  = await unitOfWork.Accounts.GetByIdDeleted(accountId);
+            unitOfWork.Accounts.Activate(account);
+            unitOfWork.Save();
+            return $"{accountId} activated";
+
+      public async Task<string> DeleteAccount(int accountId, int currentUser)
         {
             var user = await unitOfWork.Users.GetById(currentUser);
             var isAdmin = unitOfWork.Users.IsAdmin(user);

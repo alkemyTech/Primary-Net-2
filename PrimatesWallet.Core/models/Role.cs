@@ -30,5 +30,8 @@ namespace PrimatesWallet.Core.Models
         /// Role description
         /// </summary>
         public string Description { get; set; }
+
+        [Column("isDeleted", TypeName = "BIT")]
+        public bool IsDeleted { get; set; } = false;
     }
 }

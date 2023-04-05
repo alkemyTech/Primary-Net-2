@@ -178,5 +178,13 @@ namespace PrimatesWallet.Api.Controllers
             var response = new BaseResponse<bool>(ReplyMessage.MESSAGE_CREATE_SUCCESS, transaction, (int)HttpStatusCode.Created);
             return Ok(response);
         }
+
+
+        [HttpPut("activate/{transactionId}")]
+        public async Task <IActionResult> ActivateTransaction(int transactionId)
+        {
+            var transaction = await transactionService.ActivateTransaction(transactionId);
+            return Ok(transaction);
+        }
     }
 }

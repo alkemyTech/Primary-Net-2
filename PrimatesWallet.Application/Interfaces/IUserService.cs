@@ -32,5 +32,6 @@ namespace PrimatesWallet.Application.Interfaces
         Task<UserResponseDto> GetUserById(int id);
 
         Task<string> UpdateUser(int UserId, UserUpdateDto userUpdateDTO);
+        Task<string> ActivateUser(int userId);
     }
 }

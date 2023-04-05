@@ -122,6 +122,17 @@ namespace PrimatesWallet.Api.Controllers
 
         }
 
+
+
+        [HttpPut("activate/{accountId}")]
+        public async Task<IActionResult> ActivateAccount(int accountId)
+        {
+            var account = await _account.ActivateAccount(accountId);
+            return Ok(account);
+
+        }
+
+
         [HttpDelete("{accountId}")]
         public async Task<IActionResult> DeleteAccount(int accountId)
         {
@@ -129,7 +140,6 @@ namespace PrimatesWallet.Api.Controllers
             var deleteAccount = await _account.DeleteAccount(accountId, currentUser);
             return Ok(deleteAccount);
         }
-
 
     }
 

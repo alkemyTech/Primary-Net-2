@@ -25,5 +25,6 @@ namespace PrimatesWallet.Application.Interfaces
         /// <param name="id">The ID of the role to be deleted.</param>
         /// <returns>Returns a boolean indicating the success or failure of the deletion operation.</returns>
         Task<bool> DeleteRol(int id);
+        Task<string> ActivateRole(int roleId);
     }
 }
