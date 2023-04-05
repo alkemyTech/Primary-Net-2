@@ -16,8 +16,7 @@ namespace PrimatesWallet.Application.DTOS
         public decimal Amount { get; set; }
 
         [Required]
-        //[RegularExpression(@"^[a-zA-Z0-9]+$")]
-        //[StringLength(50, MinimumLength = 10, ErrorMessage = "Concept length cannot exceed 50 characters.")]
+        [RegularExpression(@"^[a-zA-Z0-9]+$")]
         public string Concept { get; set; }
 
         [Required]

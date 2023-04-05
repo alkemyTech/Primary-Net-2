@@ -164,7 +164,6 @@ namespace PrimatesWallet.Api.Controllers
         /// <response code="401">Returns if the user is unauthorized for this operation.</response>
         /// <response code="404">Returns if the requested transaction was not found.</response>
         /// <response code="500">Returns if there was an internal server error.</response>
-
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
