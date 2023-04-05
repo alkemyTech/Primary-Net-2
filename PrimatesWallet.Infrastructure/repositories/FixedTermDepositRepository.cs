@@ -37,5 +37,12 @@ namespace PrimatesWallet.Infrastructure.repositories
             //la cuenta se hace en base de datos para eficiencia
             return await base._dbContext.FixedTermDeposits.CountAsync();
         }
+
+        public async Task<IEnumerable<FixedTermDeposit>> GetClosedFixedTermDeposits()
+        {
+            var today = DateTime.Now.Date;
+
+            return await base._dbContext.FixedTermDeposits.Where(f => f.Closing_Date.Date == today).Include(f => f.Account).ToListAsync();
+        }
     }
 }

@@ -1,8 +1,12 @@
+using AutoMapper;
+using Hangfire;
+using Microsoft.Extensions.Logging;
 using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
 using PrimatesWallet.Application.Mapping.User;
+using PrimatesWallet.Core.Enums;
 using PrimatesWallet.Core.Interfaces;
 using PrimatesWallet.Core.Models;
 using System;
@@ -19,10 +23,12 @@ namespace PrimatesWallet.Application.Services
     {
 
         public readonly IUnitOfWork unitOfWork;
+        private readonly IMapper mapper;
 
-        public FixedTermDepositService(IUnitOfWork unitOfWork)
+        public FixedTermDepositService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
+            this.mapper = mapper;
         }
 
         public async Task<IEnumerable<FixedTermDeposit>> GetByUser(int userId)
@@ -101,15 +107,20 @@ namespace PrimatesWallet.Application.Services
         {
             var fixedTermDeposit = await unitOfWork.FixedTermDeposits.GetById(id);
 
+
             if (fixedTermDeposit is null) throw new AppException("Fixed term deposit not found", HttpStatusCode.NotFound);
 
             if (fixedTermDeposit.Closing_Date < DateTime.Now) throw new AppException("This fixed term deposit is closed", HttpStatusCode.BadRequest);
+            
+            var fixedTermDepositDto = mapper.Map<FixedTermDepositRequestDTO>(fixedTermDeposit);
 
             // Return of money without interest.
 
             var userAccount = await unitOfWork.Accounts.GetById(fixedTermDeposit.AccountId);
 
-            userAccount.Money += fixedTermDeposit.Amount;
+            var calculateAmount = fixedTermDeposit.Amount / (1 + CalculateInterestRate(fixedTermDepositDto));
+
+            userAccount.Money += calculateAmount;
 
             unitOfWork.Accounts.Update(userAccount);
             unitOfWork.FixedTermDeposits.Delete(fixedTermDeposit);
@@ -127,7 +138,7 @@ namespace PrimatesWallet.Application.Services
 
         public async Task<bool> Insert(int id, FixedTermDepositRequestDTO fixedTermDTO)
         {
-            var account = await unitOfWotk.Accounts.GetByUserId_FixedTerm(id); //buscamos la cuenta del user logeado
+            var account = await unitOfWork.Accounts.GetByUserId_FixedTerm(id); //buscamos la cuenta del user logeado
 
             //si no hay fondos suficientes se rechaza la operacion
             if(account.Money - fixedTermDTO.Amount < 0) throw new AppException("Insufficient funds: You do not have enough money in your account to make this investment.", HttpStatusCode.BadRequest);
@@ -146,7 +157,7 @@ namespace PrimatesWallet.Application.Services
             };
 
             account.FixedTermDeposit.Add(newFixedTerm);
-            var response = unitOfWotk.Save();
+            var response = unitOfWork.Save();
             return response > 0;
         }
 
@@ -196,6 +207,42 @@ namespace PrimatesWallet.Application.Services
             if (totalDays <= 365) return InterestLess_365Days;
 
             return interestGreater_1Year;
+        }
+
+        /// <summary>
+        /// This asynchronous method is responsible for liquidating fixed term deposits that have been closed.
+        /// It retrieves the deposits through the "unitOfWork" object and performs a series of operations on each of them,
+        /// adding the deposit amount to the associated account, registering a transaction, and updating the "account" object.
+        /// Finally, it calls the "Save" method of the "unitOfWork" object to save the changes to the database.
+        /// </summary>
+        public async Task LiquidateFixedTermDeposit()
+        {
+
+            var fixedTermDeposits = await unitOfWork.FixedTermDeposits.GetClosedFixedTermDeposits();
+
+            foreach (var deposit in fixedTermDeposits)
+            {
+                var account = deposit.Account;
+
+                account.Money += deposit.Amount;
+
+                var transaction = new Transaction() 
+                { 
+                    Concept = $"Fixed Term deposit {deposit.Id}",
+                    Type = TransactionType.topup,
+                    Account_Id= account.Id,
+                    Amount = deposit.Amount,
+                    To_Account_Id = account.Id,
+                    Date = deposit.Closing_Date
+                };
+
+                await unitOfWork.Transactions.Add(transaction);
+
+                unitOfWork.Accounts.Update(account);
+            }
+
+            unitOfWork.Save();
+
         }
     }
 }

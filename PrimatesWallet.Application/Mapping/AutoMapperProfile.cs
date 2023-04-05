@@ -15,6 +15,7 @@ namespace PrimatesWallet.Application.Mapping
         public AutoMapperProfile()
         {
             CreateMap<CatalogueDTO, Catalogue>();
+            CreateMap<FixedTermDeposit, FixedTermDepositRequestDTO>();
         }
     }
 }
