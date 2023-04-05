@@ -29,7 +29,7 @@ namespace PrimatesWallet.Infrastructure.Seed.DataSeed
                     First_Name = "Lionel",
                     Last_Name = "Messi",
                     Email = "liomessichampion@hotmail.com",
-                    Password = BCrypt.Net.BCrypt.HashPassword("liomessi"),
+                    Password = BCrypt.Net.BCrypt.HashPassword("liomessi",10),
                     Points = 0,
                     Rol_Id = 2,
                 },                
