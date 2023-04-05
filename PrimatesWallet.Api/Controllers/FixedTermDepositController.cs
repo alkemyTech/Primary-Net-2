@@ -27,6 +27,12 @@ namespace PrimatesWallet.Api.Controllers
 
         }
 
+
+        /// <summary>
+        /// This endpoint is to get a fixed-term deposit, user must have token to access it
+        /// </summary>
+        /// <param name="id">Fixed-term deposit id</param>
+        /// <returns>if everything goes well, it returns a status code 200 returning the deposit correctly</returns>
         [Authorize]
         [HttpGet("{id}", Name = "Get one FixedTermDeposit")]
         public async Task<IActionResult> GetFixedTermDepositById(int id)
@@ -37,9 +43,13 @@ namespace PrimatesWallet.Api.Controllers
                 var response = new BaseResponse<FixedTermDepositDetailDto>(ReplyMessage.MESSAGE_QUERY, fixedTermDeposit, (int)HttpStatusCode.OK);
                 return Ok(response);
         }
+        /// <summary>
+        /// This endpoint is to get all fixed-term deposits from one user, using own user token to validate it.
+        /// </summary>
+        /// <returns>if everything goes well, it returns a status code 200 and returning user deposits correctly</returns>
 
         [Authorize]
-        [HttpGet("User Deposits")]
+        [HttpGet("UserDeposits")]
         public async Task<IActionResult> GetByUser()
         //Obtener todos los Plazos fijos de un usuario
         {
@@ -82,6 +92,12 @@ namespace PrimatesWallet.Api.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// This endpoint is to Get all a fixed-term deposits, only users with Admin role can access it.
+        /// </summary>
+        /// <param name="page">Fixed-term deposit page</param>
+        /// <param name="pageSize">Fixed-term deposit items per page</param>
+        /// <returns>if everything goes well, it returns a status code 200 returning all deposits paginated by page size</returns>
 
         [HttpGet(Name = "Get All")]
         [Authorize(Roles = "Admin")]

@@ -115,11 +115,10 @@ namespace PrimatesWallet.Api.Controllers
 
 
         [HttpPut("{accountId}")]
-        public async Task<IActionResult> UpdateAccount(int accountId, [FromBody] AccountUpdateDTO accountUpdateDTO)
+        public async Task<IActionResult> UpdateAccount(int accountId, [FromBody] AccountUpdateDto accountUpdateDTO)
         {
             var updatedAccount = await _account.UpdateAccountAdmin(accountId, accountUpdateDTO);
             return Ok(updatedAccount);
-
 
         }
 
