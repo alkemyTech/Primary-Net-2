@@ -1,4 +1,5 @@
-﻿using PrimatesWallet.Core.Models;
+﻿using PrimatesWallet.Application.DTOS;
+using PrimatesWallet.Core.Models;
 
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace PrimatesWallet.Application.Interfaces
 {
     public interface IRoleService
     {
+        Task<string> CreateRole(RoleCreationDto roleCreationDto);
         Task<Role> GetRoleById(int id);
         Task<IEnumerable<Role>> GetRoles();
 
