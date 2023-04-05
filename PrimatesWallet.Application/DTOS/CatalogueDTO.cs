@@ -8,18 +8,11 @@ using System.Threading.Tasks;
 
 namespace PrimatesWallet.Application.DTOS
 {
-    public class CatalogueProductDto
+    public class CatalogueDTO
     {
-        [Required]
-        [Column("product_description", TypeName = "VARCHAR(500)")]
+        public int Id { get; set; }
         public string ProductDescription { get; set; }
-
-        [Required]
-        [Column("image", TypeName = "VARCHAR(500)")]
         public string Image { get; set; }
-
-        [Required]
-        [Column("points")]
         public int Points { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PrimatesWallet.Api.Helpers;
 using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
@@ -21,7 +22,7 @@ namespace PrimatesWallet.Api.Controllers
         private readonly IAccountService _account;
         private readonly IUserContextService _userContextService;
 
-        public AccountController(IAccountService accountService, IUserContextService userContextService )
+        public AccountController(IAccountService accountService, IUserContextService userContextService)
         {
             _account = accountService;
             _userContextService = userContextService;
@@ -29,37 +30,33 @@ namespace PrimatesWallet.Api.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] int page = 1, int pageSize = 10)
         {
-            var accounts = await _account.GetAccountsList();
-            if (accounts == null)
+            var accounts = await _account.GetAccounts(page, pageSize);
+            var totalPages = await _account.TotalPageAccounts(pageSize);
+            string url = CurrentURL.Get(HttpContext.Request);
+            var response = new BasePaginateResponse<IEnumerable<AccountResponseDTO>>()
             {
-                return StatusCode(StatusCodes.Status204NoContent, "No accounts in database.");
-            }
-
-            return StatusCode(StatusCodes.Status200OK, accounts);
+                Message = ReplyMessage.MESSAGE_QUERY,
+                Result = accounts,
+                Page = page,
+                NextPage = (page < totalPages) ? $"{url}?page={page + 1}" : "None",
+                PreviousPage = (page == 1) ? "none" : $"{url}?page={page - 1}",
+                StatusCode = (int)HttpStatusCode.OK
+            };
+            return Ok(response);
         }
+
+
+
 
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAccountDetails(int id)
         {
-
-            try
-            {
-                var account = await _account.GetAccountById(id);
-
-                if (account is null) return NotFound($"The account with id: {id} does not exist");
-
-                return Ok(account);
-
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-
-
+            var account = await _account.GetAccountById(id);
+            if (account is null) throw new AppException($"The account with id: {id} does not exist", HttpStatusCode.NotFound);
+            return Ok(account);
         }
 
         /// <summary>
@@ -78,36 +75,17 @@ namespace PrimatesWallet.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPost("{id}")]
+        [HttpPost("deposit/{id}")]
         [Authorize]
-        public async Task<IActionResult> Depositar([FromRoute] int id, [FromBody] TopUpDTO topUpDTO)
+        public async Task<IActionResult> Deposit([FromRoute] int id, [FromBody] TopUpDto topUpDTO)
         {
-            try
-            {
-                var idUser = _userContextService.GetCurrentUser();
-                if (idUser != id)
-                {
-                    throw new AppException("User not authorized", HttpStatusCode.Unauthorized);
+            var idUser = _userContextService.GetCurrentUser();
+            if (idUser != id) throw new AppException("User not authorized", HttpStatusCode.Unauthorized);
 
-                }
-
-                var Response = await _account.DepositToAccount(id, topUpDTO);
-                var result = new BaseResponse<bool>("Operacion Exitosa!",Response,(int)HttpStatusCode.OK);
-                return Ok(result);
-
-            }
-            catch (AppException ex)
-            {
-                var response = new BaseResponse<object>(ex.Message, null, (int)ex.StatusCode);
-                return StatusCode(response.StatusCode, response);
-
-            }
-            catch (Exception ex)
-            {
-                var response = new BaseResponse<object>(ex.Message, null, (int)HttpStatusCode.InternalServerError);
-                return StatusCode(response.StatusCode, response);
-            }
-
+            var response = await _account.DepositToAccount(id, topUpDTO);
+            var result = new BaseResponse<bool>("Operation succeded!", response ,(int)HttpStatusCode.OK);
+               
+            return Ok(result);
         }
 
         /// <summary>
@@ -117,7 +95,7 @@ namespace PrimatesWallet.Api.Controllers
         /// <param name="transferDTO">a DTO with the transaction information(receiver user email, amount, type of transaction, concept)</param>
         [HttpPost("transfer/{accountId}")]
         [Authorize]
-        public async Task<IActionResult> Transfer(int accountId, [FromBody] TransferDTO transferDTO)
+        public async Task<IActionResult> Transfer(int accountId, [FromBody] TransferDto transferDTO)
         {
             var userId = _userContextService.GetCurrentUser();
 
@@ -129,7 +107,7 @@ namespace PrimatesWallet.Api.Controllers
 
             var transaction = await _account.Transfer(userId, transferDTO);
 
-            var response = new BaseResponse<TransferDetailDTO>("Tranferencia exitosa!", transaction, (int)HttpStatusCode.OK);
+            var response = new BaseResponse<TransferDetailDto>("Operation succeded!", transaction, (int)HttpStatusCode.OK);
 
             return Ok(response);
         }
@@ -137,17 +115,23 @@ namespace PrimatesWallet.Api.Controllers
 
 
         [HttpPut("{accountId}")]
-        public async Task<IActionResult> UpdateAccount(int accountId, [FromBody] AccountUpdateDTO accountUpdateDTO) 
+        public async Task<IActionResult> UpdateAccount(int accountId, [FromBody] AccountUpdateDto accountUpdateDTO)
         {
-          var updatedAccount =  await _account.UpdateAccountAdmin( accountId, accountUpdateDTO);
+            var updatedAccount = await _account.UpdateAccountAdmin(accountId, accountUpdateDTO);
             return Ok(updatedAccount);
-           
 
         }
 
-
-
+        [HttpDelete("{accountId}")]
+        public async Task<IActionResult> DeleteAccount(int accountId)
+        {
+            var currentUser = _userContextService.GetCurrentUser();
+            var deleteAccount = await _account.DeleteAccount(accountId, currentUser);
+            return Ok(deleteAccount);
+        }
 
 
     }
+
 }
+

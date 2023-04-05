@@ -1,4 +1,4 @@
-﻿using PrimatesWallet.Application.DTOS;
+using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,11 +18,11 @@ namespace PrimatesWallet.Application.Services
     public class FixedTermDepositService : IFixedTermDepositService
     {
 
-        public readonly IUnitOfWork unitOfWotk;
+        public readonly IUnitOfWork unitOfWork;
 
-        public FixedTermDepositService(IUnitOfWork unitOfWotk)
+        public FixedTermDepositService(IUnitOfWork unitOfWork)
         {
-            this.unitOfWotk = unitOfWotk;
+            this.unitOfWork = unitOfWork;
         }
 
         public async Task<IEnumerable<FixedTermDeposit>> GetByUser(int userId)
@@ -30,7 +31,7 @@ namespace PrimatesWallet.Application.Services
              *  1 para obtener el accountId mediante el userId y otro para hacer la consulta en la tabla fixed,
              *  es mas eficiente realizar una sola consulta a la base con la tabla de account y hacer un join con fixed
              */
-            var account = await unitOfWotk.Accounts.GetByUserId_FixedTerm(userId);
+            var account = await unitOfWork.Accounts.GetByUserId_FixedTerm(userId);
             var fixedTermDeposit = account.FixedTermDeposit;
 
             return fixedTermDeposit is null
@@ -40,47 +41,46 @@ namespace PrimatesWallet.Application.Services
 
         public async Task<FixedTermDeposit> GetFixedTermDepositById(int id)
         {
-                var fixedTermDeposit = await unitOfWotk.FixedTermDeposits.GetById(id);
+                var fixedTermDeposit = await unitOfWork.FixedTermDeposits.GetById(id);
                 if (fixedTermDeposit == null) throw new AppException("Deposit not found", HttpStatusCode.NotFound);
                 return fixedTermDeposit;
         }
 
-        public async Task<FixedTermDepositDetailDTO> GetFixedTermDepositDetails(int id, int userId)
+        public async Task<FixedTermDepositDetailDto> GetFixedTermDepositDetails(int id, int userId)
         {
             // Para obtener el Plazo fijo requerido tomamos en cuenta las siguentes validaciones:
-            
+
             // Si no existe el Id proveído , cortar la ejecucion para optimizar recursos.
-                var fixedTermDeposit = await unitOfWotk.FixedTermDeposits.GetFixedTermDepositById(id, userId);
+                var fixedTermDeposit = await unitOfWork.FixedTermDeposits.GetFixedTermDepositById(id, userId);
                 if (fixedTermDeposit == null) throw new AppException("Fixed Term Deposit not found", HttpStatusCode.NotFound);
 
             // Si el cliente que envia la peticion no es el propietario del plazo fijo no deberá tener acceso al mismo.
-                var requestUser = await unitOfWotk.UserRepository.GetById(userId);
+                var requestUser = await unitOfWork.Users.GetById(userId);
                 if (requestUser.Account.Id != fixedTermDeposit.AccountId) throw new AppException("Invalid Credentials", HttpStatusCode.Forbidden);
                
             
-                var response = new FixedTermDepositDetailDTO()
+                var response = new FixedTermDepositDetailDto()
                 { Amount= fixedTermDeposit.Amount , Closing_Date=fixedTermDeposit.Closing_Date, Creation_Date=fixedTermDeposit.Creation_Date };
                 return response;
         }
 
-     
+
         public async Task<int> TotalPageDeposits(int pageSize)
         {
-            var totalUsers = await unitOfWotk.FixedTermDeposits.GetCount();
+            var totalUsers = await unitOfWork.FixedTermDeposits.GetCount();
             //contamos el total de Plazos fijos y calculamos cuantas paginas hay en total
             return (int)Math.Ceiling((double)totalUsers / pageSize);
         }
 
 
-        public async Task<IEnumerable<FixedTermDepositDetailDTO>> GetDeposits(int page, int pageSize)
+        public async Task<IEnumerable<FixedTermDepositDetailDto>> GetDeposits(int page, int pageSize)
         {
-
         // Listado de todos los plazos fijos para el desarrollador con paginacion ya incluida
-            var allDeposits = await unitOfWotk.FixedTermDeposits.GetAll(page, pageSize)
+            var allDeposits = await unitOfWork.FixedTermDeposits.GetAll(page, pageSize)
                  ?? throw new AppException(ReplyMessage.MESSAGE_QUERY_EMPTY, HttpStatusCode.NotFound);
 
             var deposits = allDeposits.Select(x =>
-                new FixedTermDepositDetailDTO() { Amount = x.Amount , Creation_Date = x.Creation_Date, Closing_Date = x.Closing_Date });
+                new FixedTermDepositDetailDto() { Amount = x.Amount , Creation_Date = x.Creation_Date, Closing_Date = x.Closing_Date });
                 
             return deposits;
         }
@@ -99,30 +99,103 @@ namespace PrimatesWallet.Application.Services
         /// <exception cref="AppException">if the closing date of the fixed term is less than the current one, an error is thrown indicating that the fixed term is closed </exception>
         public async Task<bool> DeleteFixedtermDeposit(int id)
         {
-            var fixedTermDeposit = await unitOfWotk.FixedTermDeposits.GetById(id);
+            var fixedTermDeposit = await unitOfWork.FixedTermDeposits.GetById(id);
 
-            if ( fixedTermDeposit is null ) throw new AppException( "Fixed term deposit not found", HttpStatusCode.NotFound );
+            if (fixedTermDeposit is null) throw new AppException("Fixed term deposit not found", HttpStatusCode.NotFound);
 
-            if ( fixedTermDeposit.Closing_Date < DateTime.Now ) throw new AppException("This fixed term deposit is closed", HttpStatusCode.BadRequest);
+            if (fixedTermDeposit.Closing_Date < DateTime.Now) throw new AppException("This fixed term deposit is closed", HttpStatusCode.BadRequest);
 
             // Return of money without interest.
 
-            var userAccount = await unitOfWotk.Accounts.GetById(fixedTermDeposit.AccountId);
+            var userAccount = await unitOfWork.Accounts.GetById(fixedTermDeposit.AccountId);
 
             userAccount.Money += fixedTermDeposit.Amount;
 
-            unitOfWotk.Accounts.Update(userAccount);
-            unitOfWotk.FixedTermDeposits.Delete(fixedTermDeposit);
+            unitOfWork.Accounts.Update(userAccount);
+            unitOfWork.FixedTermDeposits.Delete(fixedTermDeposit);
 
-            var response = unitOfWotk.Save();
+            var response = unitOfWork.Save();
 
-            if ( response > 0 ) return true;
+            if (response > 0) return true;
             else return false;
         }
 
         public Task<IQueryable<FixedTermDeposit>> GetAllDepositsQueryable()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<bool> Insert(int id, FixedTermDepositRequestDTO fixedTermDTO)
+        {
+            var account = await unitOfWork.Accounts.GetByUserId_FixedTerm(id); //buscamos la cuenta del user logeado
+
+            //si no hay fondos suficientes se rechaza la operacion
+            if(account.Money - fixedTermDTO.Amount < 0) throw new AppException("Insufficient funds: You do not have enough money in your account to make this investment.", HttpStatusCode.BadRequest);
+
+            IsValidDate(fixedTermDTO); //verificamos si es correcta la relacion entre fecha de cierre y apertura
+
+            decimal interestRate = CalculateInterestRate(fixedTermDTO); //calculamos el interes a recibir
+
+            account.Money -= fixedTermDTO.Amount; //quitamos de la cuenta el monto a invertir
+
+            var newFixedTerm = new FixedTermDeposit()
+            {
+                Amount = (fixedTermDTO.Amount * (1 + interestRate)), //agregamos el monto mas los intereses
+                Creation_Date = fixedTermDTO.Creation_Date,
+                Closing_Date = fixedTermDTO.Closing_Date,
+            };
+
+            account.FixedTermDeposit.Add(newFixedTerm);
+            var response = unitOfWork.Save();
+            return response > 0;
+        }
+
+
+        /// <summary>
+        /// Validates the creation and closing dates for a fixed-term deposit request.
+        /// </summary>
+        /// <param name="fixedTermDTO">The fixed-term deposit request object containing the creation and closing dates.</param>
+        /// <exception cref="AppException">Thrown when the creation or closing date is invalid.</exception>
+        private void IsValidDate(FixedTermDepositRequestDTO fixedTermDTO)
+        {
+            /*
+                Vemos si con las fechas otorgadas es valido realizar una inversion,
+                la inversion no puede ser en una fecha pasada, la fecha de cierre no puede ser menor que la de apertura,
+                el tiempo minimo para un plazo fijo es 30 dias
+            */
+
+            bool isCreationDateValid = fixedTermDTO.Creation_Date.Date >= DateTime.Today;
+            if (!isCreationDateValid) throw new AppException("The creation date must be equal to or later than today's date.", HttpStatusCode.BadRequest);
+
+            bool isClosingDateValid = fixedTermDTO.Closing_Date > fixedTermDTO.Creation_Date;
+            if (!isClosingDateValid) throw new AppException("The closing date cannot be earlier than the creation date.", HttpStatusCode.BadRequest);
+
+            bool isMinimumTime = (fixedTermDTO.Closing_Date - fixedTermDTO.Creation_Date).TotalDays >= 30;
+            if (!isMinimumTime) throw new AppException("The minimum term for the deposit is 30 days.", HttpStatusCode.BadRequest);
+        }
+
+        /// <summary>
+        /// Calculates the interest rate for a fixed-term deposit based on the duration of the investment.
+        /// </summary>
+        /// <param name="fixedTermDTO">The fixed-term deposit request object containing the creation and closing dates.</param>
+        /// <returns>The applicable interest rate based on the duration of the investment.</returns>
+        private decimal CalculateInterestRate(FixedTermDepositRequestDTO fixedTermDTO)
+        {
+            /*
+             calculamos el interes segun los dias, en los requerimientos no habia detalle sobre tasas y dias, se selecciono
+             menor a 90 dias 5.8 de interes, menor a un año 19 y mas de un año 85
+             */
+
+            decimal InterestLess_90Days = 0.0583M;
+            decimal InterestLess_365Days = 0.19M;
+            decimal interestGreater_1Year = 0.85M;
+
+            var totalDays = (fixedTermDTO.Closing_Date - fixedTermDTO.Creation_Date).TotalDays;
+
+            if (totalDays <= 90) return InterestLess_90Days;
+            if (totalDays <= 365) return InterestLess_365Days;
+
+            return interestGreater_1Year;
         }
     }
 }

@@ -10,6 +10,6 @@ namespace PrimatesWallet.Application.Interfaces
 {
     public interface IAuthService
     {
-        Task<User> Authenticate(LoginUser login);
+        Task<User> Authenticate(LoginUserDto login);
     }
 }

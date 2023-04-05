@@ -16,10 +16,15 @@ namespace PrimatesWallet.Application.ServiceExtension
         public static IServiceCollection AddDIApplication(this IServiceCollection services, IConfiguration configuration)
         {
 
-            new MapperConfiguration(config =>
+            var mappingConfig = new MapperConfiguration(config =>
             {
                 config.AddProfile(new AutoMapperProfile());
-            }).CreateMapper();
+            });
+
+            IMapper mapper = mappingConfig.CreateMapper();
+
+            services.AddSingleton(mapper);
+
 
 
 

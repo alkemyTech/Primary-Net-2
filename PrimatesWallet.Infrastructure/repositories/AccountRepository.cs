@@ -16,18 +16,20 @@ namespace PrimatesWallet.Infrastructure.repositories
             var account = await base._dbContext.Accounts
                 .Where(a => a.UserId == userId)
                 .Include(b => b.FixedTermDeposit //join con fixedTermc
-                    .OrderBy(c => c.Closing_Date)) //ordenamos en base de datos para mejor rendimiento
+                .OrderBy(c => c.Closing_Date)) //ordenamos en base de datos para mejor rendimiento
                 .FirstOrDefaultAsync();
 
             return account;
         }
 
-        public async Task<Account>Get_Transaccion(int Id)
+        public async Task<Account> Get_Transaccion(int Id)
         {
-            return await base._dbContext.Accounts
+            var transaction = await base._dbContext.Accounts
                 .Where(a => a.UserId == Id)
                 .Include(x => x.Transactions)
                 .FirstOrDefaultAsync();
+
+            return transaction;
         }
 
         public async Task<int?> GetIdAccount(int userId)
@@ -38,16 +40,14 @@ namespace PrimatesWallet.Infrastructure.repositories
                 .FirstOrDefaultAsync();
         }
         /// <summary>
-        ///     This method checks if an account exists with a specific user id.
-        ///     If there is an account with this id, return true else return false.
+        ///     Este m�todo valida si exista una cuenta con el id del usuario.
         /// </summary>
         /// <param name="userId">
-        ///     user id value, extracted from token.
+        ///     El valor de userId es extraido del token de autenticaci�n.
         /// </param>
         public async Task<bool> CheckAccountByUserId(int userId)
         {
-            var existingAccount = base._dbContext.Accounts.Where(a => a.UserId == userId).FirstOrDefault();
-
+            var existingAccount =await base._dbContext.Accounts.Where(a => a.UserId == userId).FirstOrDefaultAsync();
             return ( existingAccount == null ) ? false: true;
         }
 
@@ -56,7 +56,21 @@ namespace PrimatesWallet.Infrastructure.repositories
             _dbContext.Accounts.Update(account);
         }
 
+        public async Task<IEnumerable<Account>> GetAll(int page, int pageSize)
+        {
+            return await base._dbContext.Accounts
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
 
-
+        public async Task<int> GetCount()
+        {
+            return await base._dbContext.Accounts.CountAsync();
+        }
+        public void DeleteAccount(Account account)
+        {
+            _dbContext.Accounts.Remove(account);
+        }
     }
 }

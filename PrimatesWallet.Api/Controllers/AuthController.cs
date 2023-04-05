@@ -27,32 +27,19 @@ namespace PrimatesWallet.Api.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginUser loginUser)
+        public async Task<IActionResult> Login(LoginUserDto loginUser)
         {
-            try
-            {
-                //Autentica las credenciales y devuelve un usuario
-                var user = await authService.Authenticate(loginUser);
+            //Autentica las credenciales y devuelve un usuario
+            var user = await authService.Authenticate(loginUser);
 
-                if (user != null)
-                {
-                    //Si existe el usuario y las credenciales son validas, se genera el token a partir de ese usuario
-                    var token = jwtJervice.Generate(user);
+            //Si el usuario no existe o las credenciales son invalidas retorna el error y su respectivo mensaje con código de estado.
+            if (user == null) throw new AppException("Invalid email/password", HttpStatusCode.BadRequest);
+              
+            //Si existe el usuario y las credenciales son validas, se genera el token a partir de ese usuario
+            var token = jwtJervice.Generate(user);
 
-                    //Se retorna el token
-                    return Ok(token);
-}
-                else
-                {
-                    return BadRequest();
-                }
-            }
-            catch (AppException ex)
-            {
-                //Si el usuario no existe o las credenciales son invalidas retorna el error y su respectivo mensaje con código de estado.
-                var response = new BaseResponse<object>(ex.Message, null, (int)HttpStatusCode.InternalServerError);
-                return StatusCode(response.StatusCode, response);
-            }
+            //Se retorna el token
+            return Ok(token);
 
         }
 
@@ -65,12 +52,12 @@ namespace PrimatesWallet.Api.Controllers
             var userId = userContextService.GetCurrentUser();
             var user =await userService.GetUserById(userId);
             if (user == null) throw new AppException("User not found", HttpStatusCode.NotFound);
-            var userResponse = new UserResponseDTO()
+            var userResponse = new UserResponseDto()
             {
                 First_Name = user.First_Name,
                 Last_Name = user.Last_Name,
                 Email = user.Email,
-                Points = user.Points
+                Points = user.Points,
             };
             return Ok(userResponse);
 

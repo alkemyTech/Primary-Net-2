@@ -8,61 +8,61 @@ using System.Threading.Tasks;
 
 namespace PrimatesWallet.Application.Mapping.Transaction
 {
-    public class TransactionDTOBuilder
+    public class TransactionDtoBuilder
     {
-        private readonly TransactionDTO _transactionDTO;
+        private readonly TransactionDto _transactionDTO;
 
         /// <summary>
         /// Builder class para construir instancias de TransactionDTO.
         /// </summary>
-        public TransactionDTOBuilder()
+        public TransactionDtoBuilder()
         {
-            _transactionDTO = new TransactionDTO();
+            _transactionDTO = new TransactionDto();
         }
 
-        public TransactionDTOBuilder WithId(int id)
+        public TransactionDtoBuilder WithId(int id)
         {
             _transactionDTO.Id = id;
             return this;
         }
 
-        public TransactionDTOBuilder WithAmount(decimal amount)
+        public TransactionDtoBuilder WithAmount(decimal amount)
         {
             _transactionDTO.Amount = amount;
             return this;
         }
 
-        public TransactionDTOBuilder WithConcept(string concept)
+        public TransactionDtoBuilder WithConcept(string concept)
         {
             _transactionDTO.Concept = concept;
             return this;
         }
 
-        public TransactionDTOBuilder WithDate(DateTime date)
+        public TransactionDtoBuilder WithDate(DateTime date)
         {
             _transactionDTO.Date = date;
             return this;
         }
 
-        public TransactionDTOBuilder WithType(TransactionType type)
+        public TransactionDtoBuilder WithType(TransactionType type)
         {
             _transactionDTO.Type = type.ToString();
             return this;
         }
 
-        public TransactionDTOBuilder WithAccountId(int accountId)
+        public TransactionDtoBuilder WithAccountId(int accountId)
         {
             _transactionDTO.Account_Id = accountId;
             return this;
         }
 
-        public TransactionDTOBuilder WithToAccountId(int toAccountId)
+        public TransactionDtoBuilder WithToAccountId(int toAccountId)
         {
             _transactionDTO.To_Account_Id = toAccountId;
             return this;
         }
 
-        public TransactionDTO Build()
+        public TransactionDto Build()
         {
             return _transactionDTO;
         }
