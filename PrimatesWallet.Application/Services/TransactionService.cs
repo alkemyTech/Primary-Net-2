@@ -7,7 +7,9 @@ using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Mapping.Transaction;
 using System.Net;
-
+using AutoMapper;
+using System.Transactions;
+using System;
 
 namespace PrimatesWallet.Application.Services
 {
@@ -17,24 +19,32 @@ namespace PrimatesWallet.Application.Services
     public class TransactionService : ITransactionService
     {
         public readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public TransactionService(IUnitOfWork unitOfWork)
+        public TransactionService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             this._unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
+        /// <summary>
+        /// Retrieves all transactions made by a specific user.
+        /// </summary>
+        /// <param name="userId">The ID of the user.</param>
+        /// <returns>A list of TransactionDto objects representing the user's transactions.</returns>
+        /// <exception cref="AppException">Thrown if no transactions are found for the user.</exception>
         public async Task<IEnumerable<TransactionDto>> GetAllByUser(int userId)
         {
-
-            //con el id del usuario buscamos el id de su cuenta
+            // Retrieves the ID of the user's account using the user ID.
             var accountId = await _unitOfWork.Accounts.GetIdAccount(userId)
                 ?? throw new AppException(ReplyMessage.MESSAGE_QUERY_EMPTY, HttpStatusCode.NotFound);
 
-            //devolvemos las transacciones de ese usuario ya sea: deposito, transferencia realizada o recibida
+            // Retrieves all transactions for the user's account.
             var transactions = await _unitOfWork.Transactions.GetAllByAccount(accountId)
                 ?? throw new AppException(ReplyMessage.MESSAGE_QUERY_EMPTY, HttpStatusCode.NotFound);
 
-                var transactionsDTO = transactions.Select(x =>
+            // Converts the transactions into a list of TransactionDto objects.
+            var transactionsDTO = transactions.Select(x =>
                     new TransactionDtoBuilder()
                     .WithId(x.Id)
                     .WithAmount(x.Amount)
@@ -48,29 +58,38 @@ namespace PrimatesWallet.Application.Services
             return transactionsDTO;
         }
 
+        /// <summary>
+        /// Retrieves a transaction by its ID
+        /// </summary>
+        /// <param name="id">The ID of the transaction to retrieve</param>
+        /// <returns>The transaction DTO</returns>
+        /// <exception cref="AppException">Thrown when no transaction with the given ID is found</exception>
         public async Task<TransactionDto> GetTransactionById(int id)
         {
 
             var transaction = await _unitOfWork.Transactions.GetById(id);
 
-            var transactionDTO = new TransactionDtoBuilder()
-                    .WithId(transaction.Id)
-                    .WithAmount(transaction.Amount)
-                    .WithConcept(transaction.Concept)
-                    .WithDate(transaction.Date)
-                    .WithType(transaction.Type)
-                    .WithAccountId(transaction.Account_Id)
-                    .WithToAccountId((int)transaction.To_Account_Id)
-                    .Build();
+            if (transaction is null) throw new AppException($"No transaction found with id {id}", HttpStatusCode.NotFound);
+
+            // Build a new TransactionDto object using a TransactionDtoBuilder and the data from the Transaction object.
+            var transactionDTO = _mapper.Map<TransactionDto>(transaction);
 
             return transactionDTO;
 
         }
 
+        /// <summary>
+        /// Retrieves all transactions.
+        /// </summary>
+        /// <returns>A collection of TransactionDto objects representing all transactions.</returns>
+        /// <exception cref="AppException">Thrown when no transactions are found in the database.</exception>
         public async Task<IEnumerable<TransactionDto>> GetAllTransactions()
         {
             var transactions = await _unitOfWork.Transactions.GetAll();
 
+            if (transactions is null) throw new AppException("No transactions were found.", HttpStatusCode.NotFound);
+
+            // Maps the retrieved transactions to a collection of TransactionDto objects.
             var transactionsDTO = transactions.Select(x =>
                                     new TransactionDtoBuilder()
                                     .WithId(x.Id)
@@ -125,47 +144,88 @@ namespace PrimatesWallet.Application.Services
             return false;
         }
 
-        public async Task<bool> DeleteTransaction(int transactionId, int userId)
-        {
-
-            var user = await _unitOfWork.Users.GetById(userId);
-            var isAdmin = _unitOfWork.Users.IsAdmin(user);
-            
-            if (!isAdmin) throw new AppException("Invalid Credentials", HttpStatusCode.Forbidden);
-            
+        /// <summary>
+        /// Deletes a transaction by its ID
+        /// </summary>
+        /// <param name="transactionId">The ID of the transaction to be deleted</param>
+        /// <returns>A boolean indicating if the deletion was successful or not</returns>
+        /// <exception cref="AppException">Thrown when the transaction with the given ID is not found</exception>
+        public async Task<bool> DeleteTransaction(int transactionId)
+        {                        
             var transaction = await _unitOfWork.Transactions.GetById(transactionId);
             
-            if(transaction == null) throw new AppException($"Transaction {transactionId} not found", HttpStatusCode.NotFound);
+            if(transaction == null) throw new AppException($"Transaction with id:{transactionId} not found", HttpStatusCode.NotFound);
             
             _unitOfWork.Transactions.Delete(transaction);
-            _unitOfWork.Save();
+            var result = _unitOfWork.Save();
            
-            return true;
+            if( result > 0 )return true;
+
+            return false;
         }
 
-
+        /// <summary>
+        /// Inserts a new transaction into the database and updates the corresponding accounts' balances.
+        /// </summary>
+        /// <param name="transactionDTO">The transaction data transfer object.</param>
+        /// <returns>Returns a boolean indicating whether the operation was successful.</returns>
+        /// <exception cref="AppException">Throws an exception when trying to perform invalid transactions (e.g. payments between the same account, deposits to other accounts, insufficient balance, etc).</exception>
         public async Task<bool> Insert(TransactionRequestDto transactionDTO)
         {
             /*
-             Verificamos si la logica de emisor receptor de una transaccion es correcta
-             */
-            bool isTopup = transactionDTO.Type is TransactionType.topup;
-            bool isPaymentOrRepayment = transactionDTO.Type is (TransactionType.payment or TransactionType.repayment);
+                public async Task<bool> Insert(TransactionRequestDto transactionDTO)
+                {
+                    /*
+                     Verificamos si la logica de emisor receptor de una transaccion es correcta
+                     */
+            bool isTopup = transactionDTO.Type == TransactionType.topup.ToString();
+            bool isPaymentOrRepayment = transactionDTO.Type == TransactionType.payment.ToString() || transactionDTO.Type == TransactionType.repayment.ToString();
             bool isSameAccount = transactionDTO.Account_Id == transactionDTO.To_Account_Id;
 
             if (!isSameAccount && isTopup) throw new AppException("Deposits to other accounts are not allowed", HttpStatusCode.BadRequest);
 
             if (isSameAccount && isPaymentOrRepayment) throw new AppException("Payments between the same accounts are not allowed", HttpStatusCode.BadRequest);
+            
 
-            var transaction = new Transaction()
+            if (isPaymentOrRepayment)
+            {
+                var senderAccount = await _unitOfWork.Accounts.GetById(transactionDTO.Account_Id);
+                if( senderAccount == null ) throw new AppException("Sender account not fount", HttpStatusCode.NotFound);
+
+                var receivertAccount = await _unitOfWork.Accounts.GetById(transactionDTO.To_Account_Id);
+                if ( receivertAccount == null ) throw new AppException("Receiver account not fount", HttpStatusCode.NotFound);
+
+                if ( senderAccount.Money < transactionDTO.Amount) throw new AppException("The sending account does not have enough balance", HttpStatusCode.BadRequest);
+
+                senderAccount.Money -= transactionDTO.Amount;
+                receivertAccount.Money += transactionDTO.Amount;
+
+                _unitOfWork.Accounts.Update(senderAccount);
+                _unitOfWork.Accounts.Update(receivertAccount);
+            }
+
+            if (isTopup)
+            {
+                var account = await _unitOfWork.Accounts.GetById(transactionDTO.Account_Id);
+
+                account.Money += transactionDTO.Amount;
+
+                _unitOfWork.Accounts.Update(account);
+            }
+
+            var transactionType = (TransactionType)Enum.Parse(typeof(TransactionType), transactionDTO.Type);
+
+            var transaction = new Core.Models.Transaction()
             {
                 Amount = transactionDTO.Amount,
-                Type = transactionDTO.Type,
+                Type = transactionType,
                 Concept = transactionDTO.Concept,
                 Date = DateTime.Now,
                 Account_Id = transactionDTO.Account_Id,
                 To_Account_Id = transactionDTO.To_Account_Id
             };
+
+
 
             /*
                 Aca se me ocurrio 2 formas de poder validar si las cuentas existen,
