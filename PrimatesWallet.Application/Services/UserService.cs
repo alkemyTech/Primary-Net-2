@@ -98,28 +98,20 @@ namespace PrimatesWallet.Application.Services
             unitOfWork.Save();
             return true;
         }
-        public async Task<string> UpdateUser(int UserId, UserUpdateDto userUpdateDTO)
+        
+        public async Task<bool> UpdateUser(int UserId, UserUpdateDTO userUpdateDTO)
         {
-            var user = await unitOfWork.Users.GetById(UserId);
+            var user = await unitOfWork.UserRepository.GetById(UserId);
             if (user == null) throw new AppException("User not found", HttpStatusCode.NotFound);
-
-            var isAdmin = unitOfWork.Users.IsAdmin(user);
-            if (!isAdmin)
-            {
-                throw new AppException("Invalid Credentials", HttpStatusCode.Forbidden);
-            }
 
             user.First_Name = userUpdateDTO.First_Name;
             user.Last_Name = userUpdateDTO.Last_Name;
             user.Email = userUpdateDTO.Email;
             user.Password = userUpdateDTO.Password;
-            user.Points = userUpdateDTO.Points;
-            user.Rol_Id = userUpdateDTO.Rol_Id;
 
-            unitOfWork.Users.Update(user);
+            unitOfWork.UserRepository.Update(user);
             unitOfWork.Save();
-
-            return $"User {UserId} updated.";
+            return true;
         }
 
 

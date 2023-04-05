@@ -110,6 +110,15 @@ namespace PrimatesWallet.Api.Controllers
             var result = new BaseResponse<bool>(message, response, (int)statusCode);
             return StatusCode((int)statusCode, result);
 
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+
+        public async Task<IActionResult> CreateRole(RoleCreationDto roleCreationDto)
+        {
+            if(roleCreationDto.Name == null || roleCreationDto.Description == null) throw new AppException("Missing required parameters", HttpStatusCode.BadRequest);
+            var response = await _roleService.CreateRole(roleCreationDto);
+            return Ok(response);
         }
 
 

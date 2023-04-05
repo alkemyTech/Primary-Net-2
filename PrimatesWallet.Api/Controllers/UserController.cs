@@ -99,7 +99,6 @@ namespace PrimatesWallet.Api.Controllers
         {
             var updatedUser = await userService.UpdateUser(UserId, userUpdateDTO);
             
-
             return Ok(updatedUser);
         }
 

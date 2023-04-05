@@ -20,8 +20,8 @@ namespace PrimatesWallet.Application.DTOS
         public string Concept { get; set; }
 
         [Required]
-        [EnumDataType(typeof(TransactionType), ErrorMessage = "Invalid transaction type.")]
-        public TransactionType Type { get; set; }
+        //[EnumDataType(typeof(TransactionType), ErrorMessage = "Invalid transaction type.")]
+        public string Type { get; set; }
 
         [Required]
         public int Account_Id { get; set; }

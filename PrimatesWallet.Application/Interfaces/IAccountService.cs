@@ -30,5 +30,7 @@ namespace PrimatesWallet.Application.Interfaces
         /// <returns>A task that returns the total number of pages.</returns>
         Task<int> TotalPageAccounts(int PageSize);
         Task<string> ActivateAccount(int accountId);
+        Task<string> DeleteAccount(int accountId, int currentUser);
+    
     }
 }

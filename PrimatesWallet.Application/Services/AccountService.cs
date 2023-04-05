@@ -179,6 +179,21 @@ namespace PrimatesWallet.Application.Services
             unitOfWork.Accounts.Activate(account);
             unitOfWork.Save();
             return $"{accountId} activated";
+
+      public async Task<string> DeleteAccount(int accountId, int currentUser)
+        {
+            var user = await unitOfWork.Users.GetById(currentUser);
+            var isAdmin = unitOfWork.Users.IsAdmin(user);
+            if (!isAdmin) throw new AppException("Invalid Credentials", HttpStatusCode.Forbidden);
+
+            var account = await unitOfWork.Accounts.GetById(accountId);
+            if (account == null) throw new AppException($"Account {accountId} not found", HttpStatusCode.NotFound);
+
+            unitOfWork.Accounts.Delete(account);
+            unitOfWork.Save();
+
+            return $"Account {accountId} deleted.";
+
         }
     }
 }
