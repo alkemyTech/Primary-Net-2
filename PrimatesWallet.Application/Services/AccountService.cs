@@ -1,17 +1,12 @@
-using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
-using PrimatesWallet.Core.Enums;
 using PrimatesWallet.Core.Interfaces;
 using PrimatesWallet.Core.Models;
 using System.Net;
-using System.Transactions;
-using System.Security.Principal;
 using PrimatesWallet.Application.Mapping.Account;
+using PrimatesWallet.Core.Enums;
 
 namespace PrimatesWallet.Application.Services
 {
@@ -29,12 +24,12 @@ namespace PrimatesWallet.Application.Services
         {
             var account = await unitOfWork.Accounts.Get_Transaccion(id);
             account.Money += topUpDTO.Money;
-            var transactions = new Core.Models.Transaction
+            var transactions = new Transaction
             {
                 Amount = topUpDTO.Money,
                 Concept = topUpDTO.Concept,
                 Date = DateTime.Now,
-                Type = topUpDTO.Type,
+                Type = TransactionType.topup,
                 Account_Id = account.Id,
                 To_Account_Id = account.Id,
 
@@ -65,17 +60,10 @@ namespace PrimatesWallet.Application.Services
             return false;
         }
 
-        /// <summary>
-        /// This method receives a user identification extracted from the token and a DTO with the data of the recipient of the transfer.
-        /// then verifies the existence of both accounts and finally updates the amounts of the same.
-        /// </summary>
-        /// <param name="remitentId">id of the remitent, extracted from the token</param>
-        /// <param name="transferDTO">a DTO with the data of the receiver</param>
-        /// <returns>a DTO with the confirmation of the transaction</returns>
-        public async Task<TransferDetailDto> Transfer(int remitentId, TransferDto transferDTO)
+        public async Task<TransferDetailDto> Transfer(int userId, TransferDto transferDTO)
         {
 
-            var remitent = await unitOfWork.Accounts.GetById(remitentId);
+            var remitent = await unitOfWork.Accounts.Get_Transaccion(userId);
             if (remitent == null) throw new AppException("Cant find remitent account", HttpStatusCode.NotFound);
 
             var reciever = await unitOfWork.Users.GetAccountByUserEmail(transferDTO.Email);
@@ -91,7 +79,7 @@ namespace PrimatesWallet.Application.Services
             unitOfWork.Accounts.Update(remitent);
             unitOfWork.Accounts.Update(reciever.Account);
 
-            var transaction = new Core.Models.Transaction() { Amount = transferDTO.Amount, Concept = transferDTO.Concept, Date = DateTime.Now, Type = transferDTO.Type, Account_Id = remitentId, To_Account_Id = reciever.Account.Id };
+            var transaction = new Transaction() { Amount = transferDTO.Amount, Concept = transferDTO.Concept, Date = DateTime.Now, Type = TransactionType.payment, Account_Id = remitent.Id, To_Account_Id = reciever.Account.Id };
 
             var transferDetail = new TransferDetailDto()
             {
@@ -127,14 +115,6 @@ namespace PrimatesWallet.Application.Services
             return account;
         }
 
-
-        /// <summary>
-        ///     This accountService method creates an account for a user if the user does not have one.
-        /// </summary>
-        /// <param name="userId">user id extraxted from a token.</param>
-        /// <returns>if the account was created successfully, the method returns true</returns>
-        /// <exception cref="AppException">If the user have an account, the method throw an error with status 400</exception>
-        /// <exception cref="Exception">If there is an internal server error, the method catches it and throws an exception.</exception>
         public async Task<bool> Create(int userId)
         {
             var existingAccount = await unitOfWork.Accounts.CheckAccountByUserId(userId);
@@ -175,10 +155,11 @@ namespace PrimatesWallet.Application.Services
 
         public async Task<string> ActivateAccount(int accountId)
         {
-            var account  = await unitOfWork.Accounts.GetByIdDeleted(accountId);
+            var account = await unitOfWork.Accounts.GetByIdDeleted(accountId);
             unitOfWork.Accounts.Activate(account);
             unitOfWork.Save();
             return $"{accountId} activated";
+        }
 
       public async Task<string> DeleteAccount(int accountId, int currentUser)
         {

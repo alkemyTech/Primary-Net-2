@@ -29,13 +29,7 @@ namespace PrimatesWallet.Infrastructure.repositories
 
         public async Task<bool> AlreadyExistsName(string roleName)
         {
-            var exists = await _dbContext.Roles.Where(x => x.Name == roleName ).FirstOrDefaultAsync();
-            if (exists == null || roleName.ToLower() == exists.Name.ToLower()) return false;
-            if( exists.IsDeleted == true) return false;
-
-        public async Task<bool> AlreadyExistsName(string roleName)
-        {
-            var exists = await _dbContext.Roles.Where(x => x.Name == roleName).FirstOrDefaultAsync();
+            var exists = await _dbContext.Roles.Where(x => x.Name == roleName && x.IsDeleted == false).FirstOrDefaultAsync();
             if (exists == null || roleName.ToLower() == exists.Name.ToLower()) return false;
             return true;
         }
