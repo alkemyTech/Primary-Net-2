@@ -84,13 +84,11 @@ namespace PrimatesWallet.Application.Services
         /// </summary>
         /// <returns>A collection of TransactionDto objects representing all transactions.</returns>
         /// <exception cref="AppException">Thrown when no transactions are found in the database.</exception>
-        public async Task<IEnumerable<TransactionDto>> GetAllTransactions()
+        public async Task<IEnumerable<TransactionDto>> GetAllTransactions(int page, int pageSize)
         {
-            var transactions = await _unitOfWork.Transactions.GetAll();
+            var transactions = await _unitOfWork.Transactions.GetAll(page, pageSize)
+                 ?? throw new AppException(ReplyMessage.MESSAGE_QUERY_EMPTY, HttpStatusCode.NotFound);
 
-            if (transactions is null) throw new AppException("No transactions were found.", HttpStatusCode.NotFound);
-
-            // Maps the retrieved transactions to a collection of TransactionDto objects.
             var transactionsDTO = transactions.Select(x =>
                                     new TransactionDtoBuilder()
                                     .WithId(x.Id)
@@ -103,6 +101,11 @@ namespace PrimatesWallet.Application.Services
                                     .Build()).ToList();
 
             return transactionsDTO;
+        }
+        public async Task<int> TotalPageTransactions(int PageSize)
+        {
+            var totalTransactions = await _unitOfWork.Transactions.GetCount();
+            return (int)Math.Ceiling((double)totalTransactions / PageSize);
         }
 
 
