@@ -5,12 +5,8 @@ using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
-using PrimatesWallet.Core.Models;
-using PrimatesWallet.Infrastructure.Repositories;
-using System;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
-using System.Runtime.InteropServices.ObjectiveC;
-using System.Security.Principal;
 
 namespace PrimatesWallet.Api.Controllers
 {
@@ -22,14 +18,34 @@ namespace PrimatesWallet.Api.Controllers
         private readonly IAccountService _account;
         private readonly IUserContextService _userContextService;
 
+
         public AccountController(IAccountService accountService, IUserContextService userContextService)
         {
             _account = accountService;
             _userContextService = userContextService;
         }
 
+
+        /// <summary>
+        /// Returns a list of all accounts.
+        /// </summary>
+        /// <remarks>
+        /// This endpoint allows the client to retrieve a paginated list accounts. 
+        /// The response includes an object with the url of the previous page, the results and the url of the next page.
+        /// </remarks>
+        /// <param name="page">The page number to retrieve.</param>
+        /// <param name="pageSize">The maximum number of products to return per page.</param>
+        /// <response code="200">Returns the paginated list of products.</response>
+        /// <response code="401">Unauthorized user for this operation.</response>              
+        /// <response code="404">"The requested resource was not found.</response>  
+        /// <response code="500">Internal Server Error. Something has gone wrong on the Primates Wallet server.</response>
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
+        [SwaggerOperation(Summary = "Get a paginated list of accounts", Description = "Retrieves a paginated list of accounts.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "The requested resource was not found.")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
         public async Task<IActionResult> GetAll([FromQuery] int page = 1, int pageSize = 10)
         {
             var accounts = await _account.GetAccounts(page, pageSize);
@@ -49,9 +65,21 @@ namespace PrimatesWallet.Api.Controllers
 
 
 
-
+        /// <summary>
+        /// Get an account by id and show details
+        /// </summary>     
+        /// <param name="id">Get account searching by id</param>
+        /// <response code="401">Unauthorized user for this operation.</response>              
+        /// <response code="200">Successful operation.</response>        
+        /// <response code="404">The requested resource was not found.</response>
+        /// <response code="500">Internal Server Error. Something has gone wrong on the Primates Wallet server.</response>
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin")]
+        [SwaggerOperation(Summary = "Get a specific Account", Description = "Get a specific account by its ID.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "The requested resource was not found.")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
         public async Task<IActionResult> GetAccountDetails(int id)
         {
             var account = await _account.GetAccountById(id);
@@ -59,11 +87,21 @@ namespace PrimatesWallet.Api.Controllers
             return Ok(account);
         }
 
+
         /// <summary>
-        ///     Endpoint to create an account for an registered user.
-        /// </summary>
+        /// Create a new account for the logged-in user.
+        /// </summary>      
+        /// <response code="200">Successful operation.</response>  
+        /// <response code="401">Unauthorized user for this operation.</response>              
+        /// <response code="404">The requested resource was not found.</response>
+        /// <response code="500">Internal Server Error. Something has gone wrong on the Primates Wallet server.</response>
         [Authorize]
         [HttpPost("Create")]
+        [SwaggerOperation(Summary = "Create a new account for the logged-in user.", Description = "Creates a new Account in the Wallet App.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "The requested resource was not found.")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
         public async Task<IActionResult> Create()
         {
             var userId = _userContextService.GetCurrentUser();
@@ -75,35 +113,76 @@ namespace PrimatesWallet.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPost("deposit/{id}")]
+
+        /// <summary>
+        /// Deposits funds into the user's own account.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     
+        ///     {
+        ///         "money": 20000,
+        ///         "concept: "Deposits funds into the account of the logged-in user.",
+        ///     }
+        /// 
+        /// </remarks>  
+        /// <param name="topUpDTO">The details of the top-up.</param>
+        /// <returns>The HTTP response indicating the status of the operation.</returns>
+        /// <response code="200">The deposit operation was successful.</response>
+        /// <response code="401">The user is not authorized to perform the deposit operation.</response>
+        /// <response code="404">The requested account or resource was not found.</response>
+        /// <response code="500">An error occurred while processing the request.</response>
+        [HttpPost("Deposit")]
         [Authorize]
-        public async Task<IActionResult> Deposit([FromRoute] int id, [FromBody] TopUpDto topUpDTO)
+        [SwaggerOperation(Summary = "Deposits funds into the user's own account..", Description = "Performs a top-up transaction by depositing funds to the account of the logged-in user..")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "The requested resource was not found.")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
+        public async Task<IActionResult> Deposit([FromBody] TopUpDto topUpDTO)
         {
             var idUser = _userContextService.GetCurrentUser();
-            if (idUser != id) throw new AppException("User not authorized", HttpStatusCode.Unauthorized);
 
-            var response = await _account.DepositToAccount(id, topUpDTO);
+            var response = await _account.DepositToAccount(idUser, topUpDTO);
             var result = new BaseResponse<bool>("Operation succeded!", response ,(int)HttpStatusCode.OK);
                
             return Ok(result);
         }
 
+
         /// <summary>
-        /// this endpoint is to make a transfer from one account to another
+        /// Transer funds from the logged-in user's account to another.
         /// </summary>
-        /// <param name="accountId">sender account id</param>
-        /// <param name="transferDTO">a DTO with the transaction information(receiver user email, amount, type of transaction, concept)</param>
-        [HttpPost("transfer/{accountId}")]
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     
+        ///     {
+        ///         "concept": "Transfer funds to another account",
+        ///         "amount": 10000,
+        ///         "email": "receiver@example.com",
+        ///     }
+        /// 
+        /// </remarks>  
+        /// <param name="transferDTO">The transaction information. 'Type' property should be set to 1 to indicate a payment</param>
+        /// <returns>The HTTP response indicating the status of the operation.</returns>
+        /// <response code="200">The deposit operation was successful.</response>
+        /// <response code="401">The user is not authorized to perform the deposit operation.</response>
+        /// <response code="404">The requested account or resource was not found.</response>
+        /// <response code="500">An error occurred while processing the request.</response>
+        [HttpPost("Transfer")]
         [Authorize]
-        public async Task<IActionResult> Transfer(int accountId, [FromBody] TransferDto transferDTO)
+        [SwaggerOperation(Summary = "Transer funds.", Description = "Transer funds from the logged-in user's account to another.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "The requested resource was not found.")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
+        public async Task<IActionResult> Transfer([FromBody] TransferDto transferDTO)
         {
             var userId = _userContextService.GetCurrentUser();
 
             if (transferDTO.Amount <= 0) return StatusCode(StatusCodes.Status400BadRequest, "Amount must be positive");
-
-            var isValidAccount = await _account.ValidateAccount(userId, accountId);
-
-            if (!isValidAccount) return StatusCode(StatusCodes.Status401Unauthorized, "Invalid credentials");
 
             var transaction = await _account.Transfer(userId, transferDTO);
 
@@ -113,8 +192,32 @@ namespace PrimatesWallet.Api.Controllers
         }
 
 
-
+        /// <summary>
+        /// Update an existing Account.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     
+        ///     {
+        ///         "money": 300000,
+        ///         "isBlocked": true
+        ///     }
+        /// 
+        /// </remarks>  
+        /// <param name="accountId">Account ID obtained from the request URL</param>
+        /// <param name="accountUpdateDTO">Account model obtained from the request body</param>
+        /// <response code="200">Successful operation</response>     
+        /// <response code="401">Unauthorized user for this operation.</response>   
+        /// <response code="404">"The requested resource was not found.</response>              
+        /// <response code="500">Internal Server Error. Something has gone wrong on the Primates Wallet server.</response>
         [HttpPut("{accountId}")]
+        [Authorize(Roles = "Admin")]
+        [SwaggerOperation(Summary = "Update an existing Account.", Description = "Update an existing Account.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "The requested resource was not found.")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
         public async Task<IActionResult> UpdateAccount(int accountId, [FromBody] AccountUpdateDto accountUpdateDTO)
         {
             var updatedAccount = await _account.UpdateAccountAdmin(accountId, accountUpdateDTO);
@@ -123,8 +226,21 @@ namespace PrimatesWallet.Api.Controllers
         }
 
 
-
-        [HttpPut("activate/{accountId}")]
+        /// <summary>
+        /// Activates or desactivates an account by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the account to activate or desactivate.</param>
+        /// <response code="200">Successful operation</response>     
+        /// <response code="401">Unauthorized user for this operation.</response>
+        /// <response code="404">"The requested resource was not found..</response>  
+        /// <response code="500">Internal Server Error. Something has gone wrong on the Primates Wallet server.</response>
+        [HttpPut("Activate/{accountId}")]
+        [Authorize(Roles = "Admin")]
+        [SwaggerOperation(Summary = "Activate or Desactivate an Account.", Description = "Only admins have permission to perform this operation.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "The requested resource was not found.")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
         public async Task<IActionResult> ActivateAccount(int accountId)
         {
             var account = await _account.ActivateAccount(accountId);
@@ -133,7 +249,21 @@ namespace PrimatesWallet.Api.Controllers
         }
 
 
+        /// <summary>
+        /// Deletes an account.
+        /// </summary>
+        /// <param name="id">ID of the account to delete.</param>
+        /// <response code="200">Successful operation</response>     
+        /// <response code="401">Unauthorized user for this operation.</response>
+        /// <response code="404">"The requested resource was not found..</response>  
+        /// <response code="500">Internal Server Error. Something has gone wrong on the Primates Wallet server.</response>
         [HttpDelete("{accountId}")]
+        [Authorize]
+        [SwaggerOperation(Summary = "Delete an Account.", Description = "Deletes an Account by its ID.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "The requested resource was not found.")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
         public async Task<IActionResult> DeleteAccount(int accountId)
         {
             var currentUser = _userContextService.GetCurrentUser();

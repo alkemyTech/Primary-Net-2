@@ -12,7 +12,5 @@ namespace PrimatesWallet.Application.DTOS
         public string Concept { get; set; } = "Some";
         public decimal Amount { get; set; } 
         public string Email { get; set; }
-        public TransactionType Type { get; set; }
-
     }
 }

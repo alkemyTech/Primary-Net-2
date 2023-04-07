@@ -2,7 +2,6 @@
 using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
-using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Interfaces;
 using PrimatesWallet.Core.Interfaces;
 using PrimatesWallet.Core.Models;
