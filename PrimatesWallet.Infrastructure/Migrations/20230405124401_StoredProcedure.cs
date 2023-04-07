@@ -1,15 +1,14 @@
-﻿
-namespace PrimatesWallet.Infrastructure.StoredProcedure
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace PrimatesWallet.Infrastructure.Migrations
 {
-    /*
-     creo esta clase mas que nada por si se borra sin querer la carpeta de migracions que es donde la defini,
-    si se borra:
-        1) crear Add-Migration StoredProcedure
-        2) En el metodo Up colocar migrationBuilder.Sql("aca va el codigo del stored");
-     */
-    public class StoredProcedure
+    public partial class StoredProcedure : Migration
     {
-        private readonly string insertTransaction = @"
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.Sql(@"
             CREATE PROCEDURE InsertTransactionWithValidation
                 @Amount decimal(18,2),
                 @Concept VARCHAR(50),
@@ -81,6 +80,12 @@ namespace PrimatesWallet.Infrastructure.StoredProcedure
 
 				RAISERROR (@ErrorMessage, @ErrorSeverity,@ErrorState );
             END CATCH
-            ";
+            ");
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+
+        }
     }
 }

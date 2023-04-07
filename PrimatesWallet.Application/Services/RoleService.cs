@@ -67,8 +67,8 @@ namespace PrimatesWallet.Application.Services
             var response = unitOfWork.Save();
 
             return response > 0;
-
         }
+
 
         public async Task<string> ActivateRole(int roleId)
         {
@@ -77,5 +77,5 @@ namespace PrimatesWallet.Application.Services
             unitOfWork.Save();
             return $"Role {roleId} activated";
         }
-    }
+    } 
 }

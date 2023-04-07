@@ -118,5 +118,5 @@ namespace PrimatesWallet.Api.Controllers
             return Ok(role);
 
         }
-    }
+    } 
 }

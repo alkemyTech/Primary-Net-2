@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
+using Hangfire;
+using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -27,7 +30,6 @@ namespace PrimatesWallet.Application.ServiceExtension
 
 
 
-
             //services.AddAutoMapper(typeof(ServiceExtensionApplication));
             services.AddScoped<IUserContextService, UserContextService>();
             services.AddScoped<IUserService,UserService> ();
@@ -40,9 +42,34 @@ namespace PrimatesWallet.Application.ServiceExtension
             services.AddScoped<IJwtJervice, JwtService>();
             services.AddScoped<IAccountService, AccountService>();
 
+            ///<summary>
+            ///This code sets up and configures Hangfire, a popular .NET library for background job processing,
+            ///by adding it as a service to the dependency injection container, specifying a storage provider, and starting the Hangfire server.
+            /// </summary>
+
+            services.AddHangfire(config =>
+            {
+            config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UseSqlServerStorage(configuration.GetConnectionString("DefaultConnection"), new SqlServerStorageOptions
+            {
+                CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                QueuePollInterval = TimeSpan.Zero,
+                UseRecommendedIsolationLevel = true,
+                DisableGlobalLocks = true
+            });
+
+
+            });
+
+            services.AddHangfireServer();
+
             services.AddControllers().AddNewtonsoftJson(options =>
-            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-);
+            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore 
+            );
+
 
             services.AddAuthentication(options =>
             {
@@ -67,5 +94,6 @@ namespace PrimatesWallet.Application.ServiceExtension
 
             return services;
         }
+
     }
 }
