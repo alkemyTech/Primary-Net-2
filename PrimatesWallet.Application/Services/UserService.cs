@@ -99,9 +99,9 @@ namespace PrimatesWallet.Application.Services
             return true;
         }
         
-        public async Task<bool> UpdateUser(int UserId, UserUpdateDTO userUpdateDTO)
+        public async Task<bool> UpdateUser(int UserId, UserUpdateDto userUpdateDTO)
         {
-            var user = await unitOfWork.UserRepository.GetById(UserId);
+            var user = await unitOfWork.Users.GetById(UserId);
             if (user == null) throw new AppException("User not found", HttpStatusCode.NotFound);
 
             user.First_Name = userUpdateDTO.First_Name;
@@ -109,7 +109,7 @@ namespace PrimatesWallet.Application.Services
             user.Email = userUpdateDTO.Email;
             user.Password = userUpdateDTO.Password;
 
-            unitOfWork.UserRepository.Update(user);
+            unitOfWork.Users.Update(user);
             unitOfWork.Save();
             return true;
         }

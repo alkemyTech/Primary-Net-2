@@ -251,5 +251,40 @@ namespace PrimatesWallet.Application.Services
             unitOfWork.Save();
             return $"deposit n° {depositId} activated";
         }
+
+        public async Task<bool> UpdateFixedTermDeposit(int id, FixedTermDepositRequestDTO fixedTermDeposit)
+        {
+            var dbFixedTerm = await unitOfWork.FixedTermDeposits.GetById(id);
+
+            if (dbFixedTerm == null) throw new AppException("Fixed term not fount", HttpStatusCode.NotFound);
+
+            var account = await unitOfWork.Accounts.GetById(dbFixedTerm.AccountId);
+
+            if (account == null) throw new AppException("Account not found", HttpStatusCode.NotFound);
+
+            var calculate = mapper.Map<FixedTermDepositRequestDTO>(dbFixedTerm);
+
+            var interestRate = CalculateInterestRate(calculate);
+
+            var calculateAmount = dbFixedTerm.Amount / (1 + interestRate);
+
+            account.Money += calculateAmount;
+
+            account.Money -= fixedTermDeposit.Amount * (1 + interestRate);
+
+            var newAmount = CalculateInterestRate(fixedTermDeposit);
+
+            dbFixedTerm.Amount = fixedTermDeposit.Amount * (1 + interestRate);
+            dbFixedTerm.Creation_Date = fixedTermDeposit.Creation_Date;
+            dbFixedTerm.Closing_Date = fixedTermDeposit.Closing_Date;
+
+            unitOfWork.Accounts.Update(account);
+            unitOfWork.FixedTermDeposits.Update(dbFixedTerm);
+            int response = unitOfWork.Save();
+
+            if (response > 0) return true;
+
+            return false;
+        }
     }
 }

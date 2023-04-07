@@ -106,19 +106,11 @@ namespace PrimatesWallet.Api.Controllers
 
             var message = response is true ? "Deletion successful." : "Resource deletion failed, please contact support.";
             HttpStatusCode statusCode = response is true ? HttpStatusCode.OK : HttpStatusCode.BadRequest;
-            
+
             var result = new BaseResponse<bool>(message, response, (int)statusCode);
             return StatusCode((int)statusCode, result);
 
 
-        [HttpPost]
-        [Authorize(Roles = "Admin")]
-
-        public async Task<IActionResult> CreateRole(RoleCreationDto roleCreationDto)
-        {
-            if(roleCreationDto.Name == null || roleCreationDto.Description == null) throw new AppException("Missing required parameters", HttpStatusCode.BadRequest);
-            var response = await _roleService.CreateRole(roleCreationDto);
-            return Ok(response);
         }
 
 
@@ -129,5 +121,5 @@ namespace PrimatesWallet.Api.Controllers
             return Ok(role);
 
         }
-    }
+    } 
 }

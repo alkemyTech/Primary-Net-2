@@ -32,5 +32,6 @@ namespace PrimatesWallet.Application.Interfaces
         Task<bool> Insert(int id, FixedTermDepositRequestDTO fixedTermDTO);
         Task LiquidateFixedTermDeposit();
         Task<string> ActivateFixedTermDeposit(int depositId);
+        Task<bool> UpdateFixedTermDeposit(int id, FixedTermDepositRequestDTO fixedTermDeposit);
     }
 }
