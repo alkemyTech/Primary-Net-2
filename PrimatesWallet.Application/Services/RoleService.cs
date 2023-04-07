@@ -57,6 +57,21 @@ namespace PrimatesWallet.Application.Services
             return response;
 
         }
+        public async Task<string> UpdateRol(int rolId, RolUpdateDto rolUpdateDTO, int currentUser)
+        {
+            var user = await unitOfWork.Users.GetById(currentUser);
+            var isAdmin = unitOfWork.Users.IsAdmin(user);
+            if (!isAdmin) throw new AppException("Invalid Credentials", HttpStatusCode.Forbidden);
+            var role = await unitOfWork.Roles.GetById(rolId) ?? throw new AppException($"The role you entered does not exist.", HttpStatusCode.NotFound);
+
+            role.Name = rolUpdateDTO.Name;
+            role.Description = rolUpdateDTO.Description;
+
+            unitOfWork.Roles.Update(role);
+            unitOfWork.Save();
+
+            return $"Rol {rolId} updated.";
+        }
 
 
         public async Task<bool> DeleteRol(int id)
