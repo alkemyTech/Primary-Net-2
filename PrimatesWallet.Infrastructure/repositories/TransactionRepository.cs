@@ -84,5 +84,17 @@ namespace PrimatesWallet.Infrastructure.Repositories
                     throw new ArgumentException("Invalid Transaction type.", nameof(type));
             }
         }
+        public async Task<IEnumerable<Transaction>> GetAll(int page, int pageSize)
+        {
+            return await base._dbContext.Transactions
+                .Where(a => a.IsDeleted == false)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+        public async Task<int> GetCount()
+        {
+            return await base._dbContext.Transactions.Where(a => a.IsDeleted == false).CountAsync();
+        }
     }
 }
