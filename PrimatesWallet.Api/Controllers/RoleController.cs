@@ -4,6 +4,7 @@ using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
+using PrimatesWallet.Application.Services.Auth;
 using PrimatesWallet.Core.Models;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
@@ -16,10 +17,12 @@ namespace PrimatesWallet.Api.Controllers
     public class RoleController : ControllerBase
     {
         private readonly IRoleService _roleService;
+        private readonly IUserContextService _userContextService;
 
-        public RoleController(IRoleService roleService)
+        public RoleController(IRoleService roleService, IUserContextService userContextService)
         {
             _roleService = roleService;
+            _userContextService = userContextService;
         }
 
 
@@ -49,6 +52,7 @@ namespace PrimatesWallet.Api.Controllers
             }
             return StatusCode(StatusCodes.Status200OK, role);
         }
+
 
 
 
@@ -83,6 +87,16 @@ namespace PrimatesWallet.Api.Controllers
             if (roleCreationDto.Name == null || roleCreationDto.Description == null) throw new AppException("Missing required parameters", HttpStatusCode.BadRequest);
             var response = await _roleService.CreateRole(roleCreationDto);
             return Ok(response);
+        }
+
+        [HttpPut("{rolId}")]
+        public async Task<IActionResult> UpdateRol(int rolId, [FromBody] RolUpdateDto rolUpdateDTO)
+
+        {
+            var currentUser = _userContextService.GetCurrentUser();
+            var updateRol = await _roleService.UpdateRol(rolId, rolUpdateDTO, currentUser);
+
+            return Ok(updateRol);
         }
 
 

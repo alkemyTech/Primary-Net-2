@@ -26,5 +26,6 @@ namespace PrimatesWallet.Application.Interfaces
         /// <returns>Returns a boolean indicating the success or failure of the deletion operation.</returns>
         Task<bool> DeleteRol(int id);
         Task<string> ActivateRole(int roleId);
+        Task<string> UpdateRol(int rolId, RolUpdateDto rolUpdateDTO, int currentUser);
     }
 }
