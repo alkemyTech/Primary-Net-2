@@ -185,7 +185,19 @@ namespace PrimatesWallet.Api.Controllers
         }
 
 
+        /// <summary>
+        /// Activates a transaction by its ID.
+        /// </summary>
+        /// <param name="transactionId">The ID of the transaction to be activated.</param>
+        /// <returns>Returns the activated transaction.</returns>
+        /// <response code="200">Returns the activated transaction.</response>
+        /// <response code="404">Returns if the requested transaction was not found.</response>
         [HttpPut("activate/{transactionId}")]
+        [Authorize]
+        [SwaggerOperation(Summary = "Activates a transaction by its id", Description = "Activates a transaction by its id.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "NotFound. The requested operation was not found.")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
         public async Task <IActionResult> ActivateTransaction(int transactionId)
         {
             var transaction = await transactionService.ActivateTransaction(transactionId);

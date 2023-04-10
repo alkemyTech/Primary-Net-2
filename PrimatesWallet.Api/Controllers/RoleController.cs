@@ -27,9 +27,9 @@ namespace PrimatesWallet.Api.Controllers
 
 
         // GET: api/Role/1
-        /// <remarks>
+        /// <summary>
         /// Get role by id and show details
-        /// </remarks>     
+        /// </summary>     
         /// <param name="id">Get role searching by id</param>
         /// <response code="401">Unauthorized user for this operation.</response>              
         /// <response code="200">Successful operation.</response>        
@@ -54,9 +54,9 @@ namespace PrimatesWallet.Api.Controllers
 
 
         // GET: api/Role     
-        /// <remarks>
+        /// <summary>
         /// Get roles and show details
-        /// </remarks>     
+        /// </summary>     
         /// <response code="401">Unauthorized user for this operation.</response>              
         /// <response code="200">Successful operation.</response>        
         /// <response code="404">NotFound. The requested operation was not found.</response>

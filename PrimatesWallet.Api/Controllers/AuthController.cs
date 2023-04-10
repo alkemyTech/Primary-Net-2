@@ -4,6 +4,7 @@ using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
 
 namespace PrimatesWallet.Api.Controllers
