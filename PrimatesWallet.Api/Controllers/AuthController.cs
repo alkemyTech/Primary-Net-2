@@ -26,7 +26,18 @@ namespace PrimatesWallet.Api.Controllers
 
         }
 
+        /// <summary>
+        /// Authenticates the user and generates a JWT token.
+        /// </summary>
+        /// <param name="loginUser">The user's login information.</param>
+        /// <response code="200">Successful operation</response>     
+        /// <response code="400">Invalid email/password</response>
+        /// <response code="500">Internal Server Error. Something has gone wrong on the Primates Wallet server.</response>
         [HttpPost("login")]
+        [SwaggerOperation(Summary = "Authenticate user and generate JWT token.", Description = "Authenticates the user and generates a JWT token.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid email/password")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
         public async Task<IActionResult> Login(LoginUserDto loginUser)
         {
             //Autentica las credenciales y devuelve un usuario
@@ -40,12 +51,23 @@ namespace PrimatesWallet.Api.Controllers
 
             //Se retorna el token
             return Ok(token);
-
         }
 
 
+        /// <summary>
+        /// Retrieves the details of the authenticated user.
+        /// </summary>
+        /// <response code="200">Successful operation</response>     
+        /// <response code="401">Unauthorized user for this operation.</response>
+        /// <response code="404">The requested resource was not found.</response>  
+        /// <response code="500">Internal Server Error. Something has gone wrong on the Primates Wallet server.</response>
         [HttpGet("me")]
         [Authorize]
+        [SwaggerOperation(Summary = "Get authenticated user details.", Description = "Retrieves the details of the authenticated user.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "The requested resource was not found.")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
         public async Task<IActionResult> GetMe()
         {
         //Devuelve los datos del usuario logueado
@@ -60,7 +82,6 @@ namespace PrimatesWallet.Api.Controllers
                 Points = user.Points,
             };
             return Ok(userResponse);
-
         }
     }
 }
