@@ -1,16 +1,25 @@
+import { Layout } from "@/layouts/Layout";
 import { Box, Typography } from "@mui/material";
 import Link from "next/link";
 
 
 export default function Home() {
   return (
-    <Box bgcolor={"primary.background"}>
+    <Layout>
 
-    
-    <Link href={"/login"}> 
-    LoginPage
-    </Link>
+      <Box bgcolor={"primary.background"}>
 
-    </Box>
+
+        <Link href={"/login"}>
+          LoginPage
+        </Link>
+
+
+        <Link href={"/admin"}>
+          Admin Panel
+        </Link>
+
+      </Box>
+    </Layout>
   )
 }
