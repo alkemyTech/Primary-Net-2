@@ -1,10 +1,4 @@
-﻿using PrimatesWallet.Core.Enums;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace PrimatesWallet.Application.DTOS
 {
@@ -14,8 +8,5 @@ namespace PrimatesWallet.Application.DTOS
         public decimal Money { get; set; }
         [Required]
         public string Concept { get; set; }
-        [Required]
-        public TransactionType Type { get; set; }
-
     }
 }

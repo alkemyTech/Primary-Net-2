@@ -10,6 +10,11 @@ namespace PrimatesWallet.Application.Interfaces
 {
     public interface IAuthService
     {
+        /// <summary>
+        /// Authenticates a user with the provided credentials.
+        /// </summary>
+        /// <param name="login">The user credentials to authenticate.</param>
+        /// <returns>The authenticated user.</returns>
         Task<User> Authenticate(LoginUserDto login);
     }
 }

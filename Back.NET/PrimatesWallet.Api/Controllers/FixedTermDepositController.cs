@@ -123,17 +123,20 @@ namespace PrimatesWallet.Api.Controllers
             return Ok(response);
         }
 
-        /// // POST: api/FixedDeposit
-        /// <remarks>
-        /// Creates a new fixed-term deposit with the specified details.
-        /// The date format must be yyyy-MM-dd and the amount must be greater than 100.
-        /// </remarks>     
-        /// <response code="401">Unauthorized user for this operation.</response>              
-        /// <response code="200">Successful operation.</response>
-        /// <response code="400">Invalid request data.</response>
-        /// <response code="500">Internal Server Error. Something has gone wrong on the Primates Wallet server.</response>
+        /// <summary>
+        /// Creates a new fixed term deposit for the current user.
+        /// </summary>
+        /// <param name="fixedTermDTO">The FixedTermDepositRequestDTO object containing the fixed term deposit data to be created.</param>
+        /// <returns>Returns a BaseResponse object with a boolean value indicating if the fixed term deposit was created successfully or not.</returns>
+        /// <response code="200">Returns the requested fixed term deposit.</response>
+        /// <response code="401">Returns if the user is unauthorized for this operation.</response>
+        /// <response code="500">Returns if there was an internal server error.</response>
         [HttpPost]
         [Authorize]
+        [SwaggerOperation(Summary = "Create a new fixed term deposit for the current user", Description = "Creates a new fixed term deposit for the current user.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
         public async Task<IActionResult> CreateFixedTermDeposit([FromBody] FixedTermDepositRequestDTO fixedTermDTO)
         {
             var idUser = userContextService.GetCurrentUser();
@@ -142,8 +145,20 @@ namespace PrimatesWallet.Api.Controllers
             return Ok(response);
         }
 
-
+        /// <summary>
+        /// Activates a fixed term deposit by its ID.
+        /// </summary>
+        /// <param name="depositId">The ID of the fixed term deposit to activate.</param>
+        /// <response code="200">Successful operation</response>
+        /// <response code="401">Unauthorized user for this operation.</response>
+        /// <response code="404">The requested resource was not found.</response>
+        /// <response code="500">Internal Server Error. Something has gone wrong on the Primates Wallet server.</response>
         [HttpPut("activate/{depositId}")]
+        [SwaggerOperation(Summary = "Activate a fixed term deposit.", Description = "Activates a fixed term deposit by its ID.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "The requested resource was not found.")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
         public async Task<IActionResult> ActivateFixedDeposit( int depositId)
         {
             var deposit = await _fixedTermDeposit.ActivateFixedTermDeposit(depositId);
@@ -151,8 +166,23 @@ namespace PrimatesWallet.Api.Controllers
 
         }
 
+
+        /// <summary>
+        /// Updates a fixed term deposit by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the fixed term deposit to update.</param>
+        /// <param name="fixedTermDeposit">The data to update the fixed term deposit.</param>
+        /// <response code="200">Successful operation</response>
+        /// <response code="401">Unauthorized user for this operation.</response>
+        /// <response code="404">The requested resource was not found.</response>
+        /// <response code="500">Internal Server Error. Something has gone wrong on the Primates Wallet server.</response>
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
+        [SwaggerOperation(Summary = "Update a Fixed Term Deposit.", Description = "Updates a fixed term deposit by its ID.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "The requested resource was not found.")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
         public async Task<IActionResult> UpdateFixedTerm(int id, [FromBody] FixedTermDepositRequestDTO fixedTermDeposit)
         {
             var result = await _fixedTermDeposit.UpdateFixedTermDeposit(id, fixedTermDeposit);

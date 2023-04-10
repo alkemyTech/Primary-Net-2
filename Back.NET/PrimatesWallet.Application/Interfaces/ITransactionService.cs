@@ -20,7 +20,7 @@ namespace PrimatesWallet.Application.Interfaces
         
         Task<bool> DeleteTransaction(int transactionId);
         Task<bool> UpdateTransaction(int transactionId, string concept = "repayment");
-        Task<IEnumerable<TransactionDto>> GetAllTransactions();
+        Task<IEnumerable<TransactionDto>> GetAllTransactions(int page, int pageSize);
 
 
         /// <summary>
@@ -31,5 +31,6 @@ namespace PrimatesWallet.Application.Interfaces
         /// <exception cref="AppException">Thrown when the transaction violates business rules.</exception>
         Task<bool> Insert(TransactionRequestDto transactionDTO);
         Task<string> ActivateTransaction(int transactionId);
+        Task<int> TotalPageTransactions(int PageSize);
     }
 }
