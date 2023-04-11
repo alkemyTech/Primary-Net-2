@@ -3,6 +3,7 @@ import { AuthLayout } from "@/layouts/AuthLayout"
 import { HandleLogin, startLoginWithEmailAndPassword } from "@/store/auth/thunks";
 import { Grid, TextField, Alert, Button, Google, Typography, Link } from "@mui/material"
 import { Formik, Form, useFormik } from "formik"
+import {  useRouter } from "next/router";
 import { useDispatch } from "react-redux";
 import * as Yup from "yup";
 
@@ -10,6 +11,8 @@ import * as Yup from "yup";
 const login = () => {
 
   const dispatch = useDispatch();
+  const router = useRouter();
+
 
   return (
     <AuthLayout title={"Login"}>
@@ -18,6 +21,7 @@ const login = () => {
         initialValues={{ UserName: "", Password: "" }}
         onSubmit={(values, { setSubmitting }) => {  
           dispatch( startLoginWithEmailAndPassword(values) )
+          router.push("/")
         }}
         validationSchema={Yup.object({
           UserName: Yup.string().email("Must be a valid email").required(),

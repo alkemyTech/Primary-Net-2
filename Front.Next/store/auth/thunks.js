@@ -24,9 +24,9 @@ export const startLoginWithEmailAndPassword = ( { UserName, Password } ) => {
             
         } catch (error) {
 
-            const { data } = error.response;
+            // const { data } = error.response;
 
-            dispatch( logout( data ) )
+            dispatch( logout( error.response ) )
 
         }
 

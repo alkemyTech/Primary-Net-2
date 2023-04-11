@@ -84,9 +84,6 @@ export const SideBarList = () => {
             }
           </>
       }
-
-
-
     </List>
   )
 }
