@@ -154,6 +154,7 @@ namespace PrimatesWallet.Application.Services
             var accounts = await unitOfWork.Accounts.GetAll(page, pageSize)
                  ?? throw new AppException(ReplyMessage.MESSAGE_QUERY_EMPTY, HttpStatusCode.NotFound);
 
+
             var accountsDTO = accounts.Select(x =>
               new AccountDTOBuilder()
               .WithId(x.Id)
@@ -161,8 +162,10 @@ namespace PrimatesWallet.Application.Services
               .WithMoney((decimal)x.Money!)
               .WithIsBlocked(x.IsBlocked)
               .WithUserId(x.UserId)
+              .WithName(x.User.First_Name)
+              .WithLastname(x.User.Last_Name)
               .Build()).ToList();
-
+           
             return accountsDTO;
         }
 

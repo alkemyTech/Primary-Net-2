@@ -1,11 +1,7 @@
-import DenseTableRoles from '@/components/adminPanel/roles/RolesAdmin'
-import DenseTable from '@/components/adminPanel/roles/RolesAdmin'
-import { Layout } from '@/layouts/Layout'
-import { Grid, List, ListItem } from '@mui/material'
-import axios from 'axios'
-import { useState, useEffect } from 'react'
-
-const columns = []
+import DenseTableRoles from '@/components/adminPanel/roles/RolesAdmin';
+import { useState, useEffect } from 'react';
+import { Layout } from '@/layouts/Layout';
+import axios from 'axios';
 
 
 
