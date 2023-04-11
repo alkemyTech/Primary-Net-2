@@ -1,15 +1,14 @@
 import { MyTextInput } from "@/components/login/MyTextInput"
 import { AuthLayout } from "@/layouts/AuthLayout"
-import { HandleLogin, startLoginWithEmailAndPassword } from "@/store/auth/thunks";
 import { Grid, TextField, Alert, Button, Google, Typography, Link } from "@mui/material"
 import { Formik, Form, useFormik } from "formik"
-import { useDispatch } from "react-redux";
+import { signIn, useSession } from "next-auth/react";
+import { redirect } from "next/dist/server/api-utils";
 import * as Yup from "yup";
 
 
 const login = () => {
 
-  const dispatch = useDispatch();
 
   return (
     <AuthLayout title={"Login"}>
@@ -17,7 +16,7 @@ const login = () => {
       <Formik
         initialValues={{ UserName: "", Password: "" }}
         onSubmit={(values, { setSubmitting }) => {  
-          dispatch( startLoginWithEmailAndPassword(values) )
+          signIn("credentials", {...values, redirect: false})
         }}
         validationSchema={Yup.object({
           UserName: Yup.string().email("Must be a valid email").required(),

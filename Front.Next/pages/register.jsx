@@ -3,12 +3,13 @@ import { AuthLayout } from "@/layouts/AuthLayout"
 import { Grid, TextField, Alert, Button, Google, Typography, Link } from "@mui/material"
 import * as Yup from "yup";
 import {  Formik } from "formik";
-import axios from "axios";
-import { HandleRegister } from "@/store/auth/thunks";
+import { useSession } from "next-auth/react";
 
 const register = () => {
 
+    const { data: session } = useSession();
 
+    console.log(session);
 
     return (
 

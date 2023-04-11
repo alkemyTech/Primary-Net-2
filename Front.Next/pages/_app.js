@@ -2,19 +2,19 @@ import '@/styles/globals.css'
 import { ThemeProvider } from '@emotion/react';
 import mainTheme from '@/themes/mainTheme';
 import { CssBaseline } from '@mui/material';
-import { Provider } from 'react-redux';
-import { store } from '@/store';
+import { SessionProvider } from 'next-auth/react'
 
-function App({ Component, pageProps }) {
+function App({ Component, pageProps: {session, ...pageProps} }) {
   return (
-    <>
-      <Provider store={store}>
-          <ThemeProvider theme={mainTheme}>
+  <>
+  
+    <ThemeProvider theme={mainTheme}>
+            <SessionProvider session={session}>
             <CssBaseline/>
             <Component {...pageProps} />
-          </ThemeProvider>
-      </Provider>
-    </>
+      </SessionProvider>
+    </ThemeProvider>
+  </>
   )
 }
 
