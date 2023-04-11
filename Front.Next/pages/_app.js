@@ -2,27 +2,20 @@ import '@/styles/globals.css'
 import { ThemeProvider } from '@emotion/react';
 import mainTheme from '@/themes/mainTheme';
 import { CssBaseline } from '@mui/material';
-import axios from 'axios';
 
-function App({ Component, pageProps }) {
+import { SessionProvider } from 'next-auth/react'
 
-
-  if(typeof window !== "undefined"){
-    const auth = localStorage.getItem("Token") || "";
-    if(auth){
-      axios.defaults.headers.common= {"Authorization": `Bearer ${auth}`}
-    }else{
-      axios.defaults.headers.common = {"Authorization":null}
-    }
-  }
-
+function App({ Component, pageProps: {session, ...pageProps} }) {
   return (
-    <>
-          <ThemeProvider theme={mainTheme}>
+  <>
+  
+    <ThemeProvider theme={mainTheme}>
+            <SessionProvider session={session}>
             <CssBaseline/>
             <Component {...pageProps} />
-          </ThemeProvider>
-    </>
+      </SessionProvider>
+    </ThemeProvider>
+  </>
   )
 }
 

@@ -73,7 +73,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseMiddleware<ErrorHandlerMiddleware>();
+<<<<<<< HEAD
 app.UseCors(myAllowSpecificOrigins);
+=======
+app.UseRouting();
+app.UseCors(myAllowSpecificOrigins);    
+>>>>>>> 33ed9e84bf46e71bf4bae7efef8a8e52f1933f3b
 app.UseAuthentication();
 app.UseAuthorization();
 

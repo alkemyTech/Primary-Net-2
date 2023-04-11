@@ -1,23 +1,13 @@
 import { MyTextInput } from "@/components/MyTextInput"
 import { AuthLayout } from "@/layouts/AuthLayout"
-import { Grid, Button, Link } from "@mui/material"
-import axios from "axios";
-import { Formik } from "formik"
-import { useRouter } from "next/router";
+import { Grid, TextField, Alert, Button, Google, Typography, Link } from "@mui/material"
+import { Formik, Form, useFormik } from "formik"
+import { signIn, useSession } from "next-auth/react";
+import { redirect } from "next/dist/server/api-utils";
 import * as Yup from "yup";
 
 
-export default function LoginPage(){
-
-    const router = useRouter();
-    const onSubmit = async (e, values) => {
-        e.preventDefault();
-        const response = await axios.post("https://localhost:7149/api/Auth/login", values)
-        console.log(response);
-        router.push("/")
-
-
-    }
+export default function LoginPage() {
 
 
     return (
@@ -25,7 +15,9 @@ export default function LoginPage(){
 
             <Formik
                 initialValues={{ UserName: "", Password: "" }}
-                onSubmit={onSubmit}
+                onSubmit={(values, { setSubmitting }) => {
+                    signIn("credentials", { ...values, redirect: false })
+                }}
                 validationSchema={Yup.object({
                     UserName: Yup.string().email("Must be a valid email").required(),
                     Password: Yup.string().required()
@@ -33,10 +25,13 @@ export default function LoginPage(){
             >
                 {({ values,
                     errors,
+                    touched,
                     handleChange,
                     handleBlur,
+                    handleSubmit,
+                    isSubmitting,
                 }) => (
-                    <form onSubmit={(e)=>onSubmit(e, values)}>
+                    <form onSubmit={handleSubmit}>
                         <Grid container>
                             <MyTextInput label={"Email"}
                                 type={"email"}
@@ -46,6 +41,7 @@ export default function LoginPage(){
                                 onBlur={handleBlur}
                                 onChange={handleChange}
                                 errors={errors.UserName}
+                            // touched={touched.UserName}
                             />
 
                             <MyTextInput label={"Password"}
@@ -56,9 +52,9 @@ export default function LoginPage(){
                                 onBlur={handleBlur}
                                 onChange={handleChange}
                                 errors={errors.Password}
+                            // touched={touched.Password}
                             />
                         </Grid>
-
 
                         <Grid
                             container
@@ -92,6 +88,7 @@ export default function LoginPage(){
                             </Grid>
                         </Grid>
                     </form>
+
                 )}
             </Formik>
 
