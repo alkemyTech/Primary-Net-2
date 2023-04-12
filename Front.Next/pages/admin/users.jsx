@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import useSWR from "swr";
 import https from "https";
 import axios from "axios";
-import AdminTable from "@/components/adminPanel/commons/AdminTable";
+import CustomTable from "@/components/commons/CustomTable";
 import CircularProgress from '@mui/material/CircularProgress';
 
 const fetcher = async (url) => { //Para usar SWR
@@ -50,7 +50,7 @@ export default function Users({ users }) {
       <Layout>
         {/*Componente reutilizable hay que asignarle las columnas y la data que se quiera mostrar
          por ejemplo esta entidad contiene el campo password el cual no vamos a mostrar  */}
-        <AdminTable
+        <CustomTable
           rows={data.result} //contenido a visualizar, en este caso es un arreglo de usuarios
           columnLabels={["Id", "First Name", "Last Name", "Email", "Rol"]} //columnas
           dataProperties={[

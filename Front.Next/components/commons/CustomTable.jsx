@@ -19,10 +19,10 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import Link from "next/link";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import contentTable from "./contentTable";
-
+import { useSession } from "next-auth/react";
 
 /*
-  componente base para completar tablas en la vista de admin
+  componente base para completar tablas de vistas
   necesita el contenido a llenar en la tabla, el nombre de las columnas, los atributos a mostrar de la entidad, funciones para cambiar de pagina, eliminar y el nombre base de la ruta
 */
 
@@ -35,6 +35,8 @@ function AdminTable({
   routeBase,
   dataProperties,
 }) {
+  const { data: session } = useSession();
+
   return (
     <>
       <Grid container>
@@ -85,7 +87,7 @@ function AdminTable({
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
                   {/*llama a una funcion para mostrar solo los atributos necesarios ya que hay entidades con datos que no queremos mostrar */}
-                  {contentTable(row, dataProperties)}  
+                  {contentTable(row, dataProperties)}
 
                   <TableCell align="center">
                     <Link
@@ -96,24 +98,29 @@ function AdminTable({
                       <FmdGoodIcon />{" "}
                     </Link>{" "}
                   </TableCell>
-                  <TableCell align="center">
-                    <Link
-                      style={{ textDecoration: "none", color: "#000" }}
-                      href={`${routeBase}/edit/${row.id}`}
-                    >
-                      {" "}
-                      <EditIcon />{" "}
-                    </Link>{" "}
-                  </TableCell>
-                  <TableCell align="center">
-                    <Button
-                      style={{ textDecoration: "none", color: "#000" }}
-                      onClick={handleDelete}
-                    >
-                      {" "}
-                      <DeleteForeverIcon />{" "}
-                    </Button>{" "}
-                  </TableCell>
+                  {/* ahora se puede tambien reutilizar el componente para las vistas de usuario normal */}
+                  {session.user.rol == "Admin" && ( 
+                    <>
+                      <TableCell align="center">
+                        <Link
+                          style={{ textDecoration: "none", color: "#000" }}
+                          href={`${routeBase}/edit/${row.id}`}
+                        >
+                          {" "}
+                          <EditIcon />{" "}
+                        </Link>{" "}
+                      </TableCell>
+                      <TableCell align="center">
+                        <Button
+                          style={{ textDecoration: "none", color: "#000" }}
+                          onClick={handleDelete}
+                        >
+                          {" "}
+                          <DeleteForeverIcon />{" "}
+                        </Button>{" "}
+                      </TableCell>
+                    </>
+                  )}
                 </TableRow>
               ))}
             </TableBody>
