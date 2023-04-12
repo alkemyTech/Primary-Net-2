@@ -43,13 +43,23 @@ namespace PrimatesWallet.Api.Controllers
         [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
         [SwaggerResponse(StatusCodes.Status404NotFound, "NotFound. The requested operation was not found.")]
         [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
-        public async Task<IActionResult> GetTransactionsByUserId()
+        public async Task<IActionResult> GetTransactionsByUserId([FromQuery] int page = 1, int pageSize = 10)
         {
             var userId = UserContextService.GetCurrentUser(); // Gets the ID of the currently logged-in user.
-            var transactions = await transactionService.GetAllByUser(userId); // Retrieves all transactions for the user.
+            var transactions = await transactionService.GetAllByUser(userId,page,pageSize); // Retrieves all transactions for the user.
 
-            // Builds a BaseResponse object containing the user's transactions and returns an Ok response.
-            var response = new BaseResponse<IEnumerable<TransactionDto>>(ReplyMessage.MESSAGE_QUERY, transactions, (int)HttpStatusCode.OK);
+            var totalPages = await transactionService.TotalPageTransactionsByUser(userId,pageSize);
+
+            string url = CurrentURL.Get(HttpContext.Request);
+            var response = new BasePaginateResponse<IEnumerable<TransactionDto>>()
+            {
+                Message = ReplyMessage.MESSAGE_QUERY,
+                Result = transactions,
+                Page = page,
+                NextPage = (page < totalPages) ? $"{url}?page={page + 1}" : "None",
+                PreviousPage = (page == 1) ? "none" : $"{url}?page={page - 1}",
+                StatusCode = (int)HttpStatusCode.OK
+            };
             return Ok(response);
         }
 

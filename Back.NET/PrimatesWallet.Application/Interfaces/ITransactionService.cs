@@ -14,7 +14,7 @@ namespace PrimatesWallet.Application.Interfaces
         /// <param name="userId">ID del usuario del que se desean obtener las transacciones.</param>
         /// <returns>Una colección de objetos Transaction que representan las transacciones realizadas por el usuario.</returns>
         /// <exception cref="AppException">Se lanza cuando no se encuentran transacciones para el usuario.</exception>
-        Task<IEnumerable<TransactionDto>> GetAllByUser(int userId);
+        Task<IEnumerable<TransactionDto>> GetAllByUser(int userId,int page, int pageSize);
         
         Task<TransactionDto> GetTransactionById(int id);
         
@@ -32,5 +32,6 @@ namespace PrimatesWallet.Application.Interfaces
         Task<bool> Insert(TransactionRequestDto transactionDTO);
         Task<string> ActivateTransaction(int transactionId);
         Task<int> TotalPageTransactions(int PageSize);
+        Task<int> TotalPageTransactionsByUser(int id,int PageSize);
     }
 }
