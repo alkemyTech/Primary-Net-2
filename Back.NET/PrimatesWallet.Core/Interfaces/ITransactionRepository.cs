@@ -19,5 +19,7 @@ namespace PrimatesWallet.Core.Interfaces
         /// <param name="transaction">The Transaction to insert.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         Task InsertWithStoredProcedure(Transaction transaction);
+        Task<IEnumerable<Transaction>> GetAll(int page, int pageSize);
+        Task<int> GetCount();
     }
 }

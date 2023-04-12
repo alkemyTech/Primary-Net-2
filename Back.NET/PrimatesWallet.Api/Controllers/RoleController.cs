@@ -4,6 +4,7 @@ using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
+using PrimatesWallet.Application.Services.Auth;
 using PrimatesWallet.Core.Models;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
@@ -16,17 +17,19 @@ namespace PrimatesWallet.Api.Controllers
     public class RoleController : ControllerBase
     {
         private readonly IRoleService _roleService;
+        private readonly IUserContextService _userContextService;
 
-        public RoleController(IRoleService roleService)
+        public RoleController(IRoleService roleService, IUserContextService userContextService)
         {
             _roleService = roleService;
+            _userContextService = userContextService;
         }
 
 
         // GET: api/Role/1
-        /// <remarks>
+        /// <summary>
         /// Get role by id and show details
-        /// </remarks>     
+        /// </summary>     
         /// <param name="id">Get role searching by id</param>
         /// <response code="401">Unauthorized user for this operation.</response>              
         /// <response code="200">Successful operation.</response>        
@@ -39,7 +42,6 @@ namespace PrimatesWallet.Api.Controllers
         [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
         [SwaggerResponse(StatusCodes.Status404NotFound, "NotFound. The requested operation was not found.")]
         [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
-
         public async Task<IActionResult> GetRoleById(int id)
         {
             Role role = await _roleService.GetRoleById(id);
@@ -51,18 +53,16 @@ namespace PrimatesWallet.Api.Controllers
         }
 
 
-
         // GET: api/Role     
-        /// <remarks>
+        /// <summary>
         /// Get roles and show details
-        /// </remarks>     
+        /// </summary>     
         /// <response code="401">Unauthorized user for this operation.</response>              
         /// <response code="200">Successful operation.</response>        
         /// <response code="404">NotFound. The requested operation was not found.</response>
         /// <response code="500">Internal Server Error. Something has gone wrong on the Primates Wallet server.</response>
         [HttpGet]
         [Authorize]
-
         [SwaggerOperation(Summary = "Get specific list", Description = "Get role list")]
         [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
         [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
@@ -75,14 +75,53 @@ namespace PrimatesWallet.Api.Controllers
             return Ok(roles);
         }
 
+
+        /// <summary>
+        /// Creates a new role.
+        /// </summary>
+        /// <param name="roleCreationDto">Data required to create a new role.</param>
+        /// <response code="200">Successful operation.</response>  
+        /// <response code="401">Unauthorized user for this operation.</response>              
+        /// <response code="404">The requested resource was not found.</response>
+        /// <response code="500">Internal Server Error. Something has gone wrong on the Primates Wallet server.</response>
         [HttpPost]
         [Authorize(Roles = "Admin")]
-
+        [SwaggerOperation(Summary = "Create a new role", Description = "Creates a new role in the Primates Wallet app.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Missing required parameters.")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation.")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
         public async Task<IActionResult> CreateRole(RoleCreationDto roleCreationDto)
         {
             if (roleCreationDto.Name == null || roleCreationDto.Description == null) throw new AppException("Missing required parameters", HttpStatusCode.BadRequest);
             var response = await _roleService.CreateRole(roleCreationDto);
             return Ok(response);
+        }
+
+
+        /// <summary>
+        /// Updates a role by its ID.
+        /// </summary>
+        /// <param name="rolId">The ID of the role to update.</param>
+        /// <param name="rolUpdateDTO">The data to update the role.</param>
+        /// <response code="200">Successful operation</response>     
+        /// <response code="401">Unauthorized user for this operation.</response>
+        /// <response code="404">The requested resource was not found.</response>  
+        /// <response code="500">Internal Server Error. Something has gone wrong on the Primates Wallet server.</response>
+        [HttpPut("{rolId}")]
+        [Authorize(Roles = "Admin")]
+        [SwaggerOperation(Summary = "Update a Role.", Description = "Updates a role by its ID.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "The requested resource was not found.")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
+        public async Task<IActionResult> UpdateRol(int rolId, [FromBody] RolUpdateDto rolUpdateDTO)
+
+        {
+            var currentUser = _userContextService.GetCurrentUser();
+            var updateRol = await _roleService.UpdateRol(rolId, rolUpdateDTO, currentUser);
+
+            return Ok(updateRol);
         }
 
 
@@ -99,7 +138,6 @@ namespace PrimatesWallet.Api.Controllers
         [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
         [SwaggerResponse(StatusCodes.Status404NotFound, "NotFound. The requested operation was not found.")]
         [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
-
         public async Task<IActionResult> DeleteRole([FromRoute] int id)
         {
             var response = await _roleService.DeleteRol(id);
@@ -109,13 +147,25 @@ namespace PrimatesWallet.Api.Controllers
 
             var result = new BaseResponse<bool>(message, response, (int)statusCode);
             return StatusCode((int)statusCode, result);
-
-
         }
 
 
+        /// <summary>
+        /// Activates a role by its ID.
+        /// </summary>
+        /// <param name="roleId">The ID of the role to activate.</param>
+        /// <response code="200">Successful operation</response>     
+        /// <response code="401">Unauthorized user for this operation.</response>
+        /// <response code="404">The requested resource was not found.</response>  
+        /// <response code="500">Internal Server Error. Something has gone wrong on the Primates Wallet server.</response>
         [HttpPut("activate/{roleId}")]
-        public async Task<IActionResult> ActivateFixedDeposit(int roleId)
+        [Authorize(Roles = "Admin")]
+        [SwaggerOperation(Summary = "Activate a Role.", Description = "Only admins have permission to perform this operation.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation.")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "The requested resource was not found.")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
+        public async Task<IActionResult> ActivateRole(int roleId)
         {
             var role = await _roleService.ActivateRole(roleId);
             return Ok(role);
