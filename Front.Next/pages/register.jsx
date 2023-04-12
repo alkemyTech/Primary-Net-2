@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import {  Formik } from "formik";
 import { useSession } from "next-auth/react";
 
-const register = () => {
+const Register = () => {
 
     const { data: session } = useSession();
 
@@ -153,4 +153,4 @@ const register = () => {
     )
 }
 
-export default register;
+export default Register;
