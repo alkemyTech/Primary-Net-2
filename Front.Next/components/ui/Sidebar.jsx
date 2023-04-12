@@ -23,7 +23,7 @@ export const Sidebar = ({drawerWidth}) => {
                 </Toolbar>
             <Divider/>
             <List>
-            <SideBarList/>
+            <SideBarList session={session}/>
 
             </List>
         </Drawer>
