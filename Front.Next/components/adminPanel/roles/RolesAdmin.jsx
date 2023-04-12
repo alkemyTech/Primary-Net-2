@@ -17,43 +17,43 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 export default function DenseTableRoles({ rows }) {
 
-    const [search, setSearch] = React.useState("");
-    const [currentPage, setCurrentPage] = React.useState(0);
+    // const [search, setSearch] = React.useState("");
+    // const [currentPage, setCurrentPage] = React.useState(0);
 
-    const handleSearch = (e) => {
-        setSearch(e.target.value)
-    }
+    // const handleSearch = (e) => {
+    //     setSearch(e.target.value)
+    // }
 
 
-    const itemsInPage = () => {
-        // if (rows.length < 10 && search.length === 0) return rows
-        if (search.length === 0 && currentPage === 0) return rows.slice(currentPage, currentPage + 10)
-        let filteredRows = rows.filter(c => c.name.toLowerCase().includes(search.toLowerCase()))
+    // const itemsInPage = () => {
+    //     // if (rows.length < 10 && search.length === 0) return rows
+    //     if (search.length === 0 && currentPage === 0) return rows.slice(currentPage, currentPage + 10)
+    //     let filteredRows = rows.filter(c => c.name.toLowerCase().includes(search.toLowerCase()))
 
-        if (currentPage === 0) {
-            return filteredRows.slice(currentPage, currentPage + 10)
-        }
-        return filteredRows.slice(currentPage, currentPage + 10)
+    //     if (currentPage === 0) {
+    //         return filteredRows.slice(currentPage, currentPage + 10)
+    //     }
+    //     return filteredRows.slice(currentPage, currentPage + 10)
 
-    }
+    // }
 
-    const nextPage = () => {
-        if (rows.filter(c => c.name.includes(search)).length > currentPage + 10) {
-            setCurrentPage(currentPage + 10)
-        }
-    }
+    // const nextPage = () => {
+    //     if (rows.filter(c => c.name.includes(search)).length > currentPage + 10) {
+    //         setCurrentPage(currentPage + 10)
+    //     }
+    // }
 
-    const prevPage = () => {
-        if (currentPage > 0) {
-            setCurrentPage(currentPage - 10)
-        }
-    }
+    // const prevPage = () => {
+    //     if (currentPage > 0) {
+    //         setCurrentPage(currentPage - 10)
+    //     }
+    // }
 
     return (
 
         <Grid container>
 
-            <Grid container display={"flex"} justifyContent={"center"} spacing={2} gap={1} alignItems={"center"}>
+            {/* <Grid container display={"flex"} justifyContent={"center"} spacing={2} gap={1} alignItems={"center"}>
                 <TextField name='search' onChange={handleSearch}
                     sx={{ width: "80%", pb: 2, height: "80%" }} placeholder='Search roles...'
                 />
@@ -64,7 +64,7 @@ export default function DenseTableRoles({ rows }) {
                 <Button variant='contained' disabled={!currentPage+1} onClick={nextPage} sx={{ height: "75%", width: "8%" }}>
                     <ArrowForwardIcon />
                 </Button>
-            </Grid>
+            </Grid> */}
 
 
             <TableContainer component={Paper}>
@@ -80,7 +80,7 @@ export default function DenseTableRoles({ rows }) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {itemsInPage().map((row) => (
+                        {rows.map((row) => (
                             <TableRow
                                 key={row.name}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}

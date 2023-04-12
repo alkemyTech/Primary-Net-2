@@ -1,26 +1,42 @@
 import DenseTableRoles from '@/components/adminPanel/roles/RolesAdmin';
-import { useState, useEffect } from 'react';
 import { Layout } from '@/layouts/Layout';
 import axios from 'axios';
+import { getSession } from 'next-auth/react'
 
 
-
-function RolesAdmin() {
-    const [roles, setRoles] = useState([])
-
-    useEffect(() => {
-        async function fetchData() {
-            const { data } = await axios.get('https://localhost:7149/api/Role')
-            setRoles(data)
-        }
-        fetchData()
-    }, [])
-
+function RolesAdmin({ roles = [] }) {
     return (
         <Layout>
-            <DenseTableRoles rows={roles} />
+            <DenseTableRoles rows={roles} /> 
         </Layout>
     )
 }
+
+export const getServerSideProps = async (context) => {
+    try {
+
+        const session = await getSession(context);
+
+        const res = await axios.get(`https://localhost:7149/api/Role`, {
+            headers: {
+                'Authorization': `Bearer ${session.user?.token}`,
+                "Content-Type": "application/json",
+            }
+        });
+
+        return {
+            props: {
+                roles: res.data
+            }
+        };
+    } catch (error) {
+        console.error(error);
+        return {
+            props: {
+                roles: null // Retorna null si hay algún error
+            }
+        };
+    }
+};
 
 export default RolesAdmin
