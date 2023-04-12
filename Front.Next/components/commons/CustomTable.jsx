@@ -37,6 +37,10 @@ function AdminTable({
 }) {
   const { data: session } = useSession();
 
+  //como es una tabla reutilizable definimos las acciones que puede realizar un admin y un usuario normal
+  let labelActions =
+    session.user.rol === "Admin" ? ["Detail", "Edit", "Delete"] : ["Detail"];
+
   return (
     <>
       <Grid container>
@@ -78,6 +82,15 @@ function AdminTable({
                     {label}
                   </TableCell>
                 ))}
+                {labelActions.map((label) => (
+                  <TableCell
+                    key={label}
+                    sx={{ fontWeight: "bold" }}
+                    align="center"
+                  >
+                    {label}
+                  </TableCell>
+                ))}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -99,7 +112,7 @@ function AdminTable({
                     </Link>{" "}
                   </TableCell>
                   {/* ahora se puede tambien reutilizar el componente para las vistas de usuario normal */}
-                  {session.user.rol == "Admin" && ( 
+                  {session.user.rol == "Admin" && (
                     <>
                       <TableCell align="center">
                         <Link
@@ -126,17 +139,19 @@ function AdminTable({
             </TableBody>
           </Table>
         </TableContainer>
-
-        <Grid container position={"fixed"} bottom={"20px"} left={"90vw"}>
-          <Link
-            href={`{routeBase}/new`}
-            style={{ textDecoration: "none", color: "none" }}
-          >
-            <Button color={"tertiary"}>
-              <AddCircleIcon sx={{ height: "100px", width: "100px" }} />
-            </Button>
-          </Link>
-        </Grid>
+        {/*Solo tendra el boton de agregar uno nuevo desde esta vista si es admin */}
+        {session.user.rol == "Admin" && (
+          <Grid container position={"fixed"} bottom={"20px"} left={"90vw"}>
+            <Link
+              href={`{routeBase}/new`}
+              style={{ textDecoration: "none", color: "none" }}
+            >
+              <Button color={"tertiary"}>
+                <AddCircleIcon sx={{ height: "100px", width: "100px" }} />
+              </Button>
+            </Link>
+          </Grid>
+        )}
       </Grid>
     </>
   );

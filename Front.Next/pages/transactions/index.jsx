@@ -1,15 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import https from "https";
 import axios from "axios";
 import CircularProgress from "@mui/material/CircularProgress";
 import CustomTable from "@/components/commons/CustomTable";
 import { Layout } from "@/layouts/Layout";
+import useSWR from "swr";
 
 const fetcher = async (url) => {
   const response = await axios.get(url);
   return response.data;
 };
 
+/*la primera pagina se carga en el server y las siguientes por medio de swr */
 export default function Transactions({ transactions }) {
   const [page, setPage] = useState(1);
   const { data, isLoading, isError } = useSWR(
@@ -18,6 +20,7 @@ export default function Transactions({ transactions }) {
     { initialData: transactions }
   );
 
+  console.log(data)
   const handlePrevPage = () => {
     if (page > 1) {
       setPage((prevPage) => prevPage - 1);
@@ -40,16 +43,17 @@ export default function Transactions({ transactions }) {
   return (
     <>
       <Layout>
+        {/*se modifico el componente para que se pueda usar la tabla tanto en vista admin como user normal */}
         <CustomTable
           rows={data.result}
           columnLabels={["Id", "Amount", "Concept", "Date", "Type", "Receiver"]}
           dataProperties={[
-            "Id",
-            "Amount",
-            "Concept",
-            "Date",
-            "Type",
-            "To_Account_Id",
+            "id",
+            "amount",
+            "concept",
+            "date",
+            "type",
+            "to_Account_Id",
           ]}
           handlePrevPage={handlePrevPage}
           handleNextPage={handleNextPage}
@@ -60,6 +64,7 @@ export default function Transactions({ transactions }) {
   );
 }
 
+
 export async function getServerSideProps() {
   const url = "https://localhost:7149/api/Transactions?page=1";
   const agent = new https.Agent({
@@ -68,6 +73,7 @@ export async function getServerSideProps() {
 
   const response = await axios.get(url, { httpsAgent: agent });
   const transactions = response.data;
+  console.log(response)
 
   return {
     props: {

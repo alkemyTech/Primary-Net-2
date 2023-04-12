@@ -15,7 +15,7 @@ namespace PrimatesWallet.Application.DTOS
         public int? Id { get; set; }
         public decimal? Amount { get; set; }
         public string? Concept { get; set; }
-        public DateTime? Date { get; set; }
+        public string? Date { get; set; }
         public string? Type { get; set; }
         public int? Account_Id { get; set; }
         public int? To_Account_Id { get; set; }
