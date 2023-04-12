@@ -18,7 +18,7 @@ export default NextAuth({
                             password: credentials.Password
                         }),
                         headers: {
-                            "Content-Type": "application/json"
+                            "Content-Type": "application/json",
                         },
                         agent: new https.Agent({
                             rejectUnauthorized: false

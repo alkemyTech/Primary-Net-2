@@ -21,10 +21,8 @@ export default function DenseTableRoles({ rows }) {
     const [currentPage, setCurrentPage] = React.useState(0);
 
     const handleSearch = (e) => {
-        console.log(search);
         setSearch(e.target.value)
     }
-    console.log(rows);
 
 
     const itemsInPage = () => {
@@ -59,11 +57,11 @@ export default function DenseTableRoles({ rows }) {
                 <TextField name='search' onChange={handleSearch}
                     sx={{ width: "80%", pb: 2, height: "80%" }} placeholder='Search roles...'
                 />
-                <Button variant='contained' onClick={prevPage} sx={{ height: "75%", width: "8%" }}>
+                <Button variant='contained' disabled={currentPage<1} onClick={prevPage} sx={{ height: "75%", width: "8%" }}>
                     <ArrowBackIcon />
                 </Button>
 
-                <Button variant='contained' onClick={nextPage} sx={{ height: "75%", width: "8%" }}>
+                <Button variant='contained' disabled={!currentPage+1} onClick={nextPage} sx={{ height: "75%", width: "8%" }}>
                     <ArrowForwardIcon />
                 </Button>
             </Grid>
@@ -101,7 +99,7 @@ export default function DenseTableRoles({ rows }) {
             </TableContainer>
 
             <Grid container position={"fixed"} bottom={"20px"} left={"90vw"}>
-                <Link href={"/roles/new"} style={{ textDecoration: "none", color: "none" }}>
+                <Link href={"roles/newrole"} style={{ textDecoration: "none", color: "none" }}>
                     <Button color={"tertiary"}>
                         <AddCircleIcon sx={{ height: "100px", width: "100px" }} />
                     </Button>

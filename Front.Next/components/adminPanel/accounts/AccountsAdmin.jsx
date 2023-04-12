@@ -13,60 +13,67 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import FmdGoodIcon from '@mui/icons-material/FmdGood';
 import Link from 'next/link';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
+import axios from 'axios';
+import Swal from 'sweetalert2'
+import { useRouter } from 'next/router';
+
 
 export default function DenseTableAdmin({ rows }) {
 
-    const [search, setSearch] = React.useState("");
-    const [currentPage, setCurrentPage] = React.useState(0);
-
-    const handleSearch = (e) => {
-        console.log(search);
-        setSearch(e.target.value)
-    }
-    console.log(rows);
 
 
-    const itemsInPage = () => {
-        // if (rows.length < 10 && search.length === 0) return rows
-        if (search.length === 0 && currentPage === 0) return rows.slice(currentPage, currentPage + 10)
-        let filteredRows = rows.filter(c => c.name.toLowerCase().includes(search.toLowerCase()))
+    let { result = [], page, nextPage, previousPage } = rows;
 
-        if (currentPage === 0) {
-            return filteredRows.slice(currentPage, currentPage + 10)
-        }
-        return filteredRows.slice(currentPage, currentPage + 10)
+    const router = useRouter();
 
+    const nextPageRequest = async () => {
+        if (typeof(nextPage=="undefined") || nextPage == "None") return result
+        const { data } = await axios.get(`https://localhost:7149/api/Account?page={${page + 1}}&pageSize=10`)
+        result = data.result;
     }
 
-    const nextPage = () => {
-        if (rows.filter(c => c.name.includes(search)).length > currentPage + 10) {
-            setCurrentPage(currentPage + 10)
-        }
+    const prevPageRequest = async () => {
+        if (typeof(previousPage == "undefined") || previousPage == "None") return result
+        const { data } = await axios.get(`https://localhost:7149/api/Account?page={${page - 1}}&pageSize=10`)
+        result = data.result;
     }
 
-    const prevPage = () => {
-        if (currentPage > 0) {
-            setCurrentPage(currentPage - 10)
-        }
-    }
+
+            const handleDeleteAccount =async(accountId)=> {
+                Swal.fire({
+                    title:  `Do you want to delete account #${accountId} ?`,
+                    showDenyButton: false,
+                    showCancelButton: true,
+                    confirmButtonText: 'Delete',
+                  }).then((result) => {
+                    /* Read more about isConfirmed, isDenied below */
+                    if (result.isConfirmed) {
+                        axios.delete(` https://localhost:7149/api/Account/${accountId}`)
+                        .then( Swal.fire('Account Deleted!', '', 'success'))
+                        .then( router.reload(window.location.pathname))
+                    } else if (result.isDenied) {
+                      Swal.fire('Changes are not saved', '', 'info')
+                    }
+                  })
+            }
+
 
     return (
 
-        <Grid container>
+        <Grid container >
 
-            <Grid container display={"flex"} justifyContent={"center"} spacing={2} gap={1} alignItems={"center"}>
-                <TextField name='search' onChange={handleSearch}
-                    sx={{ width: "80%", pb: 2, height: "80%" }} placeholder='Search roles...'
-                />
-                <Button variant='contained' onClick={prevPage} sx={{ height: "75%", width: "8%" }}>
+
+
+            <Grid container display={"flex"} position={"fixed"} justifyContent={"center"} alignItems={"flex-end"} spacing={2} gap={1} bottom={1}>
+                <Button variant='contained' disabled={previousPage == "None" || typeof(previousPage == "undefined")} onClick={prevPageRequest} sx={{ height: "75%", width: "8%" }}>
                     <ArrowBackIcon />
                 </Button>
-
-                <Button variant='contained' onClick={nextPage} sx={{ height: "75%", width: "8%" }}>
+                <Button variant='contained'  disabled={nextPage == "None" || typeof(nextPage=="undefined")} onClick={nextPageRequest} sx={{ height: "75%", width: "8%" }}>
                     <ArrowForwardIcon />
                 </Button>
             </Grid>
+
+
 
 
             <TableContainer component={Paper}>
@@ -76,44 +83,41 @@ export default function DenseTableAdmin({ rows }) {
                             <TableCell sx={{ fontWeight: "bold" }} align="center">Id</TableCell>
                             <TableCell sx={{ fontWeight: "bold" }} align="center"> Owner </TableCell>
                             <TableCell sx={{ fontWeight: "bold" }} align="center"> Money </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }} align="center"> Block / Activate </TableCell>
                             <TableCell sx={{ fontWeight: "bold" }} align="center"> Deposits</TableCell>
                             <TableCell sx={{ fontWeight: "bold" }} align="center"> Transactions</TableCell>
                             <TableCell sx={{ fontWeight: "bold" }} align="center"> Detail</TableCell>
                             <TableCell sx={{ fontWeight: "bold" }} align="center"> Edit</TableCell>
+                            <TableCell sx={{ fontWeight: "bold" }} align="center"> Block / Activate </TableCell>
                             <TableCell sx={{ fontWeight: "bold" }} align="center"> Delete</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {itemsInPage().map((row) => (
+                        {result.map((row) => (
                             <TableRow
                                 key={row.name}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
 
                                 <TableCell align="center">{row.id}</TableCell>
-                                <TableCell align="center"> {`${row.User.First_Name} ${row.User.First_Name}}`}</TableCell>
-                                <TableCell align="center">{row.Money}</TableCell>
-                                <TableCell align="center">{row.IsBlocked == true ?  <Button> Activate </Button> : <Button> Block </Button>}</TableCell>
-                                <TableCell align="center"><Link style={{ textDecoration: "none", color: "#000" }} href={`/fixedDeposits/${row.id}`}> See user Deposits </Link> </TableCell>
-                                <TableCell align="center"><Link style={{ textDecoration: "none", color: "#000" }} href={`/transactions/${row.id}`}> See user Transactions </Link> </TableCell>
-                                <TableCell align="center"><Link style={{ textDecoration: "none", color: "#000" }} href={`/account/${row.id}`}> <FmdGoodIcon /> </Link> </TableCell>
+                                <TableCell align="center"> {`${row.name} ${row.lastName}`}</TableCell>
+                                <TableCell align="center"> $ {row.money}</TableCell>
+                                <TableCell align="center">
+                                    <Link style={{ textDecoration: "none", color: "#000" }} href={`/fixedDeposits/${row.id}`}> See user Deposits </Link> 
+                                </TableCell>
+                                <TableCell align="center">
+                                    <Link style={{ textDecoration: "none", color: "#000" }} href={`/transactions/${row.id}`}> See user Transactions </Link> 
+                                </TableCell>
+                                <TableCell align="center">
+                                    <Link style={{ textDecoration: "none", color: "#000" }} href={`/account/${row.id}`}> <FmdGoodIcon /> </Link>
+                                </TableCell>
                                 <TableCell align="center"> <EditIcon /> </TableCell>
-                                <TableCell align="center"> <DeleteForeverIcon /> </TableCell>
+                                <TableCell align="center">{row.isBlocked === true ? <Button variant='outlined' sx={{backgroundColor:"green", color:"white"}}> Activate </Button> : <Button variant='outlined' sx={{backgroundColor:"red", color:"gray"}}> Block </Button>}</TableCell>
+                                <TableCell align="center"> <Button onClick={()=>handleDeleteAccount(row.id)}> <DeleteForeverIcon /> </Button>  </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
-
-            <Grid container position={"fixed"} bottom={"20px"} left={"90vw"}>
-                <Link href={"/roles/new"} style={{ textDecoration: "none", color: "none" }}>
-                    <Button color={"tertiary"}>
-                        <AddCircleIcon sx={{ height: "100px", width: "100px" }} />
-                    </Button>
-                </Link>
-
-            </Grid>
         </Grid>
 
     );

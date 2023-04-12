@@ -11,7 +11,6 @@ function AccountsAdmin() {
   useEffect(() => {
     async function fetchData() {
       const {data} = await axios.get('https://localhost:7149/api/Account')
-      console.log(data);
       setAccounts(data)
     }
     fetchData()

@@ -4,20 +4,30 @@ import { Grid, TextField, Alert, Button, Google, Typography, Link } from "@mui/m
 import { Formik, Form, useFormik } from "formik"
 import { signIn, useSession } from "next-auth/react";
 import { redirect } from "next/dist/server/api-utils";
+import { useRouter } from "next/router";
 import * as Yup from "yup";
+
 
 
 export default function LoginPage() {
 
+    const router = useRouter();
+
+    const onSubmit = (e, values) => {
+        e.preventDefault();
+        signIn("credentials", { ...values, redirect: false })
+        router.push("/")
+    }
 
     return (
         <AuthLayout title={"Login"}>
 
             <Formik
                 initialValues={{ UserName: "", Password: "" }}
-                onSubmit={(values, { setSubmitting }) => {
-                    signIn("credentials", { ...values, redirect: false })
-                }}
+                // onSubmit={(values, { setSubmitting }) => {
+                //     signIn("credentials", { ...values, redirect: false })
+                // }}
+                onSubmit={onSubmit}
                 validationSchema={Yup.object({
                     UserName: Yup.string().email("Must be a valid email").required(),
                     Password: Yup.string().required()
@@ -31,7 +41,7 @@ export default function LoginPage() {
                     handleSubmit,
                     isSubmitting,
                 }) => (
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={onSubmit}>
                         <Grid container>
                             <MyTextInput label={"Email"}
                                 type={"email"}
