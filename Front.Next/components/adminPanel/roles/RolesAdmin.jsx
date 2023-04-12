@@ -8,7 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import { Button, Grid, TextField } from '@mui/material';
+import { Button, Grid, TextField, Typography } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import FmdGoodIcon from '@mui/icons-material/FmdGood';
@@ -65,7 +65,9 @@ export default function DenseTableRoles({ rows }) {
                     <ArrowForwardIcon />
                 </Button>
             </Grid> */}
-
+        <Typography variant='h4' sx={{pb:2}}>
+                Roles
+            </Typography>
 
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">

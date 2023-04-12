@@ -8,7 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import { Button, Grid, TextField } from '@mui/material';
+import { Button, Grid, TextField, Typography } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import FmdGoodIcon from '@mui/icons-material/FmdGood';
@@ -24,20 +24,9 @@ export default function DenseTableAdmin({ rows }) {
     return (
 
         <Grid container >
-
-
-{/* 
-            <Grid container display={"flex"} position={"fixed"} justifyContent={"center"} alignItems={"flex-end"} spacing={2} gap={1} bottom={1}>
-                <Button variant='contained' disabled={previousPage == "None" || typeof(previousPage == "undefined")} onClick={prevPageRequest} sx={{ height: "75%", width: "8%" }}>
-                    <ArrowBackIcon />
-                </Button>
-                <Button variant='contained'  disabled={nextPage == "None" || typeof(nextPage=="undefined")} onClick={nextPageRequest} sx={{ height: "75%", width: "8%" }}>
-                    <ArrowForwardIcon />
-                </Button>
-            </Grid> */}
-
-
-
+        <Typography variant='h4' sx={{pb:2}}>
+                Accounts
+            </Typography>
 
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
@@ -74,7 +63,7 @@ export default function DenseTableAdmin({ rows }) {
                                     <Link style={{ textDecoration: "none", color: "#000" }} href={`/account/${row.id}`}> <FmdGoodIcon /> </Link>
                                 </TableCell>
                                 <TableCell align="center"> <EditIcon /> </TableCell>
-                                <TableCell align="center">{row.isBlocked === true ? <Button variant='outlined' sx={{backgroundColor:"green", color:"white"}}> Activate </Button> : <Button variant='outlined' sx={{backgroundColor:"red", color:"gray"}}> Block </Button>}</TableCell>
+                                <TableCell align="center">{row.isBlocked === true ? <Button variant='outlined' sx={{backgroundColor:"green", color:"white"}}> Activate </Button> : <Button variant='outlined' sx={{backgroundColor:"red", color:"#eee"}}> Block </Button>}</TableCell>
                                 <TableCell align="center"> <Button onClick={()=>handleDeleteAccount(row.id)}> <DeleteForeverIcon /> </Button>  </TableCell>
                             </TableRow>
                         ))}
