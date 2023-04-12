@@ -21,49 +21,12 @@ import { useRouter } from 'next/router';
 export default function DenseTableAdmin({ rows }) {
 
 
-
-    let { result = [], page, nextPage, previousPage } = rows;
-
-    const router = useRouter();
-
-    const nextPageRequest = async () => {
-        if (typeof(nextPage=="undefined") || nextPage == "None") return result
-        const { data } = await axios.get(`https://localhost:7149/api/Account?page={${page + 1}}&pageSize=10`)
-        result = data.result;
-    }
-
-    const prevPageRequest = async () => {
-        if (typeof(previousPage == "undefined") || previousPage == "None") return result
-        const { data } = await axios.get(`https://localhost:7149/api/Account?page={${page - 1}}&pageSize=10`)
-        result = data.result;
-    }
-
-
-            const handleDeleteAccount =async(accountId)=> {
-                Swal.fire({
-                    title:  `Do you want to delete account #${accountId} ?`,
-                    showDenyButton: false,
-                    showCancelButton: true,
-                    confirmButtonText: 'Delete',
-                  }).then((result) => {
-                    /* Read more about isConfirmed, isDenied below */
-                    if (result.isConfirmed) {
-                        axios.delete(` https://localhost:7149/api/Account/${accountId}`)
-                        .then( Swal.fire('Account Deleted!', '', 'success'))
-                        .then( router.reload(window.location.pathname))
-                    } else if (result.isDenied) {
-                      Swal.fire('Changes are not saved', '', 'info')
-                    }
-                  })
-            }
-
-
     return (
 
         <Grid container >
 
 
-
+{/* 
             <Grid container display={"flex"} position={"fixed"} justifyContent={"center"} alignItems={"flex-end"} spacing={2} gap={1} bottom={1}>
                 <Button variant='contained' disabled={previousPage == "None" || typeof(previousPage == "undefined")} onClick={prevPageRequest} sx={{ height: "75%", width: "8%" }}>
                     <ArrowBackIcon />
@@ -71,7 +34,7 @@ export default function DenseTableAdmin({ rows }) {
                 <Button variant='contained'  disabled={nextPage == "None" || typeof(nextPage=="undefined")} onClick={nextPageRequest} sx={{ height: "75%", width: "8%" }}>
                     <ArrowForwardIcon />
                 </Button>
-            </Grid>
+            </Grid> */}
 
 
 
@@ -92,7 +55,7 @@ export default function DenseTableAdmin({ rows }) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {result.map((row) => (
+                        {rows.result.map((row) => (
                             <TableRow
                                 key={row.name}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
