@@ -1,26 +1,33 @@
 import React, { useState } from "react";
-import https from "https";
 import axios from "axios";
-import CircularProgress from "@mui/material/CircularProgress";
 import CustomTable from "@/components/commons/CustomTable";
 import { Layout } from "@/layouts/Layout";
 import useSWR from "swr";
+import { useSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
+import CircularLoading from "@/components/commons/CircularLoading";
 
-const fetcher = async (url) => {
-  const response = await axios.get(url);
-  return response.data;
+const fetcher = (token) => async (url) => {
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
+  const { data } = await axios.get(url, { headers });
+  return data;
 };
 
 /*la primera pagina se carga en el server y las siguientes por medio de swr */
 export default function Transactions({ transactions }) {
   const [page, setPage] = useState(1);
+
+  const { data: session } = useSession();
+
   const { data, isLoading, isError } = useSWR(
     `https://localhost:7149/api/Transactions?page=${page}`,
-    fetcher,
+    fetcher(session?.user?.token),
     { initialData: transactions }
   );
 
-  console.log(data)
   const handlePrevPage = () => {
     if (page > 1) {
       setPage((prevPage) => prevPage - 1);
@@ -33,13 +40,14 @@ export default function Transactions({ transactions }) {
     }
   };
 
-  if (isLoading) {
-    return <CircularProgress />;
+  if (!data || isLoading) {
+    return <CircularLoading />;
   }
 
   if (isError) {
     return <div>Error loading users</div>;
   }
+
   return (
     <>
       <Layout>
@@ -64,16 +72,19 @@ export default function Transactions({ transactions }) {
   );
 }
 
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
 
-export async function getServerSideProps() {
   const url = "https://localhost:7149/api/Transactions?page=1";
-  const agent = new https.Agent({
-    rejectUnauthorized: false,
+
+  const response = await axios.get(url, {
+    headers: {
+      Authorization: `Bearer ${session.user?.token}`,
+      "Content-Type": "application/json",
+    },
   });
 
-  const response = await axios.get(url, { httpsAgent: agent });
   const transactions = response.data;
-  console.log(response)
 
   return {
     props: {
