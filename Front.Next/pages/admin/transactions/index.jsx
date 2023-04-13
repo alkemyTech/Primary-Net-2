@@ -6,6 +6,7 @@ import CustomTable from "@/components/commons/CustomTable";
 import CircularLoading from "@/components/commons/CircularLoading";
 import { getSession } from "next-auth/react";
 import { useSession } from "next-auth/react";
+import { deleteModal } from "@/components/commons/modal/deleteModal";
 
 const fetcher = (token) => async (url) => {
   const headers = {
@@ -20,7 +21,7 @@ export default function TransactionsAdmin({ transactions }) {
   const [page, setPage] = useState(1);
   const { data: session } = useSession();
 
-  const { data, isLoading, isError,mutate } = useSWR(
+  const { data, isLoading, isError, mutate } = useSWR(
     `https://localhost:7149/api/Transactions/All?page=${page}`,
     fetcher(session?.user?.token),
     { initialData: transactions }
@@ -55,8 +56,7 @@ export default function TransactionsAdmin({ transactions }) {
             nos aseguramos que el usuario deja de ver la transaccion que efectivamente fue eliminada en la base de datos
       */
       () => {
-        mutate(data.filter((transaction) => transaction.id !== transactionId));
-        
+        mutate();
       }
     );
   };
@@ -75,13 +75,22 @@ export default function TransactionsAdmin({ transactions }) {
          con useSession verifica si es admin y si lo es renderiza los botones de edicion y eliminacion */}
         <CustomTable
           rows={data.result}
-          columnLabels={["Id", "Amount", "Concept", "Date", "Type", "Receiver"]}
+          columnLabels={[
+            "Id",
+            "Amount",
+            "Concept",
+            "Date",
+            "Type",
+            "Sender",
+            "Receiver",
+          ]}
           dataProperties={[
             "id",
             "amount",
             "concept",
             "date",
             "type",
+            "account_Id",
             "to_Account_Id",
           ]}
           handlePrevPage={handlePrevPage}
@@ -95,7 +104,7 @@ export default function TransactionsAdmin({ transactions }) {
 }
 
 export async function getServerSideProps(context) {
-    //del server buscamos la primera pagina de todas las transacciones
+  //del server buscamos la primera pagina de todas las transacciones
   const session = await getSession(context);
   const url = "https://localhost:7149/api/Transactions/All?page=1";
 
