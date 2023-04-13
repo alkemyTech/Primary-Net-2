@@ -14,7 +14,7 @@ namespace PrimatesWallet.Infrastructure.Repositories
         {
 
         }
-        
+
         public override async Task<IEnumerable<Transaction>> GetAll()
         {
             return await _dbContext.Transactions.Where(x => !x.IsDeleted).ToListAsync();
@@ -30,7 +30,7 @@ namespace PrimatesWallet.Infrastructure.Repositories
             return await _dbContext.Transactions.Where(x => x.Id == id && x.IsDeleted).FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<Transaction>> GetAllByAccount(int id)
+        public async Task<IEnumerable<Transaction>> GetAllByAccount(int id, int page, int pageSize)
         {
             return await base._dbContext.Transactions
                  .Where(t => (t.Type == TransactionType.topup && t.Account_Id == id) //depositos
@@ -38,7 +38,9 @@ namespace PrimatesWallet.Infrastructure.Repositories
                      || (t.Type == TransactionType.payment && t.To_Account_Id == id)//transferencias recibidas
                      || (t.Type == TransactionType.repayment && t.To_Account_Id == id) //reembolso recibido
                      || (t.Type == TransactionType.repayment && t.Account_Id == id)) // reembolsos realizados (solo admins)
-                 .Where(x => x.IsDeleted == false)   
+                 .Where(x => x.IsDeleted == false)
+                 .Skip((page - 1) * pageSize)
+                 .Take(pageSize)
                  .ToListAsync();
         }
 
@@ -57,7 +59,7 @@ namespace PrimatesWallet.Infrastructure.Repositories
 
             // Ejecuta el procedimiento almacenado
             await base._dbContext.Database.ExecuteSqlRawAsync("EXEC InsertTransactionWithValidation"
-                + " @Amount, @Concept, @Date, @Type, @Account_Id, @To_Account_Id", 
+                + " @Amount, @Concept, @Date, @Type, @Account_Id, @To_Account_Id",
                 parameters.ToArray());
         }
 
@@ -95,6 +97,18 @@ namespace PrimatesWallet.Infrastructure.Repositories
         public async Task<int> GetCount()
         {
             return await base._dbContext.Transactions.Where(a => a.IsDeleted == false).CountAsync();
+        }
+
+        public async Task<int> GetCountByUser(int id)
+        {
+            return await base._dbContext.Transactions
+                .Where(t => (t.Type == TransactionType.topup && t.Account_Id == id) 
+                     || (t.Type == TransactionType.payment && t.Account_Id == id) 
+                     || (t.Type == TransactionType.payment && t.To_Account_Id == id)
+                     || (t.Type == TransactionType.repayment && t.To_Account_Id == id) 
+                     || (t.Type == TransactionType.repayment && t.Account_Id == id))
+                 .Where(x => x.IsDeleted == false)
+                 .CountAsync();
         }
     }
 }

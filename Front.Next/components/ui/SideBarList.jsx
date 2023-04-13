@@ -8,7 +8,7 @@ const options = [
   },
   {
     name: "Transactions",
-    path: "/"
+    path: "/transactions"
   },
   {
     name: "Fixed Term Deposits",
