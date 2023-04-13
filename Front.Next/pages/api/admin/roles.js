@@ -1,28 +1,17 @@
-// import axios from 'axios'
-// import { useState, useEffect } from 'react'
+import axios from "axios"
 
-// function RolesAdmin() {
-//   const [roles, setRoles] = useState([])
+export default function handler( req, res ){
+    switch(req.method){
+        case "GET":
+            return getAllRoles(res);
 
-//   useEffect(() => {
-//     async function fetchData() {
-//       const {data} = await axios.get('https://localhost:7149/api/Role')
-//       console.log(data);
-//       setRoles(data)
-//     }
-//     fetchData()
-//   }, [])
+        default:
+            return res.status(400).json({message:"Invalid Endpoint"})
+    }
+}
 
-//   return (
-//     <div>
-//       <h1>My Data</h1>
-//       <ul>
-//         {roles.map((item) => (
-//           <li key={item.id}>{item.name}</li>
-//         ))}
-//       </ul>
-//     </div>
-//   )
-// }
 
-// export default RolesAdmin
+const getAllRoles = async(res) => {
+    const { data } = await axios.get("https://localhost:7149/api/Role");
+    return res.status(200).json(data)
+}

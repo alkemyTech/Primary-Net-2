@@ -79,6 +79,7 @@ namespace PrimatesWallet.Infrastructure.repositories
         {
             return await base._dbContext.Accounts
                 .Where(a => a.IsDeleted == false)
+                .Include(x => x.User)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();

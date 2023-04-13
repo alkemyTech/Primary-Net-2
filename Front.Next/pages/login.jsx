@@ -1,17 +1,13 @@
-import { MyTextInput } from "@/components/login/MyTextInput"
+import { MyTextInput } from "@/components/MyTextInput"
 import { AuthLayout } from "@/layouts/AuthLayout"
-import { HandleLogin, startLoginWithEmailAndPassword } from "@/store/auth/thunks";
 import { Grid, TextField, Alert, Button, Google, Typography, Link } from "@mui/material"
-import { Formik, Form, useFormik } from "formik"
-import {  useRouter } from "next/router";
-import { useDispatch } from "react-redux";
+import { Formik } from "formik"
+import { signIn, useSession } from "next-auth/react";
+import { redirect } from "next/dist/server/api-utils";
 import * as Yup from "yup";
 
 
-const login = () => {
-
-  const dispatch = useDispatch();
-  const router = useRouter();
+const Login = () => {
 
 
   return (
@@ -20,8 +16,7 @@ const login = () => {
       <Formik
         initialValues={{ UserName: "", Password: "" }}
         onSubmit={(values, { setSubmitting }) => {  
-          dispatch( startLoginWithEmailAndPassword(values) )
-          router.push("/")
+          signIn("credentials", {...values, redirect: true , callbackUrl:"/"})
         }}
         validationSchema={Yup.object({
           UserName: Yup.string().email("Must be a valid email").required(),
@@ -101,4 +96,4 @@ const login = () => {
   )
 }
 
-export default login
+export default Login
