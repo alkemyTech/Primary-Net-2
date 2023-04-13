@@ -9,9 +9,18 @@ using Hangfire;
 using PrimatesWallet.Application.Interfaces;
 using PrimatesWallet.Application.Services;
 
-var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.WithOrigins("http://localhost:3000")
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDIApplication(builder.Configuration);
 // Add services to the container.
@@ -51,21 +60,9 @@ builder.Services.AddSwaggerGen(c =>
 
 });
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: myAllowSpecificOrigins,
-        builder =>
-        {
-            builder.WithOrigins("http://localhost:3000")
-            .AllowAnyMethod()
-            .AllowAnyHeader();
-        });
-});
-
-
 
 var app = builder.Build();
-
+app.UseCors();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -81,7 +78,6 @@ app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseCors(myAllowSpecificOrigins);
 
 ///<summary>
 ///This code sets up the Hangfire dashboard and schedules a recurring job to call the "LiquidateFixedTermDeposit" 
