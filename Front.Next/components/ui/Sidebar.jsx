@@ -28,5 +28,5 @@ export const Sidebar = ({drawerWidth}) => {
             </List>
         </Drawer>
     </Box>
-  )
-}
+  );
+};
