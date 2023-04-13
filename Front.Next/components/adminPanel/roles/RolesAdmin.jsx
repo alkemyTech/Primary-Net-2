@@ -47,7 +47,7 @@ export default function DenseTableRoles({ rows }) {
                                 <TableCell align="center">{row.id}</TableCell>
                                 <TableCell align="center">{row.name}</TableCell>
                                 <TableCell align="center">{row.description}</TableCell>
-                                <TableCell align="center"><Link style={{ textDecoration: "none", color: "#000" }} href={`/role/${row.id}`}> <FmdGoodIcon /> </Link> </TableCell>
+                                <TableCell align="center"><Link style={{ textDecoration: "none", color: "#000" }} href={`/roles/${row.id}`}> <FmdGoodIcon /> </Link> </TableCell>
                                 <TableCell align="center"> <EditIcon /> </TableCell>
                                 <TableCell align="center"> <DeleteForeverIcon /> </TableCell>
                             </TableRow>
