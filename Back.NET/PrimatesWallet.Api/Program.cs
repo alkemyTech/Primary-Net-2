@@ -11,6 +11,7 @@ using PrimatesWallet.Application.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
@@ -60,7 +61,6 @@ builder.Services.AddSwaggerGen(c =>
 
 });
 
-
 var app = builder.Build();
 app.UseCors();
 // Configure the HTTP request pipeline.
@@ -74,6 +74,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseMiddleware<ErrorHandlerMiddleware>();
 
+app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();

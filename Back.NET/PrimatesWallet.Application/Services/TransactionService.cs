@@ -33,14 +33,14 @@ namespace PrimatesWallet.Application.Services
         /// <param name="userId">The ID of the user.</param>
         /// <returns>A list of TransactionDto objects representing the user's transactions.</returns>
         /// <exception cref="AppException">Thrown if no transactions are found for the user.</exception>
-        public async Task<IEnumerable<TransactionDto>> GetAllByUser(int userId)
+        public async Task<IEnumerable<TransactionDto>> GetAllByUser(int userId,int page, int pageSize)
         {
             // Retrieves the ID of the user's account using the user ID.
             var accountId = await _unitOfWork.Accounts.GetIdAccount(userId)
                 ?? throw new AppException(ReplyMessage.MESSAGE_QUERY_EMPTY, HttpStatusCode.NotFound);
 
             // Retrieves all transactions for the user's account.
-            var transactions = await _unitOfWork.Transactions.GetAllByAccount(accountId)
+            var transactions = await _unitOfWork.Transactions.GetAllByAccount(accountId,page,pageSize)
                 ?? throw new AppException(ReplyMessage.MESSAGE_QUERY_EMPTY, HttpStatusCode.NotFound);
 
             // Converts the transactions into a list of TransactionDto objects.
@@ -104,6 +104,12 @@ namespace PrimatesWallet.Application.Services
         public async Task<int> TotalPageTransactions(int PageSize)
         {
             var totalTransactions = await _unitOfWork.Transactions.GetCount();
+            return (int)Math.Ceiling((double)totalTransactions / PageSize);
+        }
+
+        public async Task<int> TotalPageTransactionsByUser(int id,int PageSize)
+        {
+            var totalTransactions = await _unitOfWork.Transactions.GetCountByUser(id);
             return (int)Math.Ceiling((double)totalTransactions / PageSize);
         }
 

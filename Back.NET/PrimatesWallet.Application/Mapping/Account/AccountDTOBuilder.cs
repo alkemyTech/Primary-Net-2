@@ -43,9 +43,27 @@ namespace PrimatesWallet.Application.Mapping.Account
             return this;
         }
 
+
+        public AccountDTOBuilder WithName(string name)
+        {
+            _accountDTO.Name = name;
+            return this;
+        }
+        public AccountDTOBuilder WithLastname(string lastname)
+        {
+            _accountDTO.LastName = lastname;
+            return this;
+        }
+
+
+
+
         public AccountResponseDTO Build()
         {
             return _accountDTO;
         }
+
+
+
     }
 }
