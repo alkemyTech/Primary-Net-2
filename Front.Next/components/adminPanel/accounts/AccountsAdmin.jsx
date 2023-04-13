@@ -89,7 +89,7 @@ export default function DenseTableAdmin({ rows }) {
                                     <Link style={{ textDecoration: "none", color: "#000" }} href={`/transactions/${row.id}`}> See user Transactions </Link> 
                                 </TableCell>
                                 <TableCell align="center">
-                                    <Link style={{ textDecoration: "none", color: "#000" }} href={`/account/${row.id}`}> <FmdGoodIcon /> </Link>
+                                    <Link style={{ textDecoration: "none", color: "#000" }} href={`/admin/accounts/${row.id}`}> <FmdGoodIcon /> </Link>
                                 </TableCell>
                                 <TableCell align="center"> <EditIcon /> </TableCell>
                                 <TableCell align="center">{row.isBlocked === true ? <Button variant='outlined' sx={{backgroundColor:"green", color:"white"}}> Activate </Button> : <Button variant='outlined' sx={{backgroundColor:"red", color:"#eee"}}> Block </Button>}</TableCell>
