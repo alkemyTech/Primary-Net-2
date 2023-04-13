@@ -56,7 +56,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: myAllowSpecificOrigins,
         builder =>
         {
-            builder.WithOrigins("http://localhost:3000")
+            builder.AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader();
         });
@@ -77,11 +77,12 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseMiddleware<ErrorHandlerMiddleware>();
 
+app.UseCors(myAllowSpecificOrigins);
+app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseCors(myAllowSpecificOrigins);
 
 ///<summary>
 ///This code sets up the Hangfire dashboard and schedules a recurring job to call the "LiquidateFixedTermDeposit" 

@@ -2,30 +2,18 @@ import '@/styles/globals.css'
 import { ThemeProvider } from '@emotion/react';
 import mainTheme from '@/themes/mainTheme';
 import { CssBaseline } from '@mui/material';
-import { Provider, useSelector } from 'react-redux';
-import { store } from '@/store';
-import axios from 'axios';
+import { SessionProvider } from 'next-auth/react'
+// process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0;
 
-function App({ Component, pageProps }) {
-
-
-  if(typeof window !== "undefined"){
-    const auth = localStorage.getItem("Token") || "";
-    if(auth){
-      axios.defaults.headers.common= {"Authorization": `Bearer ${auth}`}
-    }else{
-      axios.defaults.headers.common = {"Authorization":null}
-    }
-  }
-
+function App({ Component, pageProps: { session, ...pageProps } }) {
   return (
     <>
-      <Provider store={store}>
-          <ThemeProvider theme={mainTheme}>
-            <CssBaseline/>
-            <Component {...pageProps} />
-          </ThemeProvider>
-      </Provider>
+      <ThemeProvider theme={mainTheme}>
+        <SessionProvider session={session}>
+          <CssBaseline />
+          <Component {...pageProps} />
+        </SessionProvider>
+      </ThemeProvider>
     </>
   )
 }

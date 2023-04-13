@@ -3,12 +3,13 @@ import { AuthLayout } from "@/layouts/AuthLayout"
 import { Grid, TextField, Alert, Button, Google, Typography, Link } from "@mui/material"
 import * as Yup from "yup";
 import {  Formik } from "formik";
-import axios from "axios";
-import { HandleRegister } from "@/store/auth/thunks";
+import { useSession } from "next-auth/react";
 
-const register = () => {
+const Register = () => {
 
+    const { data: session } = useSession();
 
+    console.log(session);
 
     return (
 
@@ -152,4 +153,8 @@ const register = () => {
     )
 }
 
+<<<<<<< HEAD
 export default register;
+=======
+export default Register;
+>>>>>>> 3cf341c3e762dfbd2975ab83a8940f452fe8132f
