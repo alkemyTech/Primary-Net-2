@@ -11,6 +11,10 @@ const options = [
     path: "/user/"
   },
   {
+    name: "Catalogue",
+    path: "/catalogue"
+  },
+  {
     name: "Transactions",
     path: "/user/transactions"
   },
@@ -26,10 +30,7 @@ const options = [
     name: "Topup",
     path: "/user/"
   },
-  {
-    name: "Admin Panel",
-    path: "/user/"
-  }
+
 ]
 
 
