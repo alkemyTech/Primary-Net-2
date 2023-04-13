@@ -5,6 +5,9 @@ using System.Reflection;
 using PrimatesWallet.Application.ServiceExtension;
 using System.Text.Json.Serialization;
 using PrimatesWallet.Application.Middleware;
+using Hangfire;
+using PrimatesWallet.Application.Interfaces;
+using PrimatesWallet.Application.Services;
 
 var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -73,11 +76,21 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseMiddleware<ErrorHandlerMiddleware>();
+
 app.UseCors(myAllowSpecificOrigins);
 app.UseRouting();
-app.UseCors(myAllowSpecificOrigins);    
+
 app.UseAuthentication();
 app.UseAuthorization();
+
+
+///<summary>
+///This code sets up the Hangfire dashboard and schedules a recurring job to call the "LiquidateFixedTermDeposit" 
+///method of an implementation of the "IFixedTermDepositService" interface every day at 8:15 AM local time.
+/// </summary>
+app.UseHangfireDashboard();
+
+RecurringJob.AddOrUpdate<IFixedTermDepositService>(service => service.LiquidateFixedTermDeposit(), "15 8 * * *", TimeZoneInfo.Local);
 
 
 app.MapControllers();

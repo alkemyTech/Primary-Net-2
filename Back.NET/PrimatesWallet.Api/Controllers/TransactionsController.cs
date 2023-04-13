@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PrimatesWallet.Api.Helpers;
 using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
@@ -61,20 +62,24 @@ namespace PrimatesWallet.Api.Controllers
         /// <response code="404">Returns if the requested transaction was not found.</response>
         /// <response code="500">Returns if there was an internal server error.</response>
         [HttpGet("All")]
-        [Authorize(Roles = "Admin")]
         [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
         [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
         [SwaggerResponse(StatusCodes.Status404NotFound, "NotFound. The requested operation was not found.")]
         [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] int page = 1, int pageSize = 10)
         {
-            // Retrieve all transactions from the database
-            var transactions = await transactionService.GetAllTransactions();
-
-            // Build a new BaseResponse object with a success message, the retrieved transactions, and a success status code
-            var response = new BaseResponse<IEnumerable<TransactionDto>>(ReplyMessage.MESSAGE_QUERY, transactions, (int)HttpStatusCode.OK);
-
-            // Return a success response with the BaseResponse object as the response body
+            var transactions = await transactionService.GetAllTransactions(page, pageSize);
+            var totalPages = await transactionService.TotalPageTransactions(pageSize);
+            string url = CurrentURL.Get(HttpContext.Request);
+            var response = new BasePaginateResponse<IEnumerable<TransactionDto>>()
+            {
+                Message = ReplyMessage.MESSAGE_QUERY,
+                Result = transactions,
+                Page = page,
+                NextPage = (page < totalPages) ? $"{url}?page={page + 1}" : "None",
+                PreviousPage = (page == 1) ? "none" : $"{url}?page={page - 1}",
+                StatusCode = (int)HttpStatusCode.OK
+            };
             return Ok(response);
         }
 
@@ -180,7 +185,19 @@ namespace PrimatesWallet.Api.Controllers
         }
 
 
+        /// <summary>
+        /// Activates a transaction by its ID.
+        /// </summary>
+        /// <param name="transactionId">The ID of the transaction to be activated.</param>
+        /// <returns>Returns the activated transaction.</returns>
+        /// <response code="200">Returns the activated transaction.</response>
+        /// <response code="404">Returns if the requested transaction was not found.</response>
         [HttpPut("activate/{transactionId}")]
+        [Authorize]
+        [SwaggerOperation(Summary = "Activates a transaction by its id", Description = "Activates a transaction by its id.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "NotFound. The requested operation was not found.")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
         public async Task <IActionResult> ActivateTransaction(int transactionId)
         {
             var transaction = await transactionService.ActivateTransaction(transactionId);

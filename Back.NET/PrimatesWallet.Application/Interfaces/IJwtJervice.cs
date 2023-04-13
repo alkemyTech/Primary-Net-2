@@ -10,6 +10,11 @@ namespace PrimatesWallet.Application.Interfaces
 {
     public interface IJwtJervice
     {
+        /// <summary>
+        /// Generates a JSON Web Token for the given user.
+        /// </summary>
+        /// <param name="user">The user for which to generate the JWT.</param>
+        /// <returns>A JWT.</returns>
         string Generate(User user);
     }
 }
