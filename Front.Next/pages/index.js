@@ -13,6 +13,10 @@ export default function Home() {
           LoginPage
         </Link>
 
+        <Link href={"/admin/catalogues/new"}>
+          newProduct
+        </Link>
+
       </Box>
     </Layout>
   )

@@ -9,9 +9,19 @@ using Hangfire;
 using PrimatesWallet.Application.Interfaces;
 using PrimatesWallet.Application.Services;
 
-var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.WithOrigins("http://localhost:3000")
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDIApplication(builder.Configuration);
 // Add services to the container.
@@ -51,21 +61,8 @@ builder.Services.AddSwaggerGen(c =>
 
 });
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: myAllowSpecificOrigins,
-        builder =>
-        {
-            builder.AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader();
-        });
-});
-
-
-
 var app = builder.Build();
-
+app.UseCors();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -77,7 +74,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseMiddleware<ErrorHandlerMiddleware>();
 
-app.UseCors(myAllowSpecificOrigins);
 app.UseRouting();
 
 app.UseAuthentication();
