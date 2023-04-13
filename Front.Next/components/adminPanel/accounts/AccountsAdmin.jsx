@@ -16,10 +16,39 @@ import Link from 'next/link';
 import axios from 'axios';
 import Swal from 'sweetalert2'
 import { useRouter } from 'next/router';
+import { getSession } from 'next-auth/react';
+import { headers } from '@/next.config';
 
 
 export default function DenseTableAdmin({ rows }) {
+    
+    const router = useRouter();
 
+    const handleDeleteAccount =async(accountId)=> {
+        const session = await getSession();
+
+        Swal.fire({
+            title:  `Do you want to delete account #${accountId} ?`,
+            showDenyButton: false,
+            showCancelButton: true,
+            confirmButtonText: 'Delete',
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                axios.delete(` https://localhost:7149/api/Account/${accountId}` ,{
+                    headers: {
+                      'Authorization': `Bearer ${session.user?.token}`,
+                      "Content-Type": "application/json",
+                    }}
+                  )
+                .then( Swal.fire('Account Deleted!', '', 'success'))
+                .then( setTimeout(()=> console.log("Deleting account"), 1000))
+                .then( router.reload())
+            } else {
+              Swal.fire('Changes are not saved', '', 'info')
+            }
+          })
+    }
 
     return (
 
