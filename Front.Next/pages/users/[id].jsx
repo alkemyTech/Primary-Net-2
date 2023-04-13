@@ -5,6 +5,9 @@ import { getSession } from 'next-auth/react'
 
 
 const userDetailsPage = ({ user }) => {
+
+  console.log(user)
+
   return (
     <Layout>
         <UserDetailsView {...user} />
