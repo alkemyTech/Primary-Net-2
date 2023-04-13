@@ -40,7 +40,7 @@ namespace PrimatesWallet.Application.Mapping.Transaction
 
         public TransactionDtoBuilder WithDate(DateTime date)
         {
-            _transactionDTO.Date = date;
+            _transactionDTO.Date = date.ToString("yyyy-MM-dd"); ;
             return this;
         }
 

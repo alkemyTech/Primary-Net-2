@@ -12,11 +12,11 @@ const options = [
   },
   {
     name: "Transactions",
-    path: "/user/"
+    path: "/user/transactions"
   },
   {
     name: "Fixed Term Deposits",
-    path: "/users/fixed"
+    path: "/user/fixed"
   },
   {
     name: "Transfer",
