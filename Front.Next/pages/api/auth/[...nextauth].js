@@ -3,7 +3,6 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import https from 'https';
 import { decode } from "jsonwebtoken";
 import axios from "axios";
-const{ BACK_BASE_URL } = process.env
 
 export default NextAuth({
 
