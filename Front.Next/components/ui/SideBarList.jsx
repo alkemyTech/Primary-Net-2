@@ -24,7 +24,7 @@ const options = [
   },
   {
     name: "Transfer",
-    path: "/user/"
+    path: "/account/transfer"
   },
   {
     name: "Topup",
