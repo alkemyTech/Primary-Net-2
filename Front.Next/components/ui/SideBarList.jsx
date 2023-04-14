@@ -11,7 +11,7 @@ const options = [
   // },
   {
     name: "Catalogue",
-    path: "/catalogue"
+    path: "/catalogue",
   },
   {
     name: "Transactions",
@@ -30,9 +30,7 @@ const options = [
     name: "Topup",
     path: "/account/deposit"
   },
-
-]
-
+];
 
 export const entities = [
   {
@@ -56,7 +54,7 @@ export const entities = [
     name: "Users",
     path: "/admin/users",
   },
-]
+];
 
 export const SideBarList = ({ session, isAccountLocked }) => {
 
@@ -92,5 +90,5 @@ export const SideBarList = ({ session, isAccountLocked }) => {
       </Box>
 
     </List>
-  )
-}
+  );
+};

@@ -1,6 +1,14 @@
-import { Box, Divider, Drawer, List, Toolbar, Typography } from "@mui/material"
-import { SidebarOption } from "./SidebarOption"
-import { SideBarList } from "./SideBarList"
+import {
+  Box,
+  Button,
+  Divider,
+  Drawer,
+  List,
+  Toolbar,
+  Typography,
+} from "@mui/material";
+import { SidebarOption } from "./SidebarOption";
+import { SideBarList } from "./SideBarList";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 
