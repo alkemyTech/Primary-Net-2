@@ -1,18 +1,24 @@
 import { Layout } from "@/layouts/Layout";
 import React, { useState } from "react";
 import useSWR from "swr";
-import https from "https";
 import axios from "axios";
 import CustomTable from "@/components/commons/CustomTable";
-import CircularProgress from '@mui/material/CircularProgress';
+import CircularLoading from "@/components/commons/CircularLoading";
+import { getSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
-const fetcher = async (url) => { //Para usar SWR
-  const response = await axios.get(url);
-  return response.data;
+const fetcher = (token) => async (url) => {
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
+  const { data } = await axios.get(url, { headers });
+  return data;
 };
 
 export default function Users({ users }) {
   const [page, setPage] = useState(1);
+  const { data: session } = useSession();
   /*
     El componente al iniciar trae la primera pagina con getServerSideProps, la cual ingresa al componente
     desde el parametro como users, esta primera pagina se setea como data inicial de SWR para que no vuelva a cargar la pagina 1,
@@ -20,7 +26,7 @@ export default function Users({ users }) {
   */
   const { data, isLoading, isError } = useSWR(
     `https://localhost:7149/api/User/All?page=${page}`,
-    fetcher,
+    fetcher(session?.user?.token),
     { initialData: users }
   );
 
@@ -38,9 +44,10 @@ export default function Users({ users }) {
 
   const handleDelete = () => {};
 
-  if (isLoading) {
-    return <CircularProgress />;
+  if (!data || isLoading) {
+    return <CircularLoading />;
   }
+
 
   if (isError) {
     return <div>Error loading users</div>;
@@ -71,14 +78,18 @@ export default function Users({ users }) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
   /*Cargamos la primera pagina en el server */
+  const session = await getSession(context);
   const url = "https://localhost:7149/api/User/All?page=1";
-  const agent = new https.Agent({
-    rejectUnauthorized: false,
+
+  const response = await axios.get(url, {
+    headers: {
+      Authorization: `Bearer ${session.user?.token}`,
+      "Content-Type": "application/json",
+    },
   });
 
-  const response = await axios.get(url, { httpsAgent: agent });
   const users = response.data;
 
   return {

@@ -4,6 +4,7 @@ import axios from "axios";
 import { getSession } from "next-auth/react";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
+import { deleteModal } from "@/components/commons/modal/deleteModal";
 
 function RolesAdmin({ roles = [] }) {
   const [data, setData] = useState(roles); //asignamos en un estado la data que viene del server
@@ -22,14 +23,14 @@ function RolesAdmin({ roles = [] }) {
       },
       "Role", //nombre de la entidad a eliminar
       () => {
-        setData(data.filter((rol) => rol.id !== rolId));
+        setData(data.filter((rol)=> rol.id !==rolId));
       } //funcion para actualizar el estado
     );
   };
 
   return (
     <Layout>
-      <DenseTableRoles rows={roles} handleDelete={handleDelete} />
+      <DenseTableRoles rows={data} handleDelete={handleDelete} />
     </Layout>
   );
 }
@@ -61,4 +62,3 @@ export const getServerSideProps = async (context) => {
 };
 
 export default RolesAdmin;
-
