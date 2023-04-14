@@ -59,7 +59,7 @@ export default function Users({ users }) {
          por ejemplo esta entidad contiene el campo password el cual no vamos a mostrar  */}
         <CustomTable
           rows={data.result} //contenido a visualizar, en este caso es un arreglo de usuarios
-          columnLabels={["Id", "First Name", "Last Name", "Email", "Rol"]} //columnas
+          columnLabels={["Id", "First Name", "Last Name", "Email", "Points" , "Rol"]} //columnas
           dataProperties={[
             "userId",
             "first_Name",
