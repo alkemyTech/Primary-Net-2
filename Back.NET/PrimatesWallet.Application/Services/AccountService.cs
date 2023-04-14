@@ -179,5 +179,22 @@ namespace PrimatesWallet.Application.Services
             return $"Account {accountId} deleted.";
 
         }
+
+        //public async Task<AccountResponseDTO> BlockAccount(int accountId, Account accountDto)
+        //{
+        //    var account = await unitOfWork.Accounts.GetById(accountId);
+        //    if (account == null) throw new AppException("Cant find acccount", HttpStatusCode.NotFound);
+        //    if (account.IsBlocked) throw new AppException("The acccount is already blocked", HttpStatusCode.BadRequest);
+        //    unitOfWork.Accounts.Update(accountDto);
+        //    accountDto.ApplyTo(account, ModelState);
+        //}
+
+
+        //public async Task<AccountResponseDTO> UnlockAccount(int accountId, Account accountDto)
+        //{
+        //    var account = await unitOfWork.Accounts.GetById(accountId);
+        //    if (account == null) throw new AppException("Cant find acccount", HttpStatusCode.NotFound);
+        //    if (!account.IsBlocked) throw new AppException("The acccount is already unlocked", HttpStatusCode.BadRequest);
+        //}
     }
 }

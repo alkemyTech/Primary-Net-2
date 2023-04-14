@@ -112,7 +112,7 @@ namespace PrimatesWallet.Application.Services
             var catalogue = await _unitOfWork.Catalogues.GetById(catalogueId);
             if (catalogue == null) throw new AppException($"Catalogue {catalogueId} not found", HttpStatusCode.NotFound);
 
-            _unitOfWork.Catalogues.Delete(catalogue);
+            _unitOfWork.Catalogues.RealDelete(catalogue);
             _unitOfWork.Save();
 
             return $"Catalogue {catalogueId} deleted.";

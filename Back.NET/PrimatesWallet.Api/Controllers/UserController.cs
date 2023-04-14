@@ -158,7 +158,7 @@ namespace PrimatesWallet.Api.Controllers
         [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
         [SwaggerResponse(StatusCodes.Status404NotFound, "The requested resource was not found.")]
         [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         [HttpPut("{UserId}")]
         public async Task<IActionResult> UpdateUser(int UserId, [FromBody] UserUpdateDto userUpdateDTO)
         {
@@ -180,7 +180,7 @@ namespace PrimatesWallet.Api.Controllers
         [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
         [SwaggerResponse(StatusCodes.Status404NotFound, "The requested resource was not found.")]
         [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
-        [HttpPut("activate/{userId}")]
+       [HttpPut("activate/{userId}")]
         public async Task<IActionResult>ActivateUser(int userId)
         {
             var user = await userService.ActivateUser(userId);

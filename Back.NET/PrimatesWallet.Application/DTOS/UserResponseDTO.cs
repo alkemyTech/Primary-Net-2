@@ -17,5 +17,7 @@ namespace PrimatesWallet.Application.DTOS
         public string? Email { get; set; }
         public int? Points { get; set; } = 0;
         public string? Rol { get; set; }
+        public decimal? Money { get; set; } = 0;
+        public int? AccountId { get; set; } = 0;
     }
 }

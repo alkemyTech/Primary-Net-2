@@ -1,34 +1,33 @@
 import { Divider, List, ListItem, ListSubheader } from "@mui/material"
 import { SidebarOption } from "./SidebarOption"
-import { useSession } from "next-auth/react"
-
+import { getSession, useSession } from "next-auth/react"
 
 
 
 const options = [
-  {
-    name: "Home",
-    path: "/user/"
-  },
+  // {
+  //   name: "Home",
+  //   path: "/user/"
+  // },
   {
     name: "Catalogue",
     path: "/catalogue"
   },
   {
     name: "Transactions",
-    path: "/user/transactions"
+    path: "/transactions"
   },
   {
     name: "Fixed Term Deposits",
-    path: "/users/fixed"
+    path: "/fixed"
   },
   {
     name: "Transfer",
-    path: "/user/"
+    path: "/"
   },
   {
     name: "Topup",
-    path: "/user/"
+    path: "account/deposit"
   },
 
 ]

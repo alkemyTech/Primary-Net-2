@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using PrimatesWallet.Api.Helpers;
 using PrimatesWallet.Application.DTOS;
@@ -270,6 +271,20 @@ namespace PrimatesWallet.Api.Controllers
             var deleteAccount = await _account.DeleteAccount(accountId, currentUser);
             return Ok(deleteAccount);
         }
+
+        //[HttpPatch("{accountId}")]
+        //[Authorize]
+        //[SwaggerOperation(Summary = "Block an Account.", Description = "Blocks an Account by its ID.")]
+        //[SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
+        //[SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
+        //[SwaggerResponse(StatusCodes.Status404NotFound, "The requested resource was not found.")]
+        //[SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
+        //public async Task<IActionResult> BlockAccount(int accountId, JsonPatchDocument<AccountResponseDTO> accountDto)
+        //{
+        //    var currentUser = _userContextService.GetCurrentUser();
+        //    var deleteAccount = await _account.BlockAccount(accountId, currentUser);
+        //    return Ok(deleteAccount);
+        //}
 
     }
 

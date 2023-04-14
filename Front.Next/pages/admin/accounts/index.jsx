@@ -46,7 +46,7 @@ function AccountsAdmin({ accounts }) {
   return (
     <Layout>
 
-      <DenseTableAccounts rows={accounts} />
+      <DenseTableAccounts rows={itemsPerPage()} />
       <Grid container display={"flex"} justifyContent={"center"} alignItems={"center"} pt={2}>
         <Button onClick={prevPage} disabled={currentPage - 6 < 0}>
           <ArrowBackIosIcon fontSize='large' color='primary.main' />
@@ -68,7 +68,7 @@ export const getServerSideProps = async (context) => {
 
     const session = await getSession(context);
 
-    const res = await axios.get(`https://localhost:7149/api/Account?page=${page}&pageSize=100`, {
+    const res = await axios.get(`https://localhost:7149/api/Account?page=1&pageSize=100`, {
       headers: {
         'Authorization': `Bearer ${session.user?.token}`,
         "Content-Type": "application/json",

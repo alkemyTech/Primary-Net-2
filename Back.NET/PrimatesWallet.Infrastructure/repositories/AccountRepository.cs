@@ -96,5 +96,6 @@ namespace PrimatesWallet.Infrastructure.repositories
         {
             _dbContext.Accounts.Remove(account);
         }
+
     }
 }

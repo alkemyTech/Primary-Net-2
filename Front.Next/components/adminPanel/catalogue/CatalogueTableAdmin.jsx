@@ -90,12 +90,9 @@ export default function DenseTableCatalogue({ rows = [] }) {
             </TableContainer>
 
             <Grid container position={"fixed"} bottom={"20px"} left={"90vw"}>
-                <Link href={"roles/newrole"} style={{ textDecoration: "none", color: "none" }}>
-                    <Button color={"tertiary"}>
-                        <AddCircleIcon sx={{ height: "100px", width: "100px" }} />
-                    </Button>
-                </Link>
-
+                <Button color={"tertiary"} onClick={() => router.push(`catalogues/new`)}>
+                    <AddCircleIcon sx={{ height: "100px", width: "100px" }} />
+                </Button>
             </Grid>
         </Grid>
 

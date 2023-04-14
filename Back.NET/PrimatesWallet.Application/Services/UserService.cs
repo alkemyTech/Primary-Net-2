@@ -24,7 +24,7 @@ namespace PrimatesWallet.Application.Services
         {
             var user = await unitOfWork.Users.GetById(id);
             if (user == null) throw new AppException("User not found", HttpStatusCode.NotFound);
-             //si no existe el usuario lanzamos un exception personalizada en otra parte del codigo la atrapamos y le damos un formato
+            //si no existe el usuario lanzamos un exception personalizada en otra parte del codigo la atrapamos y le damos un formato
             var response = new UserResponseDto()
             {
                 First_Name = user.First_Name,
@@ -32,7 +32,9 @@ namespace PrimatesWallet.Application.Services
                 Email = user.Email,
                 Points = user.Points,
                 Rol = user.Role.Name,
-                UserId = user.UserId
+                UserId = user.UserId,
+                Money = user.Account.Money,
+                AccountId = user.Account.Id
             };
 
             return response;
@@ -106,14 +108,9 @@ namespace PrimatesWallet.Application.Services
             var user = await unitOfWork.Users.GetById(UserId);
             if (user == null) throw new AppException("User not found", HttpStatusCode.NotFound);
 
-            int salt = 10;
-
-            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(userUpdateDTO.Password, salt);
-
             user.First_Name = userUpdateDTO.First_Name;
             user.Last_Name = userUpdateDTO.Last_Name;
             user.Email = userUpdateDTO.Email;
-            user.Password = hashedPassword;
 
             unitOfWork.Users.Update(user);
             unitOfWork.Save();
