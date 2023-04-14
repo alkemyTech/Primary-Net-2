@@ -40,6 +40,7 @@ export default NextAuth({
                         })
                     });
 
+<<<<<<< HEAD
                     const user = await userResponse.json();
                     user.token = data;
 
@@ -69,3 +70,28 @@ export default NextAuth({
     }
 });
 
+=======
+          if (user) {
+            // axios.defaults.headers.common = {"Authorization": `Bearer ${response.data}`}
+            return user;
+          }
+          return null;
+        } catch (error) {
+          console.error(error);
+          return null;
+        }
+      },
+    }),
+  ],
+  callbacks: {
+    async jwt({ token, user }) {
+      return { ...token, ...user };
+    },
+    async session({ session, token, user }) {
+      session.user = token;
+
+      return session;
+    },
+  },
+});
+>>>>>>> develop

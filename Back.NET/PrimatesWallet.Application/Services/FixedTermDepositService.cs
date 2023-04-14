@@ -1,9 +1,12 @@
 using AutoMapper;
+using Hangfire;
+using Microsoft.Extensions.Logging;
 using PrimatesWallet.Application.DTOS;
 using PrimatesWallet.Application.Exceptions;
 using PrimatesWallet.Application.Helpers;
 using PrimatesWallet.Application.Interfaces;
 using PrimatesWallet.Application.Mapping.User;
+using PrimatesWallet.Core.Enums;
 using PrimatesWallet.Core.Interfaces;
 using PrimatesWallet.Core.Models;
 using System;
@@ -205,6 +208,40 @@ namespace PrimatesWallet.Application.Services
             return interestGreater_1Year;
         }
 
+        /// <summary>
+        /// This asynchronous method is responsible for liquidating fixed term deposits that have been closed.
+        /// It retrieves the deposits through the "unitOfWork" object and performs a series of operations on each of them,
+        /// adding the deposit amount to the associated account, registering a transaction, and updating the "account" object.
+        /// Finally, it calls the "Save" method of the "unitOfWork" object to save the changes to the database.
+        /// </summary>
+        public async Task LiquidateFixedTermDeposit()
+        {
+
+            var fixedTermDeposits = await unitOfWork.FixedTermDeposits.GetClosedFixedTermDeposits();
+
+            foreach (var deposit in fixedTermDeposits)
+            {
+                var account = deposit.Account;
+
+                account.Money += deposit.Amount;
+
+                var transaction = new Transaction() 
+                { 
+                    Concept = $"Fixed Term deposit {deposit.Id}",
+                    Type = TransactionType.topup,
+                    Account_Id= account.Id,
+                    Amount = deposit.Amount,
+                    To_Account_Id = account.Id,
+                    Date = deposit.Closing_Date
+                };
+
+                await unitOfWork.Transactions.Add(transaction);
+
+                unitOfWork.Accounts.Update(account);
+            }
+
+            unitOfWork.Save();
+        }
 
         public async Task<string> ActivateFixedTermDeposit(int depositId)
         {

@@ -11,20 +11,24 @@ namespace PrimatesWallet.Infrastructure.repositories
 
         }
 
+
         public override async Task<IEnumerable<Account>> GetAll()
         {
             return await _dbContext.Accounts.Where(x => !x.IsDeleted).ToListAsync();
         }
+
 
         public override async Task<Account> GetById(int id)
         {
             return await _dbContext.Accounts.Where(x => x.Id == id && !x.IsDeleted).FirstOrDefaultAsync();
         }
 
+
         public override async Task<Account> GetByIdDeleted(int id)
         {
             return await _dbContext.Accounts.Where(x => x.Id == id && x.IsDeleted).FirstOrDefaultAsync();
         }
+
 
         public async Task<Account> GetByUserId_FixedTerm(int userId)
         {
@@ -37,6 +41,7 @@ namespace PrimatesWallet.Infrastructure.repositories
             return account;
         }
 
+
         public async Task<Account> Get_Transaccion(int Id)
         {
             var transaction = await base._dbContext.Accounts
@@ -47,6 +52,7 @@ namespace PrimatesWallet.Infrastructure.repositories
             return transaction;
         }
 
+
         public async Task<int?> GetIdAccount(int userId)
         {
             return await base._dbContext.Accounts
@@ -54,36 +60,38 @@ namespace PrimatesWallet.Infrastructure.repositories
                 .Select(x => x.Id) //retornamos de la db solo el id porque no se necesita el objeto completo
                 .FirstOrDefaultAsync();
         }
-        /// <summary>
-        ///     Este m�todo valida si exista una cuenta con el id del usuario.
-        /// </summary>
-        /// <param name="userId">
-        ///     El valor de userId es extraido del token de autenticaci�n.
-        /// </param>
+
+
         public async Task<bool> CheckAccountByUserId(int userId)
         {
             var existingAccount = await base._dbContext.Accounts.Where(a => a.UserId == userId && a.IsDeleted == false).FirstOrDefaultAsync();
-            return ( existingAccount == null ) ? false: true;
+            return (existingAccount == null) ? false : true;
         }
+
 
         public void UpdateAccountRepository(Account account)
         {
             _dbContext.Accounts.Update(account);
         }
 
+
         public async Task<IEnumerable<Account>> GetAll(int page, int pageSize)
         {
             return await base._dbContext.Accounts
                 .Where(a => a.IsDeleted == false)
+                .Include(x => x.User)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
         }
 
+
         public async Task<int> GetCount()
         {
             return await base._dbContext.Accounts.Where(a => a.IsDeleted == false).CountAsync();
         }
+
+
         public void DeleteAccount(Account account)
         {
             _dbContext.Accounts.Remove(account);

@@ -9,7 +9,6 @@ using PrimatesWallet.Application.Mapping.Transaction;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
-using System.Transactions;
 using System;
 
 namespace PrimatesWallet.Application.Services
@@ -34,14 +33,14 @@ namespace PrimatesWallet.Application.Services
         /// <param name="userId">The ID of the user.</param>
         /// <returns>A list of TransactionDto objects representing the user's transactions.</returns>
         /// <exception cref="AppException">Thrown if no transactions are found for the user.</exception>
-        public async Task<IEnumerable<TransactionDto>> GetAllByUser(int userId)
+        public async Task<IEnumerable<TransactionDto>> GetAllByUser(int userId,int page, int pageSize)
         {
             // Retrieves the ID of the user's account using the user ID.
             var accountId = await _unitOfWork.Accounts.GetIdAccount(userId)
                 ?? throw new AppException(ReplyMessage.MESSAGE_QUERY_EMPTY, HttpStatusCode.NotFound);
 
             // Retrieves all transactions for the user's account.
-            var transactions = await _unitOfWork.Transactions.GetAllByAccount(accountId)
+            var transactions = await _unitOfWork.Transactions.GetAllByAccount(accountId,page,pageSize)
                 ?? throw new AppException(ReplyMessage.MESSAGE_QUERY_EMPTY, HttpStatusCode.NotFound);
 
             // Converts the transactions into a list of TransactionDto objects.
@@ -84,13 +83,11 @@ namespace PrimatesWallet.Application.Services
         /// </summary>
         /// <returns>A collection of TransactionDto objects representing all transactions.</returns>
         /// <exception cref="AppException">Thrown when no transactions are found in the database.</exception>
-        public async Task<IEnumerable<TransactionDto>> GetAllTransactions()
+        public async Task<IEnumerable<TransactionDto>> GetAllTransactions(int page, int pageSize)
         {
-            var transactions = await _unitOfWork.Transactions.GetAll();
+            var transactions = await _unitOfWork.Transactions.GetAll(page, pageSize)
+                 ?? throw new AppException(ReplyMessage.MESSAGE_QUERY_EMPTY, HttpStatusCode.NotFound);
 
-            if (transactions is null) throw new AppException("No transactions were found.", HttpStatusCode.NotFound);
-
-            // Maps the retrieved transactions to a collection of TransactionDto objects.
             var transactionsDTO = transactions.Select(x =>
                                     new TransactionDtoBuilder()
                                     .WithId(x.Id)
@@ -103,6 +100,17 @@ namespace PrimatesWallet.Application.Services
                                     .Build()).ToList();
 
             return transactionsDTO;
+        }
+        public async Task<int> TotalPageTransactions(int PageSize)
+        {
+            var totalTransactions = await _unitOfWork.Transactions.GetCount();
+            return (int)Math.Ceiling((double)totalTransactions / PageSize);
+        }
+
+        public async Task<int> TotalPageTransactionsByUser(int id,int PageSize)
+        {
+            var totalTransactions = await _unitOfWork.Transactions.GetCountByUser(id);
+            return (int)Math.Ceiling((double)totalTransactions / PageSize);
         }
 
 
@@ -174,71 +182,32 @@ namespace PrimatesWallet.Application.Services
         public async Task<bool> Insert(TransactionRequestDto transactionDTO)
         {
             /*
-                public async Task<bool> Insert(TransactionRequestDto transactionDTO)
-                {
-                    /*
-                     Verificamos si la logica de emisor receptor de una transaccion es correcta
-                     */
-            bool isTopup = transactionDTO.Type == TransactionType.topup.ToString();
-            bool isPaymentOrRepayment = transactionDTO.Type == TransactionType.payment.ToString() || transactionDTO.Type == TransactionType.repayment.ToString();
+             Verificamos si la logica de emisor receptor de una transaccion es correcta
+             */
+            bool isTopup = transactionDTO.Type is TransactionType.topup;
+            bool isPaymentOrRepayment = transactionDTO.Type is (TransactionType.payment or TransactionType.repayment);
             bool isSameAccount = transactionDTO.Account_Id == transactionDTO.To_Account_Id;
 
             if (!isSameAccount && isTopup) throw new AppException("Deposits to other accounts are not allowed", HttpStatusCode.BadRequest);
 
             if (isSameAccount && isPaymentOrRepayment) throw new AppException("Payments between the same accounts are not allowed", HttpStatusCode.BadRequest);
-            
 
-            if (isPaymentOrRepayment)
-            {
-                var senderAccount = await _unitOfWork.Accounts.GetById(transactionDTO.Account_Id);
-                if( senderAccount == null ) throw new AppException("Sender account not fount", HttpStatusCode.NotFound);
-
-                var receivertAccount = await _unitOfWork.Accounts.GetById(transactionDTO.To_Account_Id);
-                if ( receivertAccount == null ) throw new AppException("Receiver account not fount", HttpStatusCode.NotFound);
-
-                if ( senderAccount.Money < transactionDTO.Amount) throw new AppException("The sending account does not have enough balance", HttpStatusCode.BadRequest);
-
-                senderAccount.Money -= transactionDTO.Amount;
-                receivertAccount.Money += transactionDTO.Amount;
-
-                _unitOfWork.Accounts.Update(senderAccount);
-                _unitOfWork.Accounts.Update(receivertAccount);
-            }
-
-            if (isTopup)
-            {
-                var account = await _unitOfWork.Accounts.GetById(transactionDTO.Account_Id);
-
-                account.Money += transactionDTO.Amount;
-
-                _unitOfWork.Accounts.Update(account);
-            }
-
-            var transactionType = (TransactionType)Enum.Parse(typeof(TransactionType), transactionDTO.Type);
-
-            var transaction = new Core.Models.Transaction()
+            var transaction = new Transaction()
             {
                 Amount = transactionDTO.Amount,
-                Type = transactionType,
+                Type = transactionDTO.Type,
                 Concept = transactionDTO.Concept,
                 Date = DateTime.Now,
                 Account_Id = transactionDTO.Account_Id,
                 To_Account_Id = transactionDTO.To_Account_Id
             };
 
-
-
             /*
-                Aca se me ocurrio 2 formas de poder validar si las cuentas existen,
-                primero estaba por crear un servicio ExistAccount(TransactionDTO.Account_Id)
-                que compruebe en base de datos si existe esa id pero me di cuenta que entonces
-                tenia que realizar 3 operaciones I/O:
-                    1- existe la cuenta emisora ?
-                    2- existe la cuenta receptora ?
-                    3- si existen ambas el insert en base de datos
-                Entonces decidi crear un StoredProcedure que compruebe si existen las cuentas y si existe hace el insert
-                para los select del id, si alguna cuenta no existe arroja un error
-                ahora se hacen las 3 operaciones pero en 1 sola operacion I/O
+                Se creo un stored procedure donde se comprueba si las cuentas existen,
+                dependiendo el tipo de transferencia se ajustan los balances en las cuentas y
+                se registra la transaccion, si alguna validacion es incorrecta el middleware atrapa la DbException
+                con su respectivo mensaje, las operaciones se realizan un una transaccion y
+                en caso de error se hace un rollback
              */
             await _unitOfWork.Transactions.InsertWithStoredProcedure(transaction);
             _unitOfWork.Save();

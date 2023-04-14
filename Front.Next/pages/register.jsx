@@ -226,6 +226,7 @@ const Register = () => {
     )
 }
 
+<<<<<<< HEAD
 export async function getServerSideProps(context) {
 
     const session = await getSession(context);
@@ -244,4 +245,10 @@ export async function getServerSideProps(context) {
     return { props: {} };
   }
 
+=======
+<<<<<<< HEAD
+export default register;
+=======
+>>>>>>> develop
 export default Register;
+>>>>>>> 3cf341c3e762dfbd2975ab83a8940f452fe8132f

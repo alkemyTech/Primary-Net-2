@@ -1,31 +1,36 @@
 import { Divider, List, ListItem, ListSubheader } from "@mui/material"
 import { SidebarOption } from "./SidebarOption"
+import { useSession } from "next-auth/react"
+
+
+
 
 const options = [
   {
     name: "Home",
-    path: "/"
+    path: "/users/"
+  },
+  {
+    name: "Catalogue",
+    path: "/users/catalogue"
   },
   {
     name: "Transactions",
-    path: "/"
+    path: "/users/transactions"
   },
   {
     name: "Fixed Term Deposits",
-    path: "/"
+    path: "/users/fixed"
   },
   {
     name: "Transfer",
-    path: "/"
+    path: "/account/transfer"
   },
   {
     name: "Topup",
-    path: "/"
+    path: "/users/"
   },
-  {
-    name: "Admin Panel",
-    path: "/"
-  }
+
 ]
 
 
@@ -38,10 +43,10 @@ export const entities = [
     name: "Catalogues",
     path: "/admin/catalogues",
   },
-  {
-    name: "Fixed Term Deposits",
-    path: "/admin/fixed",
-  },
+  // {
+  //   name: "Fixed Term Deposits",
+  //   path: "/admin/fixed",
+  // },
   {
     name: "Roles",
     path: "/admin/roles",
@@ -56,9 +61,9 @@ export const entities = [
   },
 ]
 
-export const SideBarList = () => {
+export const SideBarList = ({ session }) => {
 
-  const isAdmin = true;
+  const userRole = session?.user?.rol;
 
   return (
     <List>
@@ -68,11 +73,11 @@ export const SideBarList = () => {
         ))
       }
       {
-        !isAdmin
+        userRole !== "Admin"
           ? null
           :
           <>
-            <Divider sx={{pt:2}} />
+            <Divider sx={{ pt: 2 }} />
             <ListSubheader>
               Admin Panel
             </ListSubheader>
@@ -84,9 +89,6 @@ export const SideBarList = () => {
             }
           </>
       }
-
-
-
     </List>
   )
 }

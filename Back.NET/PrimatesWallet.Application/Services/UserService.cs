@@ -130,6 +130,5 @@ namespace PrimatesWallet.Application.Services
             unitOfWork.Save();
             return $"User {userId} activated";
         }
-
     }
 }

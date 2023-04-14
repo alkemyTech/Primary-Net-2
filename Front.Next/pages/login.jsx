@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { SweetAlert } from "@/components/alerts/SweetAlert";
 import { MyTextInput } from "@/components/login/MyTextInput"
 import { AuthLayout } from "@/layouts/AuthLayout"
@@ -7,10 +8,18 @@ import { signIn, useSession, signOut, getSession, destroy } from "next-auth/reac
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+=======
+import { MyTextInput } from "@/components/MyTextInput"
+import { AuthLayout } from "@/layouts/AuthLayout"
+import { Grid, TextField, Alert, Button, Google, Typography, Link } from "@mui/material"
+import { Formik } from "formik"
+import { signIn, useSession } from "next-auth/react";
+import { redirect } from "next/dist/server/api-utils";
+>>>>>>> develop
 import * as Yup from "yup";
 
 
-const login = () => {
+const Login = () => {
 
   const [showAlert, setShowAlert] = useState(false);
   const [showInvalidCredentials, setShowInvalidCredentials] = useState(false)
@@ -35,6 +44,7 @@ const login = () => {
   }, [session, router]);
 
   return (
+<<<<<<< HEAD
     <>
       <Head>
         <title>
@@ -99,6 +109,38 @@ const login = () => {
                   onBlur={handleBlur}
                   onChange={handleChange}
                   errors={errors.UserName}
+=======
+    <AuthLayout title={"Login"}>
+
+      <Formik
+        initialValues={{ UserName: "", Password: "" }}
+        onSubmit={(values, { setSubmitting }) => {  
+          signIn("credentials", {...values, redirect: true , callbackUrl:"/"})
+        }}
+        validationSchema={Yup.object({
+          UserName: Yup.string().email("Must be a valid email").required(),
+          Password: Yup.string().required()
+        })}
+      >
+        {({ values,
+          errors,
+          touched,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          isSubmitting,
+        }) => (
+          <form onSubmit={handleSubmit}>
+            <Grid container>
+              <MyTextInput label={"Email"}
+                type={"email"}
+                placeholder={"example@google.com"}
+                name={"UserName"}
+                value={values.UserName}
+                onBlur={handleBlur}
+                onChange={handleChange}
+                errors={errors.UserName}
+>>>>>>> develop
                 // touched={touched.UserName}
                 />
 
@@ -157,6 +199,7 @@ const login = () => {
   )
 }
 
+<<<<<<< HEAD
 export async function getServerSideProps(context) {
   const session = await getSession(context);
   if (session && session.expires > Math.floor(Date.now() / 1000)) {
@@ -173,3 +216,6 @@ export async function getServerSideProps(context) {
 }
 
 export default login
+=======
+export default Login
+>>>>>>> develop

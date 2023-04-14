@@ -10,7 +10,7 @@ namespace PrimatesWallet.Core.Interfaces
         /// <param name="id">El ID de la cuenta de la cual se quieren obtener las transacciones.</param>
         /// <returns>Una colección de objetos <c>Transaction</c> que representan las transacciones encontradas.</returns>
         /// <exception cref="AppException">Si no se encuentran transacciones asociadas a la cuenta especificada.</exception>
-        Task<IEnumerable<Transaction>> GetAllByAccount(int id);
+        Task<IEnumerable<Transaction>> GetAllByAccount(int id,int page, int pageSize);
 
 
         /// <summary>
@@ -19,5 +19,8 @@ namespace PrimatesWallet.Core.Interfaces
         /// <param name="transaction">The Transaction to insert.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         Task InsertWithStoredProcedure(Transaction transaction);
+        Task<IEnumerable<Transaction>> GetAll(int page, int pageSize);
+        Task<int> GetCount();
+        Task<int> GetCountByUser(int id);
     }
 }
