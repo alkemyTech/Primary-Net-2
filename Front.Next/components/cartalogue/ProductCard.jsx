@@ -9,7 +9,7 @@ import Link from 'next/link';
 export function ProductCard({product}) {
   return (
     <Card sx={{ width: 345 }}>
-        <Link href={`product/${product.id}`} style={{textDecoration:"none", color:"#111"}} >
+        <Link href={`catalogue/${product.id}`} style={{textDecoration:"none", color:"#111"}} >
       <CardActionArea>
         <CardMedia
           component="img"
