@@ -84,7 +84,6 @@ export default function DenseTableRoles({ rows, handleDelete }) {
           </TableBody>
         </Table>
       </TableContainer>
-
       <Grid container position={"fixed"} bottom={"20px"} left={"90vw"}>
         <Link
           href={"roles/newrole"}
