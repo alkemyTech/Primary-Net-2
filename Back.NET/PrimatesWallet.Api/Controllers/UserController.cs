@@ -8,6 +8,7 @@ using PrimatesWallet.Application.Interfaces;
 using PrimatesWallet.Core.Models;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
+using PrimatesWallet.Application.Services.Auth;
 
 namespace PrimatesWallet.Api.Controllers
 {
@@ -17,11 +18,13 @@ namespace PrimatesWallet.Api.Controllers
     {
         public readonly IUserService userService;
         private readonly IAccountService accountService;
+        private readonly IUserContextService userContextService;
 
-        public UserController(IUserService userService, IAccountService accountService)
+        public UserController(IUserService userService, IAccountService accountService, IUserContextService userContextService)
         {
             this.userService = userService;
             this.accountService = accountService;
+            this.userContextService = userContextService;
         }
 
         // GET: api/User/1
@@ -184,6 +187,25 @@ namespace PrimatesWallet.Api.Controllers
         {
             var user = await userService.ActivateUser(userId);
             return Ok(user);
+        }
+
+        /// <summary>
+        /// Converts user points to a product.
+        /// </summary>
+        /// <param name="pointsDto">The object containing the user ID and the points to convert.</param>
+        /// <response code="204">Successful operation</response>     
+        /// <response code="401">Unauthorized user for this operation.</response>
+        [SwaggerOperation(Summary = "Converts user points to a product.", Description = "Only authorized users can perform this operation.")]
+        [SwaggerResponse(StatusCodes.Status204NoContent, "Successful operation")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation.")]
+        [Authorize]
+        [HttpPut("Product")]
+        public async Task<IActionResult> PointsToProduct([FromBody] PointsDto pointsDto)
+        {
+            var userId = userContextService.GetCurrentUser();
+            await userService.UpdatePoints(userId, pointsDto.points);
+            return NoContent();
+
         }
     }
 }

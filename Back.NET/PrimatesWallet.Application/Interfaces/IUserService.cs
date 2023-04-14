@@ -32,5 +32,13 @@ namespace PrimatesWallet.Application.Interfaces
         Task<UserResponseDto> GetUserById(int id);
         Task<string> ActivateUser(int userId);
         Task<bool> UpdateUser(int UserId, UserUpdateDto userUpdateDTO);
+
+        /// <summary>
+        /// Updates the points of a user by subtracting the specified amount.
+        /// </summary>
+        /// <param name="userId">The ID of the user whose points will be updated.</param>
+        /// <param name="points">The number of points to subtract from the user's balance.</param>
+        /// <exception cref="AppException">Thrown when the user does not have enough points.</exception>
+        Task UpdatePoints(int userId, int points);
     }
 }
