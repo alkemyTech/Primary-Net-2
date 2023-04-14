@@ -1,12 +1,15 @@
 import { SweetAlert } from "@/components/alerts/SweetAlert";
 import { Layout } from "@/layouts/Layout";
 import { Box, Typography } from "@mui/material";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 
 export default function Home() {
+  const {data: session} = useSession();
+  console.log(session);
   const [showAlert, setShowAlert] = useState(false);
   const router = useRouter();
 

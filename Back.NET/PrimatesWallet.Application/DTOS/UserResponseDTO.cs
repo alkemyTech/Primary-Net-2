@@ -17,5 +17,8 @@ namespace PrimatesWallet.Application.DTOS
         public string? Email { get; set; }
         public int? Points { get; set; } = 0;
         public string? Rol { get; set; }
+        public int? AccountId { get; set; }
+        public bool? AccountIsDeleted { get; set; }
+
     }
 }

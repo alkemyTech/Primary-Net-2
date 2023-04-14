@@ -32,7 +32,9 @@ namespace PrimatesWallet.Application.Services
                 Email = user.Email,
                 Points = user.Points,
                 Rol = user.Role.Name,
-                UserId = user.UserId
+                UserId = user.UserId,
+                AccountId = user.Account.Id,
+                AccountIsDeleted = user.Account.IsDeleted
             };
 
             return response;
