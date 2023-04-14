@@ -1,7 +1,7 @@
 import { Layout } from "@/layouts/Layout";
 import { Button, Grid, Typography } from "@mui/material";
 import { Formik } from "formik";
-import { MyTextInput } from "@/components/login/MyTextInput";
+import { MyTextInput } from "../MyTextInput";
 
 /*
   Componente reutilizable para crear formularios de altas

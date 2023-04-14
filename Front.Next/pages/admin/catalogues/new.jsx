@@ -1,20 +1,26 @@
 import CreateForm from "@/components/commons/CreateForm";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Swal from "sweetalert2";
 import * as Yup from "yup";
 
 const CreateProduct = () => {
   const router = useRouter();
-
+  const { data: session } = useSession();
   // accion despues de que se completa el formulario
   const onSubmit = async (e, values) => {
-    values.points = parseInt(values.points);
     e.preventDefault();
+    values.points = parseInt(values.points);
     try {
       const url = "https://localhost:7149/api/Catalogue";
-
-      await axios.post(url, values);
+      const token = {
+        headers: {
+          Authorization: `Bearer ${session.user?.token}`,
+          "Content-Type": "application/json",
+        },
+      };
+      await axios.post(url, values, token);
 
       Swal.fire("New product created successfully.", ``, "success");
       router.back(); //volvemos a la pag anterior en este caso la lista de productos
