@@ -8,6 +8,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import Link from 'next/link'
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import { NoProducts, PointsAlert } from '@/components/adminPanel/catalogue/NoProducts'
 
 
 const CatalogueIndex = ({ products }) => {
@@ -78,9 +79,7 @@ const CatalogueIndex = ({ products }) => {
                 <Grid container sx={{ backgroundColor: "primary.default", pt: 2, pb: 4, justifyContent: "center", alignItems: "center" }}>
                     {
                         itemsPerPage().length === 0 ?
-                            <Typography>
-                                No products
-                            </Typography>
+                            <PointsAlert pointsNeeded={session?.user?.points}/>
                             :
                             <>
                                 <ListProducts products={itemsPerPage()} />
