@@ -16,13 +16,8 @@ const Login = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [showInvalidCredentials, setShowInvalidCredentials] = useState(false)
 
-
-
   const router = useRouter();
-
   const { data: session } = useSession();
-
-  console.log(session)
 
   useEffect(() => {
 
@@ -173,4 +168,4 @@ export async function getServerSideProps(context) {
   return { props: {} };
 }
 
-export default login
+export default Login

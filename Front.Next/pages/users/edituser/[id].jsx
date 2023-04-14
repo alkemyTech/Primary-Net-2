@@ -1,4 +1,4 @@
-import { MyTextInput } from "@/components/MyTextInput";
+import { MyTextInput } from "@/components/login/MyTextInput";
 import { Layout } from "@/layouts/Layout";
 import { Button, Grid } from "@mui/material";
 import axios from "axios";

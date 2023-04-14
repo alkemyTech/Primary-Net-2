@@ -9,8 +9,6 @@ import Paper from "@mui/material/Paper";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { Button, Grid, TextField, Typography } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import FmdGoodIcon from "@mui/icons-material/FmdGood";
 import Link from "next/link";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
@@ -63,7 +61,7 @@ export default function DenseTableRoles({ rows, handleDelete }) {
                 <TableCell align="center">
                   <Link
                     style={{ textDecoration: "none", color: "#000" }}
-                    href={`/roles/${row.id}`}
+                    href={`/admin/roles/${row.id}`}
                   >
                     {" "}
                     <FmdGoodIcon />{" "}

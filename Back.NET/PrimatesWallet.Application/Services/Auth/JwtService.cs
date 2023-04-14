@@ -36,7 +36,7 @@ namespace PrimatesWallet.Application.Services.Auth
                     null,
                     null,
                     claims,
-                    expires: DateTime.Now.AddMinutes(10),
+                    expires: DateTime.Now.AddMinutes(20),
                     signingCredentials: credentials
                 );
 

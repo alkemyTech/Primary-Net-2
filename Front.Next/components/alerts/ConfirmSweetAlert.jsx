@@ -1,7 +1,6 @@
-import React from 'react'
 import Swal from 'sweetalert2';
 
-export const ConfirmSweetAlert = ({ title, text, confirmButtonText, cancelButtonText, onConfirm, onCancel }) => {
+export const ConfirmSweetAlert = ( {title, text, confirmButtonText, cancelButtonText, onConfirm, onCancel }) => {
     Swal.fire({
       title: title,
       text: text,

@@ -102,6 +102,7 @@ namespace PrimatesWallet.Application.Interfaces
         /// <param name="currentUser">The ID of the current user performing the action.</param>
         /// <returns>A string message indicating that the account has been deleted.</returns>
         Task<string> DeleteAccount(int accountId, int currentUser);
-    
+        //Task<AccountResponseDTO> BlockAccount(int accountId, AccountResponseDTO account);
+        //Task<AccountResponseDTO> UnlockAccount(int accountId, AccountResponseDTO accountDto);
     }
 }

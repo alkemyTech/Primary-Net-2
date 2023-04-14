@@ -13,7 +13,6 @@ function AccountsAdmin({ accounts }) {
   const [search, setSearch] = useState("");
 
 
-  console.log(accounts)
 
   const itemsPerPage = () => {
     if (search.length === 0 && currentPage === 0) return accounts?.result.slice(currentPage, currentPage + 10)
@@ -26,10 +25,10 @@ function AccountsAdmin({ accounts }) {
 
   }
 
-  const handleSearch = (e) => {
-    setSearch(e.target.value)
-    setCurrentPage(0)
-  }
+  // const handleSearch = (e) => {
+  //   setSearch(e.target.value)
+  //   setCurrentPage(0)
+  // }
 
   const nextPage = () => {
     if (accounts?.result.filter(c => c.productDescription.includes(search)).length > currentPage + 10) {
@@ -46,19 +45,16 @@ function AccountsAdmin({ accounts }) {
   return (
     <Layout>
 
-      <DenseTableAccounts rows={accounts} />
+      <DenseTableAccounts rows={itemsPerPage()} />
       <Grid container display={"flex"} justifyContent={"center"} alignItems={"center"} pt={2}>
-        <Button onClick={prevPage} disabled={currentPage - 6 < 0}>
+        <Button onClick={prevPage} disabled={currentPage - 10 < 0}>
           <ArrowBackIosIcon fontSize='large' color='primary.main' />
         </Button>
 
-        <Button onClick={nextPage} disabled={currentPage + 6 >= accounts?.result.length}>
+        <Button onClick={nextPage} disabled={currentPage + 11 >= accounts?.result.length}>
           <ArrowForwardIosIcon fontSize='large' color='primary.main' />
         </Button>
       </Grid>
-
-
-
     </Layout>
   )
 }
@@ -68,14 +64,13 @@ export const getServerSideProps = async (context) => {
 
     const session = await getSession(context);
 
-    const res = await axios.get(`https://localhost:7149/api/Account?page=${page}&pageSize=100`, {
+    const res = await axios.get(`https://localhost:7149/api/Account?page=1&pageSize=100`, {
       headers: {
         'Authorization': `Bearer ${session.user?.token}`,
         "Content-Type": "application/json",
       }
     });
 
-    console.log(res.data);
     return {
       props: {
         accounts: res.data

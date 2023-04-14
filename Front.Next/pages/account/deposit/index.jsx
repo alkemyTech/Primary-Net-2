@@ -18,14 +18,9 @@ export default function DepositPage() {
     if (amount > 1000000000) return
     try {
       const res = await axios.post(`https://localhost:7149/api/Account/Deposit`, { money: amount, concept: "Deposit" }, {headers: {
-        'Authorization': `Bearer ${session.user?.token}`,
+        'Authorization': `Bearer ${session?.user?.token}`,
         "Content-Type": "application/json",
       }})
-      console.log(res);
-  
-  
-  
-  
       setSuccess(true);
       
     } catch (error) {

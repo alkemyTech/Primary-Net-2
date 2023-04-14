@@ -21,39 +21,40 @@ import { headers } from '@/next.config';
 
 
 export default function DenseTableAdmin({ rows }) {
-    
+
     const router = useRouter();
 
-    const handleDeleteAccount =async(accountId)=> {
+    const handleDeleteAccount = async (accountId) => {
         const session = await getSession();
 
         Swal.fire({
-            title:  `Do you want to delete account #${accountId} ?`,
+            title: `Do you want to delete account #${accountId} ?`,
             showDenyButton: false,
             showCancelButton: true,
             confirmButtonText: 'Delete',
-          }).then((result) => {
+        }).then((result) => {
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
-                axios.delete(` https://localhost:7149/api/Account/${accountId}` ,{
+                axios.delete(` https://localhost:7149/api/Account/${accountId}`, {
                     headers: {
-                      'Authorization': `Bearer ${session.user?.token}`,
-                      "Content-Type": "application/json",
-                    }}
-                  )
-                .then( Swal.fire('Account Deleted!', '', 'success'))
-                .then( setTimeout(()=> console.log("Deleting account"), 4000))
-                .then( router.reload())
+                        'Authorization': `Bearer ${session.user?.token}`,
+                        "Content-Type": "application/json",
+                    }
+                }
+                )
+                    .then(Swal.fire('Account Deleted!', '', 'success'))
+                    .then(setTimeout(() => { router.reload() }, 3000))
+
             } else {
-              Swal.fire('Changes are not saved', '', 'info')
+                Swal.fire('Changes are not saved', '', 'info')
             }
-          })
+        })
     }
 
     return (
 
         <Grid container >
-        <Typography variant='h4' sx={{pb:2}}>
+            <Typography variant='h4' sx={{ pb: 2 }}>
                 Accounts
             </Typography>
 
@@ -64,7 +65,7 @@ export default function DenseTableAdmin({ rows }) {
                             <TableCell sx={{ fontWeight: "bold" }} align="center">Id</TableCell>
                             <TableCell sx={{ fontWeight: "bold" }} align="center"> Owner </TableCell>
                             <TableCell sx={{ fontWeight: "bold" }} align="center"> Money </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }} align="center"> Deposits</TableCell>
+                            {/* <TableCell sx={{ fontWeight: "bold" }} align="center"> Deposits</TableCell> */}
                             <TableCell sx={{ fontWeight: "bold" }} align="center"> Transactions</TableCell>
                             <TableCell sx={{ fontWeight: "bold" }} align="center"> Detail</TableCell>
                             <TableCell sx={{ fontWeight: "bold" }} align="center"> Edit</TableCell>
@@ -73,7 +74,7 @@ export default function DenseTableAdmin({ rows }) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows.result.map((row) => (
+                        {rows.map((row) => (
                             <TableRow
                                 key={row.name}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -82,18 +83,18 @@ export default function DenseTableAdmin({ rows }) {
                                 <TableCell align="center">{row.id}</TableCell>
                                 <TableCell align="center"> {`${row.name} ${row.lastName}`}</TableCell>
                                 <TableCell align="center"> $ {row.money}</TableCell>
+                                {/* <TableCell align="center">
+                                    <Link style={{ textDecoration: "none", color: "#000" }} href={`/fixedDeposits/${row.id}`}> See user Deposits </Link>
+                                </TableCell> */}
                                 <TableCell align="center">
-                                    <Link style={{ textDecoration: "none", color: "#000" }} href={`/fixedDeposits/${row.id}`}> See user Deposits </Link> 
-                                </TableCell>
-                                <TableCell align="center">
-                                    <Link style={{ textDecoration: "none", color: "#000" }} href={`/transactions/${row.id}`}> See user Transactions </Link> 
+                                    <Link style={{ textDecoration: "none", color: "#000" }} href={`/transactions/${row.id}`}> See user Transactions </Link>
                                 </TableCell>
                                 <TableCell align="center">
                                     <Link style={{ textDecoration: "none", color: "#000" }} href={`/admin/accounts/${row.id}`}> <FmdGoodIcon /> </Link>
                                 </TableCell>
                                 <TableCell align="center"> <EditIcon /> </TableCell>
-                                <TableCell align="center">{row.isBlocked === true ? <Button variant='outlined' sx={{backgroundColor:"green", color:"white"}}> Activate </Button> : <Button variant='outlined' sx={{backgroundColor:"red", color:"#eee"}}> Block </Button>}</TableCell>
-                                <TableCell align="center"> <Button onClick={()=>handleDeleteAccount(row.id)}> <DeleteForeverIcon /> </Button>  </TableCell>
+                                <TableCell align="center">{row.isBlocked === true ? <Button variant='outlined' sx={{ textTransform: "capitalize", backgroundColor: "green", color: "#000", ":hover": { backgroundColor: "green", color: "#eee" } }}> Activate </Button> : <Button variant='outlined' sx={{ textTransform: "capitalize", backgroundColor: "tertiary.main", color: "#eee", ":hover": { backgroundColor: "red" } }}> Block </Button>}</TableCell>
+                                <TableCell align="center"> <Button onClick={() => handleDeleteAccount(row.id)}> <DeleteForeverIcon /> </Button>  </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
