@@ -19,7 +19,7 @@ namespace PrimatesWallet.Infrastructure.repositories
 
         public override async Task<User> GetById(int id)
         {
-            return await _dbContext.Users.Where(x => x.UserId == id && !x.IsDeleted).Include(u => u.Role).FirstOrDefaultAsync();
+            return await _dbContext.Users.Where(x => x.UserId == id && !x.IsDeleted).Include(x => x.Account).Include(u => u.Role).FirstOrDefaultAsync();
 
         }
 
