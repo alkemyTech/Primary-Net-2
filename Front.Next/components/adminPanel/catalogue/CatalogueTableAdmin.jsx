@@ -41,8 +41,8 @@ export default function DenseTableCatalogue({ rows = [] }) {
                     }
                 }
                 )
-                    .then(Swal.fire('Product Deleted!', '', 'success'))
-                    .then(router.reload())
+                .then(Swal.fire('Product Deleted!', '', 'success'))
+                .then(setTimeout(() => { router.reload() }, 3000))
             } else {
                 Swal.fire('Changes are not saved', '', 'info')
             }
@@ -80,7 +80,7 @@ export default function DenseTableCatalogue({ rows = [] }) {
                                 <TableCell align="center">{row.id}</TableCell>
                                 <TableCell align="center">{row.productDescription}</TableCell>
                                 <TableCell align="center">{row.points}</TableCell>
-                                <TableCell align="center"><Link style={{ textDecoration: "none", color: "#000" }} href={`/roles/${row.id}`}> <FmdGoodIcon /> </Link> </TableCell>
+                                <TableCell align="center"><Link style={{ textDecoration: "none", color: "#000" }} href={`/catalogue/${row.id}`}> <FmdGoodIcon /> </Link> </TableCell>
                                 <TableCell align="center"> <EditIcon /> </TableCell>
                                 <TableCell align="center">  <Button onClick={() => handleDeleteProduct(row.id)}> <DeleteForeverIcon />  </Button> </TableCell>
                             </TableRow>

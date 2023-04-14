@@ -1,5 +1,5 @@
 import { Layout } from "@/Layouts/Layout";
-import { MyTextInput } from "@/components/MyTextInput"
+import { MyTextInput } from "@/components/login/MyTextInput"
 import { headers } from "@/next.config";
 import { Grid, Button, Link, Typography } from "@mui/material"
 import axios from "axios";

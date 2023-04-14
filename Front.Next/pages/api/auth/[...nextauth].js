@@ -1,9 +1,14 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import https from "https";
+import NextAuth, { NextAuthOptions } from "next-auth"
+import CredentialsProvider from "next-auth/providers/credentials"
+import https from 'https';
+import { decode } from "jsonwebtoken";
 import axios from "axios";
+const{ BACK_BASE_URL } = process.env
 
 export default NextAuth({
+
+  
+
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -26,6 +31,7 @@ export default NextAuth({
           };
 
           const { data } = await axios.get(
+            
             "https://localhost:7149/api/Auth/me",
             {
               headers: headers,
@@ -45,19 +51,22 @@ export default NextAuth({
           return null;
         } catch (error) {
           console.error(error);
-          return null;
-        }
-      },
-    }),
+          return null;
+        }
+      }
+    })
   ],
   callbacks: {
     async jwt({ token, user }) {
       return { ...token, ...user };
     },
-    async session({ session, token, user }) {
-      session.user = token;
-
+    async session({ session, token }) {
+      if (token) {
+        const decodedToken = decode(token.token);
+        session.user = token;
+        session.expires = decodedToken?.exp;
+      }
       return session;
-    },
-  },
+    }
+  }
 });

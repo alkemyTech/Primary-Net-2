@@ -90,8 +90,9 @@ namespace PrimatesWallet.Application.Services
             var userId = await unitOfWork.Users.GetUserIdByEmail(newUser.Email);
             if (userId == 0) throw new AppException($"No user with id {userId}", HttpStatusCode.BadRequest);
             
+
             if (response > 0)  return userId;
-            return 0;
+            return userId;
         }
 
 

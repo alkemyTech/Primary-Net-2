@@ -107,13 +107,12 @@ namespace PrimatesWallet.Api.Controllers
         /// <response code="401">Returns if the user is unauthorized for this operation.</response>
         /// <response code="404">Returns if the requested user was not found.</response>
         /// <response code="500">Returns if there was an internal server error.</response>
-        [Authorize(Roles = "Admin")]
         [HttpPost("signup")]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterUserDto user)
         {
             var newUser = await userService.Signup(user);
                 if (newUser == 0) return BadRequest();
-            var account = accountService.Create(newUser);
+            var account =await accountService.Create(newUser);
             var userDTO = new RegisterUserDto() { First_Name = user.First_Name, Last_Name = user.Last_Name, Email = user.Email };
             var response = new BaseResponse<RegisterUserDto>(ReplyMessage.MESSAGE_QUERY, userDTO, (int)HttpStatusCode.Created);
             

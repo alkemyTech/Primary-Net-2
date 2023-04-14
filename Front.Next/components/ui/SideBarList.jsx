@@ -7,7 +7,7 @@ import { getSession, useSession } from "next-auth/react"
 const options = [
   // {
   //   name: "Home",
-  //   path: "/user/"
+  //   path: "/users/"
   // },
   {
     name: "Catalogue",
@@ -15,7 +15,7 @@ const options = [
   },
   {
     name: "Transactions",
-    path: "/transactions"
+    path: "/users/transactions"
   },
   {
     name: "Fixed Term Deposits",
@@ -23,11 +23,11 @@ const options = [
   },
   {
     name: "Transfer",
-    path: "/"
+    path: "/account/transfer"
   },
   {
     name: "Topup",
-    path: "account/deposit"
+    path: "/account/deposit"
   },
 
 ]
