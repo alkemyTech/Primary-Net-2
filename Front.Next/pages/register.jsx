@@ -40,7 +40,7 @@ const Register = () => {
             const { response: data } = error;
             const message = data.data.errors[0].error;
             console.log(message)
-            if ( message && message == "Email already registered.") setEmailAlreadyRegistered(true);
+            if (message && message == "Email already registered.") setEmailAlreadyRegistered(true);
             else {
                 setShowAlert(true);
                 setErrorMessage(message);
@@ -87,7 +87,7 @@ const Register = () => {
             <AuthLayout title={"Register"}>
                 <Formik
                     initialValues={{ name: "", lastname: "", email: "", password: "", confirmPassword: "" }}
-                    onSubmit={async(values, { setSubmitting }) => {
+                    onSubmit={async (values, { setSubmitting }) => {
                         console.log(values);
                         await handleRegister({ First_Name: values.name, Last_Name: values.lastname, Email: values.email, Password: values.password })
                         //TODO redirect to login.
@@ -226,29 +226,23 @@ const Register = () => {
     )
 }
 
-<<<<<<< HEAD
 export async function getServerSideProps(context) {
 
     const session = await getSession(context);
-  
-    console.log("Esta es la sesion =>", session)
-  
-    if (session && session.expires > Math.floor(Date.now() / 1000)) {
-      return {
-        redirect: {
-          destination: '/',
-          permanent: false,
-        },
-      };
-    }
-  
-    return { props: {} };
-  }
 
-=======
-<<<<<<< HEAD
-export default register;
-=======
->>>>>>> develop
+    console.log("Esta es la sesion =>", session)
+
+    if (session && session.expires > Math.floor(Date.now() / 1000)) {
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false,
+            },
+        };
+    }
+
+    return { props: {} };
+}
+
+
 export default Register;
->>>>>>> 3cf341c3e762dfbd2975ab83a8940f452fe8132f
