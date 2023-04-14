@@ -39,7 +39,7 @@ function AdminTable({
 
   //como es una tabla reutilizable definimos las acciones que puede realizar un admin y un usuario normal
   let labelActions =
-    session.user.rol === "Admin" ? ["Detail", "Edit", "Delete"] : ["Detail"];
+    session?.user?.rol === "Admin" ? ["Detail", "Edit", "Delete"] : ["Detail"];
 
   return (
     <>

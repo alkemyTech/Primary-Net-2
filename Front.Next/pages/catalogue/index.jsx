@@ -45,7 +45,6 @@ const CatalogueIndex = ({products}) => {
         setCurrentPage(currentPage - 6)
       }
     }
-    console.log(currentPage)
 
     return (
         <Layout>
@@ -61,11 +60,11 @@ const CatalogueIndex = ({products}) => {
         </Grid>
 
         <Grid container display={"flex"} justifyContent={"center"} alignItems={"center"} pt={2}>
-            <Button onClick={prevPage} disabled={currentPage - 6 < 1}>
+            <Button onClick={prevPage} disabled={currentPage - 6 < 0}>
                     <ArrowBackIosIcon fontSize='large' color='primary.main'/>
             </Button>
 
-            <Button onClick={nextPage}>
+            <Button onClick={nextPage} disabled={currentPage + 6 >= products?.result.length}>
                     <ArrowForwardIosIcon fontSize='large' color='primary.main'/>
             </Button>
         </Grid>

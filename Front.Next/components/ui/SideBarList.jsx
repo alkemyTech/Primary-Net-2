@@ -43,10 +43,10 @@ export const entities = [
     name: "Catalogues",
     path: "/admin/catalogues",
   },
-  {
-    name: "Fixed Term Deposits",
-    path: "/admin/fixed",
-  },
+  // {
+  //   name: "Fixed Term Deposits",
+  //   path: "/admin/fixed",
+  // },
   {
     name: "Roles",
     path: "/admin/roles",

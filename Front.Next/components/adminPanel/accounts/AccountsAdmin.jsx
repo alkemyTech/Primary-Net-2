@@ -42,7 +42,7 @@ export default function DenseTableAdmin({ rows }) {
                     }}
                   )
                 .then( Swal.fire('Account Deleted!', '', 'success'))
-                .then( setTimeout(()=> console.log("Deleting account"), 1000))
+                .then( setTimeout(()=> console.log("Deleting account"), 4000))
                 .then( router.reload())
             } else {
               Swal.fire('Changes are not saved', '', 'info')

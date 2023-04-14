@@ -2,6 +2,7 @@ import { Box, Divider, Drawer, List, Toolbar, Typography } from "@mui/material"
 import { SidebarOption } from "./SidebarOption"
 import { SideBarList } from "./SideBarList"
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 export const Sidebar = ({drawerWidth}) => {
 
@@ -18,7 +19,9 @@ export const Sidebar = ({drawerWidth}) => {
             }}>
                 <Toolbar >
                     <Typography variant="h6" noWrap component={"div"} >
+                        <Link href={`users/${session?.user?.userId}`} style={{textDecoration:"none", color:"black"}}>
                         {`${session?.user.first_Name} ${session?.user.last_Name} `}
+                        </Link>
                     </Typography>
                 </Toolbar>
             <Divider/>
