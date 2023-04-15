@@ -32,9 +32,12 @@ export const Layout = ({ children }) => {
                 }
             })
             const { isBlocked } = res.data;
+
+            console.log(isBlocked)
             setIsAccountLocked(isBlocked)
             console.log(isAccountLocked)
         } catch (error) {
+            console.log("ENTRE AL ERROR")
             console.log(error)
         }
     }
@@ -75,7 +78,7 @@ export const Layout = ({ children }) => {
             }
             <Grid container>
 
-                <Navbar drawerWidth={drawerWidth} isAccountLocked={isAccountLocked} isLocked={isLocked} lockAccount={lockAccount} logout={logout} setShowAlert={setShowAlert} setShowAlertLock={setShowAlertLock} />
+                <Navbar drawerWidth={drawerWidth} isAccountLocked={isAccountLocked} setShowAlert={setShowAlert} setShowAlertLock={setShowAlertLock} />
                 <Sidebar drawerWidth={drawerWidth} isAccountLocked={isAccountLocked} />
                 <Box component={"main"} sx={{ flexGrow: 1, padding: 2 }}>
                     <Toolbar />
