@@ -33,13 +33,8 @@ namespace PrimatesWallet.Application.Services
                 Points = user.Points,
                 Rol = user.Role.Name,
                 UserId = user.UserId,
-<<<<<<< HEAD
-                Money = user.Account.Money,
-                AccountId = user.Account.Id
-=======
                 AccountId = user.Account.Id,
                 AccountIsDeleted = user.Account.IsDeleted
->>>>>>> 287673bbecb1946e0e835e7a0b90f250d2141d32
             };
 
             return response;
