@@ -236,7 +236,7 @@ namespace PrimatesWallet.Api.Controllers
         /// <response code="404">"The requested resource was not found..</response>  
         /// <response code="500">Internal Server Error. Something has gone wrong on the Primates Wallet server.</response>
         [HttpPut("Activate/{accountId}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         [SwaggerOperation(Summary = "Activate or Desactivate an Account.", Description = "Only admins have permission to perform this operation.")]
         [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
         [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]

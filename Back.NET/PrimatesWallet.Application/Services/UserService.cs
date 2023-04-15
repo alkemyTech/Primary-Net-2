@@ -34,7 +34,8 @@ namespace PrimatesWallet.Application.Services
                 Rol = user.Role.Name,
                 UserId = user.UserId,
                 Money = user.Account.Money,
-                AccountId = user.Account.Id
+                AccountId = user.Account.Id,
+                IsAccountBlocked = user.Account.IsBlocked
             };
 
             return response;

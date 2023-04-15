@@ -19,5 +19,6 @@ namespace PrimatesWallet.Application.DTOS
         public string? Rol { get; set; }
         public decimal? Money { get; set; }
         public int? AccountId { get; set; }
+        public bool? IsAccountBlocked { get; set; }
     }
 }
