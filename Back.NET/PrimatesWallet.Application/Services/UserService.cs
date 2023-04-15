@@ -131,5 +131,17 @@ namespace PrimatesWallet.Application.Services
             unitOfWork.Save();
             return $"User {userId} activated";
         }
+
+        public async Task UpdatePoints(int userId, int points)
+        {
+            var user = await unitOfWork.Users.GetById(userId);
+
+            if (points > user.Points) throw new AppException("You do not have enough points", HttpStatusCode.BadRequest);
+
+            user.Points -= points;
+
+            unitOfWork.Users.Update(user);
+            unitOfWork.Save();
+        }
     }
 }
