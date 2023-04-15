@@ -1,6 +1,6 @@
 import { Layout } from "@/layouts/Layout";
 import React, { useState } from "react";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import axios from "axios";
 import CustomTable from "@/components/commons/CustomTable";
 import CircularLoading from "@/components/commons/CircularLoading";
@@ -42,7 +42,30 @@ export default function Users({ users }) {
     }
   };
 
-  const handleDelete = () => { };
+  const handleDelete = async (userId) => {
+    try {
+      await axios.delete(
+        `https://localhost:7149/api/User/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${session?.user?.token}`,
+          },
+        }
+      );
+      // Obtener una nueva lista de usuarios que excluya al usuario eliminado
+      const updatedUsers = data.result.filter((user) => user.userId !== userId);
+      // Actualizar el caché de SWR con la nueva lista de usuarios
+      mutate(
+        `https://localhost:7149/api/User/All?page=${page}`,
+        { ...data, result: updatedUsers },
+        false
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+  
 
   if (!data || isLoading) {
     return <CircularLoading />;
@@ -54,11 +77,6 @@ export default function Users({ users }) {
   }
   return (
     <>
-      <Head>
-        <title>
-          Primates - Admin users list
-        </title>
-      </Head>
       <Layout>
         {/*Componente reutilizable hay que asignarle las columnas y la data que se quiera mostrar
          por ejemplo esta entidad contiene el campo password el cual no vamos a mostrar  */}

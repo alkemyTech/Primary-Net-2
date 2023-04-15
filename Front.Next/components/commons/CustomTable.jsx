@@ -127,7 +127,7 @@ function AdminTable({
                       <TableCell align="center">
                         <Button
                           style={{ textDecoration: "none", color: "#000" }}
-                          onClick={() => handleDelete(row.id)}
+                          onClick={() => handleDelete(row.userId)}
                         >
                           {" "}
                           <DeleteForeverIcon />{" "}
