@@ -25,7 +25,7 @@ const Login = () => {
 
     if (session?.expires && session.expires < now) {
       setShowAlert(true);
-      signOut();
+      signOut({ redirect: false, callbackUrl: '/login' });
     }
 
   }, [session, router]);
@@ -63,7 +63,7 @@ const Login = () => {
             if (res.ok == false) {
               setShowInvalidCredentials(true);
               setSubmitting(false);
-              signOut();
+              await signOut({ redirect: false, callbackUrl: '/login' });
             }
             else {
               router.push('/')

@@ -1,6 +1,6 @@
 import Swal from 'sweetalert2';
 
-export const ConfirmSweetAlert = ( {title, text, confirmButtonText, cancelButtonText, onConfirm, onCancel }) => {
+export const ConfirmSweetAlert = ( {title, text, confirmButtonText, cancelButtonText, onConfirm, onCancel, onClose }) => {
     Swal.fire({
       title: title,
       text: text,
@@ -20,5 +20,7 @@ export const ConfirmSweetAlert = ( {title, text, confirmButtonText, cancelButton
           onCancel();
         }
       }
+    }).then(() => {
+      onClose && onClose();
     });
   }
