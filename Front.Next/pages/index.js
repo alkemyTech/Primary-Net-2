@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import Head from "next/head";
 
 
 export default function Home() {
@@ -26,6 +27,12 @@ export default function Home() {
   }, [router.query.invalidcredentials]);
   return (
     <>
+    <Head>
+      <title>
+        Primates - Home
+      </title>
+    </Head>
+ 
       {
         showAlert && <SweetAlert
           title="Unauthorized"

@@ -36,8 +36,6 @@ namespace PrimatesWallet.Application.Services
                 Money = user.Account.Money,
                 AccountId = user.Account.Id,
                 IsAccountBlocked = user.Account.IsBlocked,
-
-
             };
 
             return response;
