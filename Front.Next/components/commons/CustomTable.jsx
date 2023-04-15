@@ -94,6 +94,7 @@ function AdminTable({
               </TableRow>
             </TableHead>
             <TableBody>
+              {console.log(rows)}
               {rows.map((row) => (
                 <TableRow
                   key={row.userId}
@@ -105,7 +106,7 @@ function AdminTable({
                   <TableCell align="center">
                     <Link
                       style={{ textDecoration: "none", color: "#000" }}
-                      href={`${routeBase}/${row.id}`}
+                      href={  `${routeBase}/${row.id ? row.id : row.userId}`}
                     >
                       {" "}
                       <FmdGoodIcon />{" "}

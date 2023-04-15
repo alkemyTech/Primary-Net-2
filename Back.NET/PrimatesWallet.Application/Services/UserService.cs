@@ -35,7 +35,9 @@ namespace PrimatesWallet.Application.Services
                 UserId = user.UserId,
                 Money = user.Account.Money,
                 AccountId = user.Account.Id,
-                IsAccountBlocked = user.Account.IsBlocked
+                IsAccountBlocked = user.Account.IsBlocked,
+
+
             };
 
             return response;
@@ -126,6 +128,18 @@ namespace PrimatesWallet.Application.Services
             unitOfWork.Users.Activate(user);
             unitOfWork.Save();
             return $"User {userId} activated";
+        }
+
+        public async Task UpdatePoints(int userId, int points)
+        {
+            var user = await unitOfWork.Users.GetById(userId);
+
+            if (points > user.Points) throw new AppException("You do not have enough points", HttpStatusCode.BadRequest);
+
+            user.Points -= points;
+
+            unitOfWork.Users.Update(user);
+            unitOfWork.Save();
         }
     }
 }

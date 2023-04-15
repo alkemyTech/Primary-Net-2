@@ -1,10 +1,18 @@
-import { Box, Divider, Drawer, List, Toolbar, Typography } from "@mui/material"
-import { SidebarOption } from "./SidebarOption"
-import { SideBarList } from "./SideBarList"
+import {
+  Box,
+  Button,
+  Divider,
+  Drawer,
+  List,
+  Toolbar,
+  Typography,
+} from "@mui/material";
+import { SidebarOption } from "./SidebarOption";
+import { SideBarList } from "./SideBarList";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 
-export const Sidebar = ({drawerWidth}) => {
+export const Sidebar = ({drawerWidth, isAccountLocked}) => {
 
     const { data: session } = useSession();
 
@@ -26,7 +34,7 @@ export const Sidebar = ({drawerWidth}) => {
                 </Toolbar>
             <Divider/>
             <List>
-            <SideBarList session={session}/>
+            <SideBarList session={session} isAccountLocked={isAccountLocked}/>
 
             </List>
         </Drawer>
