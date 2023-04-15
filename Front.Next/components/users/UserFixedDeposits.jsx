@@ -8,7 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import { Button, Grid, TextField, Typography } from '@mui/material';
+import { Button, Grid, IconButton, TextField, Typography } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import FmdGoodIcon from '@mui/icons-material/FmdGood';
@@ -22,7 +22,7 @@ import { getSession, useSession } from 'next-auth/react';
 export const UserFixedDeposits = ({fixed}) => {
 
     const {data: session} = useSession();
-    console.log(session)
+    const router = useRouter();
     const userName = session?.user?.first_Name || "User"
 
     const formatDate = (date = "") => {
@@ -30,6 +30,7 @@ export const UserFixedDeposits = ({fixed}) => {
         const time=  date.slice(11, 16 )
         return `${day} at ${time}`
     }
+
 
   return (
     <Grid container >
@@ -46,6 +47,7 @@ export const UserFixedDeposits = ({fixed}) => {
                         <TableCell sx={{ fontWeight: "bold" }} align="center"> Closing Date </TableCell>
                         <TableCell sx={{ fontWeight: "bold" }} align="center"> Return Amount </TableCell>
                         <TableCell sx={{ fontWeight: "bold" }} align="center"> Detail</TableCell>
+                        <TableCell sx={{ fontWeight: "bold" }} align="center"> Edit</TableCell>
                         <TableCell sx={{ fontWeight: "bold" }} align="center"> Delete</TableCell>
                     </TableRow>
                 </TableHead>
@@ -64,7 +66,7 @@ export const UserFixedDeposits = ({fixed}) => {
                             <TableCell align="center">
                                 <Link style={{ textDecoration: "none", color: "#000" }} href={`/fixed/${row.id}`}> <FmdGoodIcon /> </Link>
                             </TableCell>
-                            <TableCell align="center"> <EditIcon /> </TableCell>
+                            <TableCell align="center"> <IconButton onClick={()=> router.push(`/fixed/edit/${row.id}`)}> <EditIcon /> </IconButton>  </TableCell>
                             <TableCell align="center"> <Button> <DeleteForeverIcon /> </Button>  </TableCell>
                         </TableRow>
                     ))}
