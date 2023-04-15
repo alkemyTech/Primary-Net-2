@@ -1,15 +1,10 @@
 import { LogoutOutlined, MenuOutlined } from "@mui/icons-material"
-import { AppBar, Grid, IconButton, Toolbar, Typography, Box } from "@mui/material"
+import { AppBar, Grid, IconButton, Toolbar, Typography, Box, Tooltip } from "@mui/material"
 import { getSession, signOut, useSession } from "next-auth/react"
-import { ConfirmSweetAlert } from "../alerts/ConfirmSweetAlert"
-import { useEffect, useState } from "react"
 import LockIcon from "@mui/icons-material/Lock";
-import axios from "axios"
-import { headers } from "@/next.config"
 import LockOpenIcon from '@mui/icons-material/LockOpen';
-import { SweetAlert } from "../alerts/SweetAlert"
-import https from "https"
-import { useRouter } from "next/router"
+
+
 
 export const Navbar = ({ drawerWidth,  isAccountLocked,   setShowAlertLock, setShowAlert}) => {
 
@@ -31,14 +26,18 @@ export const Navbar = ({ drawerWidth,  isAccountLocked,   setShowAlertLock, setS
                             <IconButton sx={{ color: "tertiary.main" }} onClick={() => setShowAlertLock(true)}>
                                 {
                                     !isAccountLocked
-                                        ? <LockIcon />
-                                        : <LockOpenIcon />
+                                        ? <Tooltip title="Lock Account"><LockIcon />
+                                        </Tooltip> 
+                                        :  <Tooltip title="Lock Account"><LockOpenIcon /></Tooltip>
                                 }
                             </IconButton>
                         </Box>
                         <Box component={"div"}>
                             <IconButton color="error" onClick={() => setShowAlert(true)}>
+                                <Tooltip title="Logout">
                                 <LogoutOutlined />
+
+                                </Tooltip>
                             </IconButton>
                         </Box>
 
