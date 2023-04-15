@@ -62,11 +62,11 @@ export const Layout = ({ children }) => {
     return (
         <>
             {
-                showAlert && <ConfirmSweetAlert title="Logging out" text="Are you sure you want to logout?" confirmButtonText="Yes" cancelButtonText="No" onConfirm={logout} onCancel={() => setShowAlert(false)} />
+                showAlert && <ConfirmSweetAlert title="Logging out" text="Are you sure you want to logout?" confirmButtonText="Yes" cancelButtonText="No" onConfirm={logout} onCancel={() => setShowAlert(false)} onClose={() => setShowAlert(false)} />
             }
 
             {
-                showAlertLock && <ConfirmSweetAlert title="Lock account" text="Are you sure you want lock your account?" confirmButtonText="Yes" cancelButtonText="No" onConfirm={lockAccount} onCancel={() => setShowAlertLock(false)} />
+                showAlertLock && <ConfirmSweetAlert title={`${!isAccountLocked ? 'Unlock' : 'Lock'} account`} text={`Are you sure you want ${!isAccountLocked ? 'unlock' : 'lock'} your account?`} confirmButtonText="Yes" cancelButtonText="No" onConfirm={lockAccount} onClose={() => setShowAlertLock(false)} onCancel={() => setShowAlertLock(false)} />
             }
 
             {

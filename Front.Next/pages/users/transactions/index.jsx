@@ -6,6 +6,7 @@ import useSWR from "swr";
 import { useSession } from "next-auth/react";
 import { getSession } from "next-auth/react";
 import CircularLoading from "@/components/commons/CircularLoading";
+import Head from "next/head";
 
 const fetcher = (token) => async (url) => {
   const headers = {
@@ -50,6 +51,11 @@ export default function Transactions({ transactions }) {
 
   return (
     <>
+      <Head>
+        <title>
+          Primates - My transactions
+        </title>
+      </Head>
       <Layout>
         {/*se modifico el componente para que se pueda usar la tabla tanto en vista admin como user normal */}
         <CustomTable
@@ -73,22 +79,40 @@ export default function Transactions({ transactions }) {
 }
 
 export async function getServerSideProps(context) {
-  const session = await getSession(context);
 
-  const url = "https://localhost:7149/api/Transactions?page=1";
+  try {
 
-  const response = await axios.get(url, {
-    headers: {
-      Authorization: `Bearer ${session.user?.token}`,
-      "Content-Type": "application/json",
-    },
-  });
+    const session = await getSession(context);
 
-  const transactions = response.data;
+    const now = Math.floor(Date.now() / 1000);
 
-  return {
-    props: {
-      transactions,
-    },
-  };
+    if (session == null || session.expires < now) {
+      return {
+        redirect: {
+          destination: '/login',
+          permanent: false,
+        },
+      };
+    }
+
+    const url = "https://localhost:7149/api/Transactions?page=1";
+
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${session.user?.token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    const transactions = response.data;
+
+    return {
+      props: {
+        transactions,
+      },
+    };
+  } catch (error) {
+
+  }
+
 }

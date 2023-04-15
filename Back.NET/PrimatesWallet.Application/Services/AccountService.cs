@@ -15,7 +15,7 @@ namespace PrimatesWallet.Application.Services
         public readonly IUnitOfWork unitOfWork;
 
 
-        public AccountService(IUnitOfWork unitOfWork )
+        public AccountService(IUnitOfWork unitOfWork)
         {
             this.unitOfWork = unitOfWork;
         }
@@ -35,7 +35,7 @@ namespace PrimatesWallet.Application.Services
 
             };
             account.Transactions!.Add(transactions);
-            
+
             var response = unitOfWork.Save();
             if (response > 0) return true;
             return false;
@@ -43,7 +43,7 @@ namespace PrimatesWallet.Application.Services
 
         public async Task<IEnumerable<Account>> GetAccountsList()
         {
-             return await unitOfWork.Accounts.GetAll();
+            return await unitOfWork.Accounts.GetAll();
         }
 
         public async Task<Account> GetAccountById(int id)
@@ -55,8 +55,8 @@ namespace PrimatesWallet.Application.Services
         public async Task<bool> ValidateAccount(int userId, int accountId)
         {
             var account = await unitOfWork.Accounts.GetById(accountId);
-            if( account == null) throw new AppException("The account does not exist", HttpStatusCode.BadRequest);
-            if(account.UserId == userId) return true;
+            if (account == null) throw new AppException("The account does not exist", HttpStatusCode.BadRequest);
+            if (account.UserId == userId) return true;
             return false;
         }
 
@@ -69,7 +69,7 @@ namespace PrimatesWallet.Application.Services
             var reciever = await unitOfWork.Users.GetAccountByUserEmail(transferDTO.Email);
             if (reciever == null) throw new AppException("The email provided is invalid", HttpStatusCode.BadRequest);
 
-                
+
             if (remitent.Money < transferDTO.Amount) throw new AppException("Insufficient balance to do this transaction", HttpStatusCode.BadRequest);
 
             remitent.Money -= transferDTO.Amount;
@@ -145,7 +145,7 @@ namespace PrimatesWallet.Application.Services
               .WithName(x.User.First_Name)
               .WithLastname(x.User.Last_Name)
               .Build()).ToList();
-           
+
             return accountsDTO;
         }
 
@@ -158,13 +158,15 @@ namespace PrimatesWallet.Application.Services
 
         public async Task<string> ActivateAccount(int accountId)
         {
-            var account = await unitOfWork.Accounts.GetByIdDeleted(accountId);
-            unitOfWork.Accounts.Activate(account);
+            var account = await unitOfWork.Accounts.GetById(accountId);
+            account.IsBlocked = !account.IsBlocked;
+            unitOfWork.Accounts.Update(account);
             unitOfWork.Save();
-            return $"{accountId} activated";
+            var message = account.IsBlocked ? "Locked" : "Unlocked";
+            return $"Account {message}" ;
         }
 
-      public async Task<string> DeleteAccount(int accountId, int currentUser)
+        public async Task<string> DeleteAccount(int accountId, int currentUser)
         {
             var user = await unitOfWork.Users.GetById(currentUser);
             var isAdmin = unitOfWork.Users.IsAdmin(user);
@@ -180,21 +182,5 @@ namespace PrimatesWallet.Application.Services
 
         }
 
-        //public async Task<AccountResponseDTO> BlockAccount(int accountId, Account accountDto)
-        //{
-        //    var account = await unitOfWork.Accounts.GetById(accountId);
-        //    if (account == null) throw new AppException("Cant find acccount", HttpStatusCode.NotFound);
-        //    if (account.IsBlocked) throw new AppException("The acccount is already blocked", HttpStatusCode.BadRequest);
-        //    unitOfWork.Accounts.Update(accountDto);
-        //    accountDto.ApplyTo(account, ModelState);
-        //}
-
-
-        //public async Task<AccountResponseDTO> UnlockAccount(int accountId, Account accountDto)
-        //{
-        //    var account = await unitOfWork.Accounts.GetById(accountId);
-        //    if (account == null) throw new AppException("Cant find acccount", HttpStatusCode.NotFound);
-        //    if (!account.IsBlocked) throw new AppException("The acccount is already unlocked", HttpStatusCode.BadRequest);
-        //}
     }
 }

@@ -4,6 +4,7 @@ import { Layout } from "@/layouts/Layout";
 import { Box, Button, FormControlLabel, Grid, Switch, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import { getSession, useSession } from "next-auth/react";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
@@ -58,6 +59,9 @@ const UpdateAccountForm = ({ account }) => {
 
     return (
         <>
+        <Head>
+            <title>Primates - Admin accounts update</title>
+        </Head>
             {
                 showConfirm && <ConfirmSweetAlert
                     title='Confirmation'
