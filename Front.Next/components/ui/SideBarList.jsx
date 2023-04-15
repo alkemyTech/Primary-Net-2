@@ -1,4 +1,4 @@
-import { Divider, List, ListItem, ListSubheader } from "@mui/material"
+import { Box, Divider, List, ListItem, ListSubheader } from "@mui/material"
 import { SidebarOption } from "./SidebarOption"
 import { getSession, useSession } from "next-auth/react"
 
@@ -11,7 +11,7 @@ const options = [
   // },
   {
     name: "Catalogue",
-    path: "/catalogue"
+    path: "/catalogue",
   },
   {
     name: "Transactions",
@@ -21,6 +21,7 @@ const options = [
     name: "Fixed Term Deposits",
     path: "/fixed"
   },
+
   {
     name: "Transfer",
     path: "/account/transfer"
@@ -29,9 +30,7 @@ const options = [
     name: "Topup",
     path: "/account/deposit"
   },
-
-]
-
+];
 
 export const entities = [
   {
@@ -42,10 +41,7 @@ export const entities = [
     name: "Catalogues",
     path: "/admin/catalogues",
   },
-  // {
-  //   name: "Fixed Term Deposits",
-  //   path: "/admin/fixed",
-  // },
+
   {
     name: "Roles",
     path: "/admin/roles",
@@ -58,25 +54,20 @@ export const entities = [
     name: "Users",
     path: "/admin/users",
   },
-]
+];
 
-export const SideBarList = ({ session }) => {
+export const SideBarList = ({ session, isAccountLocked }) => {
 
   const userRole = session?.user?.rol;
 
   return (
     <List>
       {
-        options.map(({ name, path }) => (
-          <SidebarOption key={name} name={name} path={path} />
-        ))
-      }
-      {
         userRole !== "Admin"
           ? null
           :
           <>
-            <Divider sx={{ pt: 2 }} />
+            {/* <Divider sx={{ pt: 2 }} /> */}
             <ListSubheader>
               Admin Panel
             </ListSubheader>
@@ -88,6 +79,16 @@ export const SideBarList = ({ session }) => {
             }
           </>
       }
+      <Box display={ isAccountLocked? "none" : "" }>
+      <ListSubheader>
+              User Options
+      </ListSubheader>        {
+          options.map(({ name, path }) => (
+            <SidebarOption key={name} name={name} path={path} />
+          ))
+        }
+      </Box>
+
     </List>
-  )
-}
+  );
+};
