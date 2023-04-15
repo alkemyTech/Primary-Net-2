@@ -124,6 +124,11 @@ const DepositComponent = ({ account }) => {
     };
     return (
         <>
+            <Head>
+                <title>
+                    Primates - Nex fixed term deposit
+                </title>
+            </Head>
             {
                 showSuccess && <SweetAlert
                     title="Success!"

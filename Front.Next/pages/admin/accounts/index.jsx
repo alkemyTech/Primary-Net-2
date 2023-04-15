@@ -6,6 +6,7 @@ import { getSession } from 'next-auth/react';
 import { useState } from 'react';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import Head from 'next/head';
 
 function AccountsAdmin({ accounts }) {
 
@@ -43,19 +44,26 @@ function AccountsAdmin({ accounts }) {
   }
 
   return (
-    <Layout>
+    <>
+      <Head>
+        <title>
+          Primates - Admin accounts list
+        </title>
+      </Head>
+      <Layout>
 
-      <DenseTableAccounts rows={itemsPerPage()} />
-      <Grid container display={"flex"} justifyContent={"center"} alignItems={"center"} pt={2}>
-        <Button onClick={prevPage} disabled={currentPage - 10 < 0}>
-          <ArrowBackIosIcon fontSize='large' color='primary.main' />
-        </Button>
+        <DenseTableAccounts rows={itemsPerPage()} />
+        <Grid container display={"flex"} justifyContent={"center"} alignItems={"center"} pt={2}>
+          <Button onClick={prevPage} disabled={currentPage - 10 < 0}>
+            <ArrowBackIosIcon fontSize='large' color='primary.main' />
+          </Button>
 
-        <Button onClick={nextPage} disabled={currentPage + 11 >= accounts?.result.length}>
-          <ArrowForwardIosIcon fontSize='large' color='primary.main' />
-        </Button>
-      </Grid>
-    </Layout>
+          <Button onClick={nextPage} disabled={currentPage + 11 >= accounts?.result.length}>
+            <ArrowForwardIosIcon fontSize='large' color='primary.main' />
+          </Button>
+        </Grid>
+      </Layout>
+    </>
   )
 }
 
@@ -63,6 +71,26 @@ export const getServerSideProps = async (context) => {
   try {
 
     const session = await getSession(context);
+
+    const now = Math.floor(Date.now() / 1000);
+
+    if (session == null || session.expires < now) {
+      return {
+        redirect: {
+          destination: '/login',
+          permanent: false,
+        },
+      };
+    }
+
+    if (session.user.rol != 'Admin') {
+      return {
+        redirect: {
+          destination: '/?invalidcredentials=true',
+          permanent: false,
+        },
+      };
+    }
 
     const res = await axios.get(`https://localhost:7149/api/Account?page=1&pageSize=100`, {
       headers: {
