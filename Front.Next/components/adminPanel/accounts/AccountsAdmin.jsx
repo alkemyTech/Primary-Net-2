@@ -66,10 +66,10 @@ export default function DenseTableAdmin({ rows }) {
                             <TableCell sx={{ fontWeight: "bold" }} align="center"> Owner </TableCell>
                             <TableCell sx={{ fontWeight: "bold" }} align="center"> Money </TableCell>
                             {/* <TableCell sx={{ fontWeight: "bold" }} align="center"> Deposits</TableCell> */}
-                            <TableCell sx={{ fontWeight: "bold" }} align="center"> Transactions</TableCell>
+                            {/* <TableCell sx={{ fontWeight: "bold" }} align="center"> Transactions</TableCell> */}
+                            <TableCell sx={{ fontWeight: "bold" }} align="center"> Status </TableCell>
                             <TableCell sx={{ fontWeight: "bold" }} align="center"> Detail</TableCell>
                             <TableCell sx={{ fontWeight: "bold" }} align="center"> Edit</TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }} align="center"> Block / Activate </TableCell>
                             <TableCell sx={{ fontWeight: "bold" }} align="center"> Delete</TableCell>
                         </TableRow>
                     </TableHead>
@@ -86,14 +86,14 @@ export default function DenseTableAdmin({ rows }) {
                                 {/* <TableCell align="center">
                                     <Link style={{ textDecoration: "none", color: "#000" }} href={`/fixedDeposits/${row.id}`}> See user Deposits </Link>
                                 </TableCell> */}
-                                <TableCell align="center">
+                                {/* <TableCell align="center">
                                     <Link style={{ textDecoration: "none", color: "#000" }} href={`/transactions/${row.id}`}> See user Transactions </Link>
-                                </TableCell>
+                                </TableCell> */}
+                                <TableCell align="center">{row.isBlocked === true ? <Button variant='outlined' sx={{ width:80, textTransform: "capitalize", backgroundColor: "tertiary.main", color: "#eee", ":hover": { backgroundColor: "red", color: "#fff" } }}> Blocked </Button> : <Button variant='outlined' sx={{ width:80, textTransform: "capitalize", backgroundColor: "green", color: "#eee", ":hover":{backgroundColor: "green"}}}> Active </Button>}</TableCell>
                                 <TableCell align="center">
                                     <Link style={{ textDecoration: "none", color: "#000" }} href={`/admin/accounts/${row.id}`}> <FmdGoodIcon /> </Link>
                                 </TableCell>
                                 <TableCell align="center"> <EditIcon /> </TableCell>
-                                <TableCell align="center">{row.isBlocked === true ? <Button variant='outlined' sx={{ textTransform: "capitalize", backgroundColor: "green", color: "#000", ":hover": { backgroundColor: "green", color: "#eee" } }}> Activate </Button> : <Button variant='outlined' sx={{ textTransform: "capitalize", backgroundColor: "tertiary.main", color: "#eee", ":hover": { backgroundColor: "red" } }}> Block </Button>}</TableCell>
                                 <TableCell align="center"> <Button onClick={() => handleDeleteAccount(row.id)}> <DeleteForeverIcon /> </Button>  </TableCell>
                             </TableRow>
                         ))}
