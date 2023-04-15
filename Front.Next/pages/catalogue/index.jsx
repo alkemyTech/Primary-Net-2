@@ -106,7 +106,7 @@ const CatalogueIndex = ({ products }) => {
                 userRole === "Admin"
                     ?
                     <Grid container position={"fixed"} bottom={"20px"} left={"90vw"}>
-                        <Link href={"catalogue/newproduct"} style={{ textDecoration: "none", color: "none" }}>
+                        <Link href={"admin/catalogues/new"} style={{ textDecoration: "none", color: "none" }}>
                             <Button color={"tertiary"}>
                                 <AddCircleIcon sx={{ height: "100px", width: "100px" }} />
                             </Button>
