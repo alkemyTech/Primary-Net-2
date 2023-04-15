@@ -78,7 +78,7 @@ const CatalogueIndex = ({ products }) => {
 
                 <Grid container sx={{ backgroundColor: "primary.default", pt: 2, pb: 4, justifyContent: "center", alignItems: "center" }}>
                     {
-                        itemsPerPage().length === 0 ?
+                        itemsPerPage()?.length === 0 ?
                             <PointsAlert pointsNeeded={session?.user?.points}/>
                             :
                             <>
