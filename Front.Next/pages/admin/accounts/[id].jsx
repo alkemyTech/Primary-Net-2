@@ -2,20 +2,50 @@ import { AccountDetailsView } from '@/components/adminPanel/accounts/AccountDeta
 import { Layout } from '@/layouts/Layout'
 import https from 'https'
 import { getSession } from 'next-auth/react'
+import Head from 'next/head'
 
 
 const AccountDetailsPage = ({ account }) => {
   return (
-    <Layout>
-      {account && <AccountDetailsView {...account} />}
-    </Layout>
+    <>
+      <Head>
+        <title>
+          Primates- Admin account details
+        </title>
+      </Head>
+      <Layout>
+        {account && <AccountDetailsView {...account} />}
+      </Layout>
+    </>
   )
 }
 
 export const getServerSideProps = async (context) => {
   try {
-    const session = await getSession(context);
     const { id } = context.params;
+
+    const session = await getSession(context);
+
+    const now = Math.floor(Date.now() / 1000);
+
+    if (session == null || session.expires < now) {
+      return {
+        redirect: {
+          destination: '/login',
+          permanent: false,
+        },
+      };
+    }
+
+    if (session.user.rol != 'Admin') {
+      return {
+        redirect: {
+          destination: '/?invalidcredentials=true',
+          permanent: false,
+        },
+      };
+    }
+
     const res = await fetch(`https://localhost:7149/api/Account/${id}`, {
       method: 'get',
       headers: {

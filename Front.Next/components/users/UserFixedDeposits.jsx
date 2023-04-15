@@ -7,7 +7,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import { Button, Grid, TextField, Typography } from '@mui/material';
+import { Button, Grid, IconButton, TextField, Typography } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import FmdGoodIcon from '@mui/icons-material/FmdGood';
@@ -19,12 +19,12 @@ import { getSession, useSession } from 'next-auth/react';
 import { useState } from 'react';
 
 
-
 export const UserFixedDeposits = ({ fixed }) => {
   const [fixedDeposits, setFixedDeposits] = useState(fixed);
   const router = useRouter();
   const { data: session } = useSession();
   const userName = session?.user?.first_Name || "User";
+
 
   const nonDeletedFixedDeposits = fixedDeposits.filter(fixedDeposit => !fixedDeposit.isDeleted);
   const formatDate = (date = "") => {
@@ -32,6 +32,7 @@ export const UserFixedDeposits = ({ fixed }) => {
     const time=  date.slice(11, 16 )
     return `${day} at ${time}`
   }
+
 
   const handleDeletefixedDeposit = async (fixedDepositId) => {
     const session = await getSession();
@@ -61,6 +62,7 @@ export const UserFixedDeposits = ({ fixed }) => {
       }
     });
   };
+
   return (
     <Grid container >
     <Typography variant='h4' sx={{pb:2}}>
@@ -76,6 +78,7 @@ export const UserFixedDeposits = ({ fixed }) => {
                         <TableCell sx={{ fontWeight: "bold" }} align="center"> Closing Date </TableCell>
                         <TableCell sx={{ fontWeight: "bold" }} align="center"> Return Amount </TableCell>
                         <TableCell sx={{ fontWeight: "bold" }} align="center"> Detail</TableCell>
+                        <TableCell sx={{ fontWeight: "bold" }} align="center"> Edit</TableCell>
                         <TableCell sx={{ fontWeight: "bold" }} align="center"> Delete</TableCell>
                     </TableRow>
                 </TableHead>
@@ -96,6 +99,7 @@ export const UserFixedDeposits = ({ fixed }) => {
                             </TableCell>
                             <TableCell align="center"> <EditIcon /> </TableCell>
                             <TableCell align="center"> <Button onClick={() => handleDeletefixedDeposit(row.id)}> <DeleteForeverIcon /> </Button>  </TableCell>
+
                         </TableRow>
                     ))}
                 </TableBody>
