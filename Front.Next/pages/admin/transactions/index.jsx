@@ -43,15 +43,10 @@ export default function TransactionsAdmin({ transactions }) {
   const handleDelete = async (transactionId) => {
     //podemos usar la funcion reutilizable del ticket anterior
     await deleteModal(
-      `Do you want to delete transaction #${transactionId} ?`,
-      {
-        url: `https://localhost:7149/api/Transactions/${transactionId}`,
-        headers: {
-          Authorization: `Bearer ${session.user?.token}`,
-          "Content-Type": "application/json",
-        },
-      },
+      transactionId,
       "Transaction",
+      `https://localhost:7149/api/Transactions/${transactionId}`,
+      session.user?.token,
       /* deleteModal puede recibir cualquier funcion que se ejecute luego del llamado a la api
             en este caso como usamos swr, podemos directamente actualizar el cache sin llamar nuevamente a la api y como la callback se ejecuta solo si la eliminacion es exitosa
             nos aseguramos que el usuario deja de ver la transaccion que efectivamente fue eliminada en la base de datos
@@ -72,9 +67,7 @@ export default function TransactionsAdmin({ transactions }) {
   return (
     <>
       <Head>
-        <title>
-          Primates - Admin transactions list
-        </title>
+        <title>Primates - Admin transactions list</title>
       </Head>
       <Layout>
         {/*usamos el componente reusable de tabla del ticket anterior, el cual
@@ -112,7 +105,6 @@ export default function TransactionsAdmin({ transactions }) {
 export async function getServerSideProps(context) {
   //del server buscamos la primera pagina de todas las transacciones
   try {
-
     const session = await getSession(context);
 
     const now = Math.floor(Date.now() / 1000);
@@ -120,16 +112,16 @@ export async function getServerSideProps(context) {
     if (session == null || session.expires < now) {
       return {
         redirect: {
-          destination: '/login',
+          destination: "/login",
           permanent: false,
         },
       };
     }
 
-    if (session.user.rol != 'Admin') {
+    if (session.user.rol != "Admin") {
       return {
         redirect: {
-          destination: '/?invalidcredentials=true',
+          destination: "/?invalidcredentials=true",
           permanent: false,
         },
       };
@@ -153,8 +145,8 @@ export async function getServerSideProps(context) {
   } catch (error) {
     return {
       props: {
-        data: null
-      }
-    }
+        data: null,
+      },
+    };
   }
 }

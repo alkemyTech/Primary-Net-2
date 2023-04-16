@@ -14,15 +14,10 @@ function RolesAdmin({ roles = [] }) {
   const handleDelete = async (rolId) => {
     /* muestra un modal generico para eliminar entidades */
     await deleteModal(
-      `Do you want to delete role #${rolId} ?`, //mensaje confirmacion
-      {
-        url: `https://localhost:7149/api/Role/${rolId}`,
-        headers: {
-          Authorization: `Bearer ${session.user?.token}`,
-          "Content-Type": "application/json",
-        }, //ruta a la que vamos a mandar la eliminacion
-      },
+      rolId,
       "Role", //nombre de la entidad a eliminar
+      `https://localhost:7149/api/Role/${rolId}`, //ruta a la que vamos a mandar la eliminacion
+      session.user?.token,
       () => {
         setData(data.filter((rol) => rol.id !== rolId));
       } //funcion para actualizar el estado
@@ -32,9 +27,7 @@ function RolesAdmin({ roles = [] }) {
   return (
     <>
       <Head>
-        <title>
-          Primates - Admin roles list
-        </title>
+        <title>Primates - Admin roles list</title>
       </Head>
       <Layout>
         <DenseTableRoles rows={data} handleDelete={handleDelete} />
@@ -52,16 +45,16 @@ export const getServerSideProps = async (context) => {
     if (session == null || session.expires < now) {
       return {
         redirect: {
-          destination: '/login',
+          destination: "/login",
           permanent: false,
         },
       };
     }
 
-    if (session.user.rol != 'Admin') {
+    if (session.user.rol != "Admin") {
       return {
         redirect: {
-          destination: '/?invalidcredentials=true',
+          destination: "/?invalidcredentials=true",
           permanent: false,
         },
       };

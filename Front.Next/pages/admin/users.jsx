@@ -33,34 +33,30 @@ export default function Users({ users }) {
   );
 
   const handlePrevPage = () => {
-    if (page > 1) { //solo se puede avanzar a la siguente pagina si la actual es mayor a 1
+    if (page > 1) {
+      //solo se puede avanzar a la siguente pagina si la actual es mayor a 1
       setPage((prevPage) => prevPage - 1);
     }
   };
 
   const handleNextPage = () => {
-    if (data.nextPage != "None") { //nextPage es una propiedad que devuelve la api si existe pagina siguiente
+    if (data.nextPage != "None") {
+      //nextPage es una propiedad que devuelve la api si existe pagina siguiente
       setPage((prevPage) => prevPage + 1);
     }
   };
 
   const handleDelete = async (userId) => {
     await deleteModal(
-
-      `Do you want to delete User #${userId} ?`,
-      {
-      url: `https://localhost:7149/api/User/${userId}`,
-      headers: {
-        Authorization: `Bearer ${session.user?.token}`,
-        "Content-Type": "application/json",
-      },
-    },
-    "User",
-
-      () => {
-
+      userId,
+      "User",
+      `https://localhost:7149/api/User/${userId}`,
+      session.user?.token,
+      () => { //probar solo mutate()
         // // Obtener una nueva lista de usuarios que excluya al usuario eliminado
-         const updatedUsers = data.result.filter((user) => user.userId !== userId);
+        const updatedUsers = data.result.filter(
+          (user) => user.userId !== userId
+        );
         // // Actualizar el caché de SWR con la nueva lista de usuarios
         mutate(
           `https://localhost:7149/api/User/All?page=${page}`,
@@ -68,18 +64,20 @@ export default function Users({ users }) {
           false
         );
       }
-      )
-    };
-
+    );
+  };
 
   if (!data || isLoading) {
     return <CircularLoading />;
   }
 
-
   if (isError) {
     return <div>Error loading users</div>;
   }
+
+  //para poder usar bien customTable, user es la unica entidad que el id se llama distinto
+  const formattedUsers = data.result.map(({ userId: id, ...rest }) => ({ id, ...rest }));
+  
   return (
     <>
       <Layout>
@@ -87,7 +85,14 @@ export default function Users({ users }) {
          por ejemplo esta entidad contiene el campo password el cual no vamos a mostrar  */}
         <CustomTable
           rows={data.result} //contenido a visualizar, en este caso es un arreglo de usuarios
-          columnLabels={["Id", "First Name", "Last Name", "Email", "Points", "Rol"]} //columnas
+          columnLabels={[
+            "Id",
+            "First Name",
+            "Last Name",
+            "Email",
+            "Points",
+            "Rol",
+          ]} //columnas
           dataProperties={[
             "userId",
             "first_Name",
@@ -110,7 +115,6 @@ export async function getServerSideProps(context) {
   /*Cargamos la primera pagina en el server */
 
   try {
-
     const session = await getSession(context);
 
     const now = Math.floor(Date.now() / 1000);
@@ -118,16 +122,16 @@ export async function getServerSideProps(context) {
     if (session == null || session.expires < now) {
       return {
         redirect: {
-          destination: '/login',
+          destination: "/login",
           permanent: false,
         },
       };
     }
 
-    if (session.user.rol != 'Admin') {
+    if (session.user.rol != "Admin") {
       return {
         redirect: {
-          destination: '/?invalidcredentials=true',
+          destination: "/?invalidcredentials=true",
           permanent: false,
         },
       };
@@ -151,9 +155,8 @@ export async function getServerSideProps(context) {
   } catch (error) {
     return {
       props: {
-        data: null
-      }
-    }
+        data: null,
+      },
+    };
   }
 }
-
