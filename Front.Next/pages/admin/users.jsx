@@ -7,6 +7,7 @@ import CircularLoading from "@/components/commons/CircularLoading";
 import { getSession } from "next-auth/react";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
+import { deleteModal } from "@/components/commons/modal/deleteModal";
 
 const fetcher = (token) => async (url) => {
   const headers = {
@@ -44,29 +45,32 @@ export default function Users({ users }) {
   };
 
   const handleDelete = async (userId) => {
-    try {
-      await axios.delete(
-        `https://localhost:7149/api/User/${userId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${session?.user?.token}`,
-          },
-        }
-      );
-      // Obtener una nueva lista de usuarios que excluya al usuario eliminado
-      const updatedUsers = data.result.filter((user) => user.userId !== userId);
-      // Actualizar el caché de SWR con la nueva lista de usuarios
-      mutate(
-        `https://localhost:7149/api/User/All?page=${page}`,
-        { ...data, result: updatedUsers },
-        false
-      );
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  
-  
+    await deleteModal(
+
+      `Do you want to delete User #${userId} ?`,
+      {
+      url: `https://localhost:7149/api/User/${userId}`,
+      headers: {
+        Authorization: `Bearer ${session.user?.token}`,
+        "Content-Type": "application/json",
+      },
+    },
+    "User",
+
+      () => {
+
+        // // Obtener una nueva lista de usuarios que excluya al usuario eliminado
+         const updatedUsers = data.result.filter((user) => user.userId !== userId);
+        // // Actualizar el caché de SWR con la nueva lista de usuarios
+        mutate(
+          `https://localhost:7149/api/User/All?page=${page}`,
+          { ...data, result: updatedUsers },
+          false
+        );
+      }
+      )
+    };
+
 
   if (!data || isLoading) {
     return <CircularLoading />;
