@@ -32,8 +32,11 @@ export const Layout = ({ children }) => {
                 }
             })
             const { isBlocked } = res.data;
+
+            console.log(isBlocked)
             setIsAccountLocked(isBlocked)
         } catch (error) {
+            console.log("ENTRE AL ERROR")
             console.log(error)
         }
     }
@@ -58,11 +61,11 @@ export const Layout = ({ children }) => {
     return (
         <>
             {
-                showAlert && <ConfirmSweetAlert title="Logging out" text="Are you sure you want to logout?" confirmButtonText="Yes" cancelButtonText="No" onConfirm={logout} onCancel={() => setShowAlert(false)} />
+                showAlert && <ConfirmSweetAlert title="Logging out" text="Are you sure you want to logout?" confirmButtonText="Yes" cancelButtonText="No" onConfirm={logout} onCancel={() => setShowAlert(false)} onClose={() => setShowAlert(false)} />
             }
 
             {
-                showAlertLock && <ConfirmSweetAlert title="Lock account" text="Are you sure you want lock your account?" confirmButtonText="Yes" cancelButtonText="No" onConfirm={lockAccount} onCancel={() => setShowAlertLock(false)} />
+                showAlertLock && <ConfirmSweetAlert title={`${isAccountLocked ? 'Unlock' : 'Lock'} account`} text={`Are you sure you want ${isAccountLocked ? 'unlock' : 'lock'} your account?`} confirmButtonText="Yes" cancelButtonText="No" onConfirm={lockAccount} onClose={() => setShowAlertLock(false)} onCancel={() => setShowAlertLock(false)} />
             }
 
             {
@@ -74,7 +77,7 @@ export const Layout = ({ children }) => {
             }
             <Grid container>
 
-                <Navbar drawerWidth={drawerWidth} isAccountLocked={isAccountLocked} isLocked={isLocked} lockAccount={lockAccount} logout={logout} setShowAlert={setShowAlert} setShowAlertLock={setShowAlertLock} />
+                <Navbar drawerWidth={drawerWidth} isAccountLocked={isAccountLocked} setShowAlert={setShowAlert} setShowAlertLock={setShowAlertLock} />
                 <Sidebar drawerWidth={drawerWidth} isAccountLocked={isAccountLocked} />
                 <Box component={"main"} sx={{ flexGrow: 1, padding: 2 }}>
                     <Toolbar />

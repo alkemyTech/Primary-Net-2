@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -17,20 +16,52 @@ import axios from 'axios';
 import Swal from 'sweetalert2'
 import { useRouter } from 'next/router';
 import { getSession, useSession } from 'next-auth/react';
+import { useState } from 'react';
 
 
-export const UserFixedDeposits = ({fixed}) => {
+export const UserFixedDeposits = ({ fixed }) => {
+  const [fixedDeposits, setFixedDeposits] = useState(fixed);
+  const router = useRouter();
+  const { data: session } = useSession();
+  const userName = session?.user?.first_Name || "User";
 
-    const {data: session} = useSession();
-    const router = useRouter();
-    const userName = session?.user?.first_Name || "User"
 
-    const formatDate = (date = "") => {
-        const day = date.slice(0, 10 )
-        const time=  date.slice(11, 16 )
-        return `${day} at ${time}`
-    }
+  const nonDeletedFixedDeposits = fixedDeposits.filter(fixedDeposit => !fixedDeposit.isDeleted);
+  const formatDate = (date = "") => {
+    const day = date.slice(0, 10 )
+    const time=  date.slice(11, 16 )
+    return `${day} at ${time}`
+  }
 
+
+  const handleDeletefixedDeposit = async (fixedDepositId) => {
+    const session = await getSession();
+
+    Swal.fire({
+      title: `Do you want to delete fixedDeposit #${fixedDepositId} ?`,
+      showDenyButton: false,
+      showCancelButton: true,
+      confirmButtonText: 'Delete',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(` https://localhost:7149/api/FixedDeposit/${fixedDepositId}`, {
+            headers: {
+              Authorization: `Bearer ${session.user?.token}`,
+              'Content-Type': 'application/json',
+            },
+          })
+          .then((res) => {
+            const updatedFixedDeposits = fixedDeposits.filter((fd) => fd.id !== fixedDepositId);
+            setFixedDeposits(updatedFixedDeposits);
+            Swal.fire('Deleted!', '', 'success')
+            router.reload();
+          });
+      } else {
+        Swal.fire('Changes are not saved', '', 'info');
+      }
+    });
+  };
 
   return (
     <Grid container >
@@ -52,7 +83,7 @@ export const UserFixedDeposits = ({fixed}) => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {fixed?.map((row) => (
+                {nonDeletedFixedDeposits?.map((row) => ( 
                         <TableRow
                             key={row.id}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -66,8 +97,9 @@ export const UserFixedDeposits = ({fixed}) => {
                             <TableCell align="center">
                                 <Link style={{ textDecoration: "none", color: "#000" }} href={`/fixed/${row.id}`}> <FmdGoodIcon /> </Link>
                             </TableCell>
-                            <TableCell align="center"> <IconButton onClick={()=> router.push(`/fixed/edit/${row.id}`)}> <EditIcon /> </IconButton>  </TableCell>
-                            <TableCell align="center"> <Button> <DeleteForeverIcon /> </Button>  </TableCell>
+                            <TableCell align="center"> <IconButton onClick={()=> {router.push(`fixed/edit/${row.id}`)}}><EditIcon /> </IconButton>  </TableCell>
+                            <TableCell align="center"> <Button onClick={() => handleDeletefixedDeposit(row.id)}> <DeleteForeverIcon /> </Button>  </TableCell>
+
                         </TableRow>
                     ))}
                 </TableBody>

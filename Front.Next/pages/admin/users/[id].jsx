@@ -9,17 +9,22 @@ import { date } from 'yup'
 
 const userDetailsPage = ({ user }) => {
 
-    console.log(user)
-
     return (
-        <Layout>
+        <>
             <Head>
                 <title>
-                    Primates Admin - users
+                    Primates - Admin user details
                 </title>
             </Head>
-            <UserDetailsView {...user} />
-        </Layout>
+            <Layout>
+                <Head>
+                    <title>
+                        Primates Admin - users
+                    </title>
+                </Head>
+                <UserDetailsView {...user} />
+            </Layout>
+        </>
     )
 }
 
@@ -28,14 +33,11 @@ export const getServerSideProps = async (context) => {
         //Forma de obtener el id de la url
         const { id } = context.params;
 
-        console.log("Este es el id" + id);
-
-        //obtener la sesión next auth
         const session = await getSession(context);
-        //obtener el tiempo actual
+
         const now = Math.floor(Date.now() / 1000);
 
-        if(session == null){
+        if (session == null || session.expires < now) {
             return {
                 redirect: {
                     destination: '/login',
@@ -44,40 +46,28 @@ export const getServerSideProps = async (context) => {
             };
         }
 
-        if (!session || (session && session.expires && session.expires < now)) { 
+        if (session.user.rol != 'Admin') {
             return {
                 redirect: {
-                    destination: '/login?sessionexpired=true',
+                    destination: '/?invalidcredentials=true',
                     permanent: false,
                 },
             };
         }
-        if (session.user?.rol && session.user.rol != "Admin") {
-            return {
-              redirect: {
-                destination: '/',
-                permanent: false,
-              },
-            };
-          }
-
-          const { data } = await axios.get(
+        const { data } = await axios.get(
             `https://localhost:7149/api/User/${id}`,
             {
-              headers:{
-                'Authorization': `Bearer ${session.user?.token}`,
-                "Content-Type": "application/json",
+                headers: {
+                    'Authorization': `Bearer ${session.user?.token}`,
+                    "Content-Type": "application/json",
 
-            },
-              httpsAgent: new https.Agent({
-                rejectUnauthorized: false
-            }),
+                },
+                httpsAgent: new https.Agent({
+                    rejectUnauthorized: false
+                }),
             }
-          );
+        );
 
-        console.log(data)
-
-        
         return {
             props: {
                 user: data.result

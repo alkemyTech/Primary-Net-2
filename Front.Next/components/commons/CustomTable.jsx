@@ -118,8 +118,8 @@ function AdminTable({
                       <TableCell align="center">
                         <Link
                           style={{ textDecoration: "none", color: "#000" }}
-                          href={`${routeBase}/edit/${row.id}`}
-                        >
+                          href={  `${routeBase}/${row.id ? row.id : row.userId}`}
+                          >
                           {" "}
                           <EditIcon />{" "}
                         </Link>{" "}

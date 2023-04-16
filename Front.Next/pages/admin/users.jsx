@@ -6,6 +6,7 @@ import CustomTable from "@/components/commons/CustomTable";
 import CircularLoading from "@/components/commons/CircularLoading";
 import { getSession } from "next-auth/react";
 import { useSession } from "next-auth/react";
+import Head from "next/head";
 
 const fetcher = (token) => async (url) => {
   const headers = {
@@ -42,7 +43,7 @@ export default function Users({ users }) {
     }
   };
 
-  const handleDelete = () => {};
+  const handleDelete = () => { };
 
   if (!data || isLoading) {
     return <CircularLoading />;
@@ -54,12 +55,17 @@ export default function Users({ users }) {
   }
   return (
     <>
+      <Head>
+        <title>
+          Primates - Admin users list
+        </title>
+      </Head>
       <Layout>
         {/*Componente reutilizable hay que asignarle las columnas y la data que se quiera mostrar
          por ejemplo esta entidad contiene el campo password el cual no vamos a mostrar  */}
         <CustomTable
           rows={data.result} //contenido a visualizar, en este caso es un arreglo de usuarios
-          columnLabels={["Id", "First Name", "Last Name", "Email", "Points" , "Rol"]} //columnas
+          columnLabels={["Id", "First Name", "Last Name", "Email", "Points", "Rol"]} //columnas
           dataProperties={[
             "userId",
             "first_Name",
@@ -80,22 +86,52 @@ export default function Users({ users }) {
 
 export async function getServerSideProps(context) {
   /*Cargamos la primera pagina en el server */
-  const session = await getSession(context);
-  const url = "https://localhost:7149/api/User/All?page=1";
 
-  const response = await axios.get(url, {
-    headers: {
-      Authorization: `Bearer ${session.user?.token}`,
-      "Content-Type": "application/json",
-    },
-  });
+  try {
 
-  const users = response.data;
+    const session = await getSession(context);
 
-  return {
-    props: {
-      users,
-    },
-  };
+    const now = Math.floor(Date.now() / 1000);
+
+    if (session == null || session.expires < now) {
+      return {
+        redirect: {
+          destination: '/login',
+          permanent: false,
+        },
+      };
+    }
+
+    if (session.user.rol != 'Admin') {
+      return {
+        redirect: {
+          destination: '/?invalidcredentials=true',
+          permanent: false,
+        },
+      };
+    }
+    const url = "https://localhost:7149/api/User/All?page=1";
+
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${session.user?.token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    const users = response.data;
+
+    return {
+      props: {
+        users,
+      },
+    };
+  } catch (error) {
+    return {
+      props: {
+        data: null
+      }
+    }
+  }
 }
 

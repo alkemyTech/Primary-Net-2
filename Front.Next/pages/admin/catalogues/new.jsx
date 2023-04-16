@@ -1,6 +1,7 @@
 import CreateForm from "@/components/commons/CreateForm";
 import axios from "axios";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import Swal from "sweetalert2";
 import * as Yup from "yup";
@@ -44,6 +45,11 @@ const CreateProduct = () => {
 
   return (
     <>
+      <Head>
+        <title>
+          Primates - Admin Create product
+        </title>
+      </Head>
       <CreateForm
         entity={"Product"}
         fields={["productDescription", "image", "points"]}
@@ -53,5 +59,35 @@ const CreateProduct = () => {
     </>
   );
 };
+
+export const getServerSideProps = async (context) => {
+  const session = await getSession(context);
+
+  const now = Math.floor(Date.now() / 1000);
+
+  if (session == null || session.expires < now) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    };
+  }
+
+  if (session.user.rol != 'Admin') {
+    return {
+      redirect: {
+        destination: '/?invalidcredentials=true',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {
+      data: null
+    }
+  }
+}
 
 export default CreateProduct;

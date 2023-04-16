@@ -30,6 +30,10 @@ const options = [
     name: "Topup",
     path: "/account/deposit"
   },
+  {
+    name: "Create Deposit",
+    path: "/fixed/make"
+  },
 ];
 
 export const entities = [

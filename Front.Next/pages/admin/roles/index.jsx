@@ -5,6 +5,7 @@ import { getSession } from "next-auth/react";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { deleteModal } from "@/components/commons/modal/deleteModal";
+import Head from "next/head";
 
 function RolesAdmin({ roles = [] }) {
   const [data, setData] = useState(roles); //asignamos en un estado la data que viene del server
@@ -23,21 +24,48 @@ function RolesAdmin({ roles = [] }) {
       },
       "Role", //nombre de la entidad a eliminar
       () => {
-        setData(data.filter((rol)=> rol.id !==rolId));
+        setData(data.filter((rol) => rol.id !== rolId));
       } //funcion para actualizar el estado
     );
   };
 
   return (
-    <Layout>
-      <DenseTableRoles rows={data} handleDelete={handleDelete} />
-    </Layout>
+    <>
+      <Head>
+        <title>
+          Primates - Admin roles list
+        </title>
+      </Head>
+      <Layout>
+        <DenseTableRoles rows={data} handleDelete={handleDelete} />
+      </Layout>
+    </>
   );
 }
 
 export const getServerSideProps = async (context) => {
   try {
     const session = await getSession(context);
+
+    const now = Math.floor(Date.now() / 1000);
+
+    if (session == null || session.expires < now) {
+      return {
+        redirect: {
+          destination: '/login',
+          permanent: false,
+        },
+      };
+    }
+
+    if (session.user.rol != 'Admin') {
+      return {
+        redirect: {
+          destination: '/?invalidcredentials=true',
+          permanent: false,
+        },
+      };
+    }
 
     const res = await axios.get(`https://localhost:7149/api/Role`, {
       headers: {
