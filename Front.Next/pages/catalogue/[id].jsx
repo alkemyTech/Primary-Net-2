@@ -75,7 +75,6 @@ export const getServerSideProps = async (context) => {
       }),
     });
     const catalogue = await res.json();
-    console.log(catalogue);
     return {
       props: {
         catalogue,

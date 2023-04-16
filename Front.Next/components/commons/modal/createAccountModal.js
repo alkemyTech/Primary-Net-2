@@ -23,7 +23,6 @@ export const createAccountModal = async (token) => {
             "Content-Type": "application/json"
         }
     })
-      console.log(response);
       Swal.fire("Account created successfully!", "", "success");
     } catch (error) {
       console.error(error);

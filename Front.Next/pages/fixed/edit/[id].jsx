@@ -25,9 +25,6 @@ const EditFixedTerm = ({ fixed, account }) => {
     const router = useRouter();
     const { id } = router.query;
 
-    // console.log(account)
-    // console.log(new Date( fixed.creation_Date).toISOString())
-
     const formatDate = (date = "") => {
         const day = date.slice(0, 10)
         // const time = date.slice(11, 16)

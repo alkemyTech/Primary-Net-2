@@ -41,3 +41,17 @@ export const Sidebar = ({drawerWidth, isAccountLocked}) => {
     </Box>
   );
 };
+
+/*    
+<Image
+    cover
+    src={primate}
+    alt="Logo de la aplicación"
+    style={{
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "auto",
+}}>
+ */

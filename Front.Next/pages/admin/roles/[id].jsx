@@ -55,7 +55,6 @@ export const getServerSideProps = async (context) => {
       })
     });
     const role = await res.json();
-    console.log(role)
     return {
       props: {
         role,

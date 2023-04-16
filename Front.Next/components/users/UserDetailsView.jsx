@@ -4,6 +4,7 @@ import EditIcon from '@mui/icons-material/Edit';
 
 export const UserDetailsView = ({ first_Name, last_Name, email, points, rol, money }) => {
     const router = useRouter();
+    const{ id } = router.query
 
     return (
         <Paper elevation={3} style={{ padding: "20px", margin: "20px" }}>
