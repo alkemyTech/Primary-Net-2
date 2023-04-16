@@ -39,7 +39,6 @@ const Register = () => {
         } catch (error) {
             const { response: data } = error;
             const message = data.data.errors[0].error;
-            console.log(message)
             if (message && message == "Email already registered.") setEmailAlreadyRegistered(true);
             else {
                 setShowAlert(true);
@@ -88,7 +87,6 @@ const Register = () => {
                 <Formik
                     initialValues={{ name: "", lastname: "", email: "", password: "", confirmPassword: "" }}
                     onSubmit={async (values, { setSubmitting }) => {
-                        console.log(values);
                         await handleRegister({ First_Name: values.name, Last_Name: values.lastname, Email: values.email, Password: values.password })
                         //TODO redirect to login.
                     }}
@@ -229,8 +227,6 @@ const Register = () => {
 export async function getServerSideProps(context) {
 
     const session = await getSession(context);
-
-    console.log("Esta es la sesion =>", session)
 
     if (session && session.expires > Math.floor(Date.now() / 1000)) {
         return {

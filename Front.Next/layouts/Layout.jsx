@@ -32,11 +32,8 @@ export const Layout = ({ children }) => {
                 }
             })
             const { isBlocked } = res.data;
-
-            console.log(isBlocked)
             setIsAccountLocked(isBlocked)
         } catch (error) {
-            console.log("ENTRE AL ERROR")
             console.log(error)
         }
     }

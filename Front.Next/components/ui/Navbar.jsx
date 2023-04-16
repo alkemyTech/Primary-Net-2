@@ -79,8 +79,6 @@ export const Navbar = ({
 export const getServerSideProps = async (context) => {
   try {
     const session = await getSession(context);
-    console.log(session);
-
     return {
       props: {
         account: res.data,

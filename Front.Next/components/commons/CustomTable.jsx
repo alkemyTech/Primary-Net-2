@@ -94,7 +94,6 @@ function AdminTable({
               </TableRow>
             </TableHead>
             <TableBody>
-              {console.log(rows)}
               {rows.map((row) => (
                 <TableRow
                   key={row.id ? row.id : row.userId}

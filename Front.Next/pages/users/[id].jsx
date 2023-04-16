@@ -6,9 +6,6 @@ import Head from 'next/head'
 
 
 const userDetailsPage = ({ user }) => {
-
-  console.log(user)
-
   return (
     <>
       <Head>
@@ -54,7 +51,6 @@ export const getServerSideProps = async (context) => {
     });
 
     const { result } = await res.json();
-    console.log(result)
     return {
       props: {
         user: result

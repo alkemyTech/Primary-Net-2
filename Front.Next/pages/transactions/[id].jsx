@@ -118,8 +118,6 @@ export const getServerSideProps = async (context) => {
       }
     );
 
-    console.log(data)
-
     return {
       props: {
         transaction: data.result

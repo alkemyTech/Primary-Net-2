@@ -57,7 +57,6 @@ export const getServerSideProps = async (context) => {
       })
     });
     const account = await res.json();
-    console.log(account)
     return {
       props: {
         account,
