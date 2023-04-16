@@ -69,7 +69,7 @@ export default function DenseTableRoles({ rows, handleDelete }) {
                 </TableCell>
                 <TableCell align="center">
                   {" "}
-                  <EditIcon />{" "}
+                  <Link style={{ textDecoration: "none", color: "#000" }} href={`/admin/roles/update/${row.id}`}> <EditIcon /> </Link>
                 </TableCell>
                 <TableCell align="center">
                   {" "}
