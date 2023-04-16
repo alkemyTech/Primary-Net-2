@@ -65,7 +65,7 @@ export const Layout = ({ children }) => {
             }
 
             {
-                showAlertLock && <ConfirmSweetAlert title={`${!isAccountLocked ? 'Unlock' : 'Lock'} account`} text={`Are you sure you want ${!isAccountLocked ? 'unlock' : 'lock'} your account?`} confirmButtonText="Yes" cancelButtonText="No" onConfirm={lockAccount} onClose={() => setShowAlertLock(false)} onCancel={() => setShowAlertLock(false)} />
+                showAlertLock && <ConfirmSweetAlert title={`${isAccountLocked ? 'Unlock' : 'Lock'} account`} text={`Are you sure you want ${isAccountLocked ? 'unlock' : 'lock'} your account?`} confirmButtonText="Yes" cancelButtonText="No" onConfirm={lockAccount} onClose={() => setShowAlertLock(false)} onCancel={() => setShowAlertLock(false)} />
             }
 
             {

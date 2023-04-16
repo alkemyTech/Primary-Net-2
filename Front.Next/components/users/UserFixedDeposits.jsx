@@ -97,7 +97,7 @@ export const UserFixedDeposits = ({ fixed }) => {
                             <TableCell align="center">
                                 <Link style={{ textDecoration: "none", color: "#000" }} href={`/fixed/${row.id}`}> <FmdGoodIcon /> </Link>
                             </TableCell>
-                            <TableCell align="center"> <EditIcon /> </TableCell>
+                            <TableCell align="center"> <IconButton onClick={()=> {router.push(`fixed/edit/${row.id}`)}}><EditIcon /> </IconButton>  </TableCell>
                             <TableCell align="center"> <Button onClick={() => handleDeletefixedDeposit(row.id)}> <DeleteForeverIcon /> </Button>  </TableCell>
 
                         </TableRow>

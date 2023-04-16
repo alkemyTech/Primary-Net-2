@@ -97,7 +97,7 @@ function AdminTable({
               {console.log(rows)}
               {rows.map((row) => (
                 <TableRow
-                  key={row.userId}
+                  key={row.id ? row.id : row.userId}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
                   {/*llama a una funcion para mostrar solo los atributos necesarios ya que hay entidades con datos que no queremos mostrar */}
@@ -118,8 +118,8 @@ function AdminTable({
                       <TableCell align="center">
                         <Link
                           style={{ textDecoration: "none", color: "#000" }}
-                          href={`${routeBase}/edit/${row.id}`}
-                        >
+                          href={  `${routeBase}/${row.id ? row.id : row.userId}`}
+                          >
                           {" "}
                           <EditIcon />{" "}
                         </Link>{" "}
@@ -127,7 +127,7 @@ function AdminTable({
                       <TableCell align="center">
                         <Button
                           style={{ textDecoration: "none", color: "#000" }}
-                          onClick={() => handleDelete(row.id)}
+                          onClick={() => handleDelete(row.id ? row.id : row.userId)}
                         >
                           {" "}
                           <DeleteForeverIcon />{" "}
