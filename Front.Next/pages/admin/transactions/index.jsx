@@ -96,6 +96,7 @@ export default function TransactionsAdmin({ transactions }) {
           handleNextPage={handleNextPage}
           routeBase={"/transactions"}
           handleDelete={handleDelete}
+          newButton={true}
         />
       </Layout>
     </>

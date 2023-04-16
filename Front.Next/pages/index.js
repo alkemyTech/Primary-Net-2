@@ -16,7 +16,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
 export default function Home({ transactions = [], deposits = [], user }) {
-
+console.log(transactions)
   const formatDate = (date = "") => {
     const day = date.slice(0, 10);
     return `${day}`;
@@ -56,7 +56,7 @@ export default function Home({ transactions = [], deposits = [], user }) {
         <Grid container sx={{ backgroundColor: "#fff", borderRadius: 5, p: 2 }}>
           <Grid container display={"flex"} pb={2}>
             <Typography variant="h4">
-              Welcome {user.first_Name}!
+              Welcome {user?.first_Name}!
             </Typography>
           </Grid>
           <Grid>
@@ -64,7 +64,7 @@ export default function Home({ transactions = [], deposits = [], user }) {
               <Typography variant="h5">Balance:</Typography>
               <Grid item>
                 <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-                  $ {user.money}
+                  $ {user?.money}
                 </Typography>
               </Grid>
             </Grid>
@@ -74,7 +74,7 @@ export default function Home({ transactions = [], deposits = [], user }) {
 
               <Grid item>
                 <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-                  {user.points}
+                  {user?.points}
                 </Typography>
               </Grid>
             </Grid>

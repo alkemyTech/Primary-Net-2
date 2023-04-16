@@ -34,6 +34,7 @@ function AdminTable({
   handleDelete,
   routeBase,
   dataProperties,
+  newButton = false,
 }) {
   const { data: session } = useSession();
 
@@ -105,7 +106,7 @@ function AdminTable({
                   <TableCell align="center">
                     <Link
                       style={{ textDecoration: "none", color: "#000" }}
-                      href={  `${routeBase}/${row.id ? row.id : row.userId}`}
+                      href={`${routeBase}/${row.id ? row.id : row.userId}`}
                     >
                       {" "}
                       <FmdGoodIcon />{" "}
@@ -117,8 +118,8 @@ function AdminTable({
                       <TableCell align="center">
                         <Link
                           style={{ textDecoration: "none", color: "#000" }}
-                          href={  `${routeBase}/${row.id ? row.id : row.userId}`}
-                          >
+                          href={`${routeBase}/${row.id ? row.id : row.userId}`}
+                        >
                           {" "}
                           <EditIcon />{" "}
                         </Link>{" "}
@@ -126,7 +127,9 @@ function AdminTable({
                       <TableCell align="center">
                         <Button
                           style={{ textDecoration: "none", color: "#000" }}
-                          onClick={() => handleDelete(row.id ? row.id : row.userId)}
+                          onClick={() =>
+                            handleDelete(row.id ? row.id : row.userId)
+                          }
                         >
                           {" "}
                           <DeleteForeverIcon />{" "}
@@ -140,7 +143,7 @@ function AdminTable({
           </Table>
         </TableContainer>
         {/*Solo tendra el boton de agregar uno nuevo desde esta vista si es admin */}
-        {session.user.rol == "Admin" && (
+        {(session.user.rol == "Admin" && newButton ) && (
           <Grid container position={"fixed"} bottom={"20px"} left={"90vw"}>
             <Link
               href={`{routeBase}/new`}
