@@ -12,15 +12,26 @@ using PrimatesWallet.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCors(options =>
+//builder.Services.AddCors(options =>
+//{
+//    options.AddDefaultPolicy(builder =>
+//    {
+//        builder.WithOrigins("http://localhost:3000")
+//               .AllowAnyHeader()
+//               .AllowAnyMethod();
+//    });
+//});
+
 {
-    options.AddDefaultPolicy(builder =>
+    builder.Services.AddCors(options =>
     {
-        builder.WithOrigins("http://localhost:3000")
-               .AllowAnyHeader()
-               .AllowAnyMethod();
+        options.AddPolicy("localhost",
+            builder => builder.WithOrigins("http://localhost:3000", "http://127.0.0.1:3000")
+                                .AllowAnyHeader()
+                                .AllowAnyMethod());
     });
-});
+
+}
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDIApplication(builder.Configuration);
@@ -62,7 +73,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
-app.UseCors();
+app.UseCors("localhost");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
