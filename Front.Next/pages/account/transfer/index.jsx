@@ -18,6 +18,12 @@ export default function TransferPage() {
   const [amount, setAmount] = useState("");
   const [email, setEmail] = useState("");
 
+  const [touched, setTouched] = useState({
+    concept: false,
+    amount: false,
+    email: false,
+  });
+
   const [success, setSuccess] = useState(null);
   const { data: session } = useSession();
 
@@ -41,11 +47,16 @@ export default function TransferPage() {
   };
 
   const isValidAmount = amount > 0 && !isNaN(amount);
-  const isValidEmail = (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/).test(email)
+  const isValidEmail = (/^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/).test(email)
   const isValidConcept = typeof concept === "string" || concept.lenght > 8;
 
   return (
     <Layout>
+      <title>
+          Primates - Transfer 
+        </title>
+
+
       <Grid
         container
         mt={6}
@@ -79,11 +90,12 @@ export default function TransferPage() {
                 type="string"
                 value={concept}
                 onChange={(e) => setConcept(e.target.value)}
-                error={!isValidConcept}
+                error={!isValidConcept && touched.concept}
                 sx={{ marginBottom: 2, textAlign: "center" }}
                 InputProps={{
                   sx: { fontSize: 20 },
                 }}
+                onBlur={() => setTouched({ ...touched, concept: true })}
                 fullWidth
               />
               <TextField
@@ -92,7 +104,8 @@ export default function TransferPage() {
                 type="number"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                error={!isValidAmount}
+                error={!isValidAmount && touched.amount}
+                onBlur={() => setTouched({ ...touched, amount: true })} 
                 helperText={!isValidAmount ? "Enter a valid value" : ""}
                 sx={{ marginBottom: 2, textAlign: "center" }}
                 InputProps={{
@@ -106,7 +119,8 @@ export default function TransferPage() {
                 type="string"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                error={!isValidEmail}
+                error={!isValidEmail && touched.email}
+                onBlur={() => setTouched({ ...touched, email: true })}                
                 helperText={!isValidEmail ? "Enter a valid email" : ""}
                 sx={{ marginBottom: 2, textAlign: "center" }}
                 InputProps={{
