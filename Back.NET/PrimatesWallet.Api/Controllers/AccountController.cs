@@ -75,7 +75,7 @@ namespace PrimatesWallet.Api.Controllers
         /// <response code="404">The requested resource was not found.</response>
         /// <response code="500">Internal Server Error. Something has gone wrong on the Primates Wallet server.</response>
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         [SwaggerOperation(Summary = "Get a specific Account", Description = "Get a specific account by its ID.")]
         [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
         [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]
