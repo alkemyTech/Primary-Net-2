@@ -39,6 +39,7 @@ namespace PrimatesWallet.Infrastructure.Repositories
                      || (t.Type == TransactionType.repayment && t.To_Account_Id == id) //reembolso recibido
                      || (t.Type == TransactionType.repayment && t.Account_Id == id)) // reembolsos realizados (solo admins)
                  .Where(x => x.IsDeleted == false)
+                 .OrderBy(x => x.Date)
                  .Skip((page - 1) * pageSize)
                  .Take(pageSize)
                  .ToListAsync();

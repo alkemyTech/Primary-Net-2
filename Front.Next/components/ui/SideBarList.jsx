@@ -5,10 +5,10 @@ import { getSession, useSession } from "next-auth/react"
 
 
 const options = [
-  // {
-  //   name: "Home",
-  //   path: "/users/"
-  // },
+  {
+    name: "Home",
+    path: "/"
+  },
   {
     name: "Catalogue",
     path: "/catalogue",
