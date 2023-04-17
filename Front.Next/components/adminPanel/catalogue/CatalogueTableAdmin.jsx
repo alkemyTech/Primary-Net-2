@@ -81,7 +81,7 @@ export default function DenseTableCatalogue({ rows = [] }) {
                                 <TableCell align="center">{row.productDescription}</TableCell>
                                 <TableCell align="center">{row.points}</TableCell>
                                 <TableCell align="center"><Link style={{ textDecoration: "none", color: "#000" }} href={`/catalogue/${row.id}`}> <FmdGoodIcon /> </Link> </TableCell>
-                                <TableCell align="center"> <EditIcon /> </TableCell>
+                                <TableCell align="center"> <Link style={{ textDecoration: "none", color: "#000" }} href={`/admin/catalogues/update/${row.id}`}><EditIcon /></Link></TableCell>
                                 <TableCell align="center">  <Button onClick={() => handleDeleteProduct(row.id)}> <DeleteForeverIcon />  </Button> </TableCell>
                             </TableRow>
                         ))}

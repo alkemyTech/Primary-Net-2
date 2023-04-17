@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Layout } from '@/layouts/Layout';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
-import { headers } from '@/next.config';
+import Head from 'next/head';
 
 
 
@@ -12,6 +12,10 @@ export default function DepositPage() {
   const [amount, setAmount] = useState('');
   const [success, setSuccess] = useState(false);
   const { data: session } = useSession()
+
+  const [touched, setTouched] = useState({
+    amount: false,
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,9 +31,18 @@ export default function DepositPage() {
       console.log(error);
     }
   }
+  const isValidAmount = amount > 0 && !isNaN(amount);
+
 
   return (
     <Layout>
+
+      <Head>
+        <title>
+          Primates - Topup 
+        </title>
+      </Head>
+
       <Grid container width={"100%"} height={"60vh"} mt={6} component={"div"} display={"flex"} justifyContent={"center"} alignItems={"center"}>
 
         <Card sx={{ width: "80%", height: "80%", margin: 'auto', boxShadow: 4 }}>
@@ -44,7 +57,8 @@ export default function DepositPage() {
                 type="number"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                error={amount <= 0 || isNaN(amount)}
+                error={!isValidAmount && touched.amount}
+                onBlur={() => setTouched({ ...touched, amount: true })} 
                 helperText={amount <= 0 || isNaN(amount) ? 'Enter a valid value' : ''}
                 sx={{ marginBottom: 2, textAlign: "center" }}
                 InputProps={{

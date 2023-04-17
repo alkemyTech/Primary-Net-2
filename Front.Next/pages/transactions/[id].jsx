@@ -94,16 +94,6 @@ export const getServerSideProps = async (context) => {
       };
     }
 
-    if (!session || (session && session.expires && session.expires < now)) {
-      return {
-        redirect: {
-          destination: '/login?sessionexpired=true',
-          permanent: false,
-        },
-      };
-    }
-
-
     const { data } = await axios.get(
       `https://localhost:7149/api/Transactions/${id}`,
       {
