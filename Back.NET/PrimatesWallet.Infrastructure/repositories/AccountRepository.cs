@@ -35,7 +35,7 @@ namespace PrimatesWallet.Infrastructure.repositories
             var account = await base._dbContext.Accounts
                 .Where(a => a.UserId == userId && a.IsDeleted == false)
                 .Include(b => b.FixedTermDeposit //join con fixedTermc
-                .OrderBy(c => c.Closing_Date)) //ordenamos en base de datos para mejor rendimiento
+                .OrderByDescending(c => c.Closing_Date)) //ordenamos en base de datos para mejor rendimiento
                 .FirstOrDefaultAsync();
 
             return account;

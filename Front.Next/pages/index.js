@@ -16,6 +16,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
 export default function Home({ transactions = [], deposits = [], user }) {
+  console.log(transactions);
   const formatDate = (date = "") => {
     const day = date.slice(0, 10);
     return `${day}`;
@@ -140,9 +141,17 @@ export default function Home({ transactions = [], deposits = [], user }) {
                     >
                       {row.id}
                     </TableCell>
-                    <TableCell align="right" sx={{ fontSize: "large" }}>
-                      $ {row.amount}
+                    <TableCell
+                      align="right"
+                      sx={{
+                        fontSize: "large",
+                        color: (row.type === 'payment' && row.account_Id == user?.accountId) ? "red" : "green",
+                      }}
+                    >
+                      {row.type === 'payment' && row.account_Id == user?.accountId
+                        ?  "-$" + row.amount : "$" + row.amount}
                     </TableCell>
+
                     <TableCell align="right" sx={{ fontSize: "large" }}>
                       {row.concept}
                     </TableCell>
@@ -215,8 +224,8 @@ export default function Home({ transactions = [], deposits = [], user }) {
                     >
                       {row.id}
                     </TableCell>
-                    <TableCell align="right" sx={{ fontSize: "large" }}>
-                      {row.amount}
+                    <TableCell align="right" sx={{ fontSize: "large",color:"green" }}>
+                      {"$" + row.amount}
                     </TableCell>
                     <TableCell align="right" sx={{ fontSize: "large" }}>
                       {formatDate(row.creation_Date)}
@@ -239,17 +248,6 @@ export default function Home({ transactions = [], deposits = [], user }) {
 
 export const getServerSideProps = async (context) => {
   const session = await getSession(context);
-
-  const now = Math.floor(Date.now() / 1000);
-
-  if (session == null || session.expires < now) {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  }
   try {
     const token = session.user?.token;
 

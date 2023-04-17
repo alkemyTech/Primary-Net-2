@@ -32,7 +32,7 @@ namespace PrimatesWallet.Infrastructure.repositories
         public async Task<FixedTermDeposit> GetFixedTermDepositById(int userId, int fixedId)
         {
             // Selecciona un Plazo fijo espescífico para el usuario que lo requiere
-            var accountDeposits = await _dbContext.Accounts.Where(x => x.UserId == userId ).Include(x => x.FixedTermDeposit).FirstOrDefaultAsync();
+            var accountDeposits = await _dbContext.Accounts.Where(x => x.UserId == userId ).Include(x => x.FixedTermDeposit.OrderByDescending(x => x.Creation_Date)).FirstOrDefaultAsync();
             if (accountDeposits == null) throw new AppException("No deposits in this account", HttpStatusCode.NoContent);
             var fixedTermDeposit = accountDeposits.FixedTermDeposit.FirstOrDefault(x => x.Id == fixedId && x.IsDeleted == false);
             return fixedTermDeposit;
@@ -43,6 +43,7 @@ namespace PrimatesWallet.Infrastructure.repositories
             //recuperamos en base de datos solo lo que necesitamos
             return await base._dbContext.FixedTermDeposits
                 .Where( x => x.IsDeleted == false)
+                .OrderByDescending(x => x.Creation_Date)
                 .Skip((page - 1) * pageSize) //saltamos lo anterior
                 .Take(pageSize) //tomamos los 10 que necesitamos
                 .ToListAsync();

@@ -11,12 +11,12 @@ const CatalogueDetailsPage = ({ catalogue }) => {
   const router = useRouter();
   const { data: session } = useSession();
 
-  const handleGetProduct = async (points) => {
+  const handleGetProduct = async (points,id) => {
     /*funcion que crea un modal y habilita token y body para axios */
-    await pointsToProductModal(session.user?.token, points, async () => {
+    await pointsToProductModal(session?.user?.token, points, async () => {
       /*callback que solo se ejecuta si lo anterior es exitoso,
        en este caso restarle puntos al usuario igual a los puntos del producto*/
-      await deleteProduct(catalogue.id);
+      //await deleteProduct(id);
       router.back();
     });
   };
@@ -24,7 +24,7 @@ const CatalogueDetailsPage = ({ catalogue }) => {
   const deleteProduct = async (productId) => {
     await axios.delete(`https://localhost:7149/api/Catalogue/${productId}`, {
       headers: {
-        Authorization: `Bearer ${session.user?.token}`,
+        Authorization: `Bearer ${session?.user?.token}`,
         "Content-Type": "application/json",
       },
     });

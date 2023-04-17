@@ -90,7 +90,7 @@ export default function DenseTableCatalogue({ rows = [] }) {
             </TableContainer>
 
             <Grid container position={"fixed"} bottom={"20px"} left={"90vw"}>
-                <Button color={"tertiary"} onClick={() => router.push('admin/catalogues/new')}>
+                <Button color={"tertiary"} onClick={() => router.push('/admin/catalogues/new')}>
                     <AddCircleIcon sx={{ height: "100px", width: "100px" }} />
                 </Button>
             </Grid>
