@@ -8,9 +8,9 @@ import { modalCallBack } from "./modalCallback";
             para modificar el estado y no se vea mas el elemento eliminado
 */
 export const deleteModal = async (id, entityName, url, token, callback) => {
-  message = `Do you want to delete transaction #${id} ?`;
-  sucessMessage = `${entityName} Deleted!`;
-  ErrorMessage = `Error deleting ${entityName}`;
+  const message = `Do you want to delete transaction #${id} ?`;
+  const successMessage = `${entityName} Deleted!`;
+  const errorMessage = `Error deleting ${entityName}`;
 
   const config = {
     apiEndpoint: {
@@ -24,5 +24,5 @@ export const deleteModal = async (id, entityName, url, token, callback) => {
     confirmButtonText: "Delete",
   };
 
-  await modalCallBack(message, config, sucessMessage, errorMessage, callback);
+  await modalCallBack(message, config, successMessage, errorMessage, callback);
 };

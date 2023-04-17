@@ -18,7 +18,6 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 
 const DepositComponent = ({ account }) => {
-  console.log(account);
   const [amount, setAmount] = useState("");
   const [term, setTerm] = useState("1-month");
   const [error, setError] = useState(null);

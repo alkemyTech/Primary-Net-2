@@ -176,7 +176,7 @@ namespace PrimatesWallet.Api.Controllers
         /// <response code="401">Unauthorized user for this operation.</response>
         /// <response code="404">The requested resource was not found.</response>
         /// <response code="500">Internal Server Error. Something has gone wrong on the Primates Wallet server.</response>
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         [HttpPut("{id}")]
         [SwaggerOperation(Summary = "Update a Fixed Term Deposit.", Description = "Updates a fixed term deposit by its ID.")]
         [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]

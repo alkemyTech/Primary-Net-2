@@ -12,12 +12,11 @@ import { NoProducts, PointsAlert } from '@/components/adminPanel/catalogue/NoPro
 import Head from 'next/head'
 
 
-const CatalogueIndex = ({ products }) => {
+const CatalogueIndex = ({ products, user }) => {
 
     const [currentPage, setCurrentPage] = useState(0);
     const [search, setSearch] = useState("");
     const [filterPoints, setFilterPoints] = useState(false);
-
 
     const { data: session } = useSession();
     const userRole = session?.user?.rol;
@@ -34,7 +33,7 @@ const CatalogueIndex = ({ products }) => {
         }
 
         let filteredResults = products?.result.filter(r => r.productDescription.toLowerCase().includes(search.toLowerCase()))
-        let pointFilter = filteredResults.filter(r => r.points <= session?.user?.points)
+        let pointFilter = filteredResults.filter(r => r.points <= user?.points)
 
         if (currentPage === 0) {
             return pointFilter.slice(currentPage, currentPage + 6)
@@ -79,14 +78,14 @@ const CatalogueIndex = ({ products }) => {
 
                         <TextField size="normal" sx={{ width: "80%" }} label="Search Products by Name" variant="standard" onChange={handleSearch} />
                         <Button variant="text" sx={{ width: "20%", backgroundColor: "#ddd", ":hover": { color: "white", backgroundColor: "#FB923C" } }} onClick={() => setFilterPoints(!filterPoints)}>
-                            Filter By Points ({session?.user?.points} Points)
+                            Filter By Points ({user?.points} Points)
                         </Button>
                     </Grid>
 
                     <Grid container sx={{ backgroundColor: "primary.default", pt: 2, pb: 4, justifyContent: "center", alignItems: "center" }}>
                         {
                             itemsPerPage()?.length === 0 ?
-                                <PointsAlert pointsNeeded={session?.user?.points} />
+                                <PointsAlert pointsNeeded={user?.points} />
                                 :
                                 <>
                                     <ListProducts products={itemsPerPage()} />
@@ -130,6 +129,7 @@ export const getServerSideProps = async (context) => {
     try {
 
         const session = await getSession(context);
+        
 
         const now = Math.floor(Date.now() / 1000);
 
@@ -148,9 +148,22 @@ export const getServerSideProps = async (context) => {
                 "Content-Type": "application/json",
             }
         });
+
+
+        const { data } = await axios.get(
+            `https://localhost:7149/api/User/${session?.user?.userId}`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${session.user?.token}`,
+                    "Content-Type": "application/json",
+
+                }
+            }
+        );
         return {
             props: {
-                products: res.data
+                products: res.data,
+                user: data.result
             }
         };
     } catch (error) {

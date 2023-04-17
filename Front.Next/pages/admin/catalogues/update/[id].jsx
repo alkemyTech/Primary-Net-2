@@ -12,7 +12,6 @@ import * as Yup from "yup";
 
 const UpdateCatalogue = ({ product }) => {
 
-    console.log(product)
     const [newProduct, setNewProduct] = useState(null);
     const [showConfirm, setShowConfirm] = useState(false);
     const [success, setSuccess] = useState(false);
@@ -211,7 +210,6 @@ export const getServerSideProps = async (context) => {
             }
         });
 
-        console.log(data)
 
         return {
             props: {

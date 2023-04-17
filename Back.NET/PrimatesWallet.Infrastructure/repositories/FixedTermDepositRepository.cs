@@ -36,7 +36,6 @@ namespace PrimatesWallet.Infrastructure.repositories
             if (accountDeposits == null) throw new AppException("No deposits in this account", HttpStatusCode.NoContent);
             var fixedTermDeposit = accountDeposits.FixedTermDeposit.FirstOrDefault(x => x.Id == fixedId && x.IsDeleted == false);
             return fixedTermDeposit;
-
         }
 
         public async Task<IEnumerable<FixedTermDeposit>> GetAll(int page, int pageSize)

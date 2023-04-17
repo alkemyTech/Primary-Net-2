@@ -94,7 +94,7 @@ export default function TransactionsAdmin({ transactions }) {
           ]}
           handlePrevPage={handlePrevPage}
           handleNextPage={handleNextPage}
-          routeBase={"/admin/transactions"}
+          routeBase={"/transactions"}
           handleDelete={handleDelete}
           newButton={true}
         />
