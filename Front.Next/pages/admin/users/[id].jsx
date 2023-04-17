@@ -61,10 +61,7 @@ export const getServerSideProps = async (context) => {
                     'Authorization': `Bearer ${session.user?.token}`,
                     "Content-Type": "application/json",
 
-                },
-                httpsAgent: new https.Agent({
-                    rejectUnauthorized: false
-                }),
+                }
             }
         );
 

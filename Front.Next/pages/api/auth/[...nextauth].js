@@ -41,7 +41,6 @@ export default NextAuth({
 
           const user = { ...data, token: response.data };
 
-          console.log(user);
 
           if (user) {
             // axios.defaults.headers.common = {"Authorization": `Bearer ${response.data}`}

@@ -16,7 +16,6 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
 export default function Home({ transactions = [], deposits = [], user }) {
-console.log(transactions)
   const formatDate = (date = "") => {
     const day = date.slice(0, 10);
     return `${day}`;
@@ -55,9 +54,7 @@ console.log(transactions)
       <Layout>
         <Grid container sx={{ backgroundColor: "#fff", borderRadius: 5, p: 2 }}>
           <Grid container display={"flex"} pb={2}>
-            <Typography variant="h4">
-              Welcome {user?.first_Name}!
-            </Typography>
+            <Typography variant="h4">Welcome {user?.first_Name}!</Typography>
           </Grid>
           <Grid>
             <Grid container display={"flex"} direction={"row"}>
@@ -242,6 +239,17 @@ console.log(transactions)
 
 export const getServerSideProps = async (context) => {
   const session = await getSession(context);
+
+  const now = Math.floor(Date.now() / 1000);
+
+  if (session == null || session.expires < now) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
   try {
     const token = session.user?.token;
 
@@ -253,7 +261,9 @@ export const getServerSideProps = async (context) => {
     const [userData, transactionData, fixedTermData] = await Promise.all([
       axios.get("https://localhost:7149/api/Auth/me", { headers }),
       axios.get("https://localhost:7149/api/Transactions?page=1", { headers }),
-      axios.get("https://localhost:7149/api/FixedDeposit/UserDeposits", { headers }),
+      axios.get("https://localhost:7149/api/FixedDeposit/UserDeposits", {
+        headers,
+      }),
     ]);
 
     return {

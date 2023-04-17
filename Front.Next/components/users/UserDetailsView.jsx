@@ -42,8 +42,7 @@ export const UserDetailsView = ({ first_Name, last_Name, email, points, rol, mon
                     sx={{ mt: 2 }}
                 >
                     <Typography textTransform={"capitalize"}>
-                        Volver
-
+                        Back
                     </Typography>
                 </Button>
 

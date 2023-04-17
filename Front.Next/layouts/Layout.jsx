@@ -18,7 +18,7 @@ export const Layout = ({ children }) => {
   const [lockeddAlert, setLockedAlert] = useState(false);
 
   const logout = () => {
-    signOut({ redirect: "/login", permanent: false });
+    signOut({ callbackUrl : "/login" , permanent: false });
   };
 
   const isLocked = useCallback(async () => {
@@ -27,7 +27,7 @@ export const Layout = ({ children }) => {
         `https://localhost:7149/api/Account/${session?.user?.accountId}`,
         {
           headers: {
-            Authorization: `Bearer ${session.user?.token}`,
+            Authorization: `Bearer ${session?.user?.token}`,
             "Content-Type": "application/json",
           },
         }
@@ -41,11 +41,11 @@ export const Layout = ({ children }) => {
 
   const lockAccount = async () => {
     const { data } = await axios.put(
-      `https://localhost:7149/api/Account/Activate/${session.user?.accountId}`,
+      `https://localhost:7149/api/Account/Activate/${session?.user?.accountId}`,
       {},
       {
         headers: {
-          Authorization: `Bearer ${session.user?.token}`,
+          Authorization: `Bearer ${session?.user?.token}`,
           "Content-Type": "application/json",
         },
       }
