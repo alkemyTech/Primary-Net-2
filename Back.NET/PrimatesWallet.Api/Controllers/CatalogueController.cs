@@ -145,8 +145,8 @@ namespace PrimatesWallet.Api.Controllers
         /// <response code="401">Unauthorized user for this operation.</response>
         /// <response code="404">"NotFound. The requested operation was not found.</response>  
         /// <response code="500">Internal Server Error. Something has gone wrong on the Primates Wallet server.</response>
+        [Authorize]
         [HttpDelete("{catalogueId}")]
-        [Authorize(Roles = "Admin")]
         [SwaggerOperation(Summary = "Delete a product.", Description = "Deletes a product from the catalogue by its ID.")]
         [SwaggerResponse(StatusCodes.Status200OK, "Successful operation")]
         [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized user for this operation")]

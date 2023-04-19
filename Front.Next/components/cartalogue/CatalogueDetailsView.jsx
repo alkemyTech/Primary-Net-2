@@ -2,7 +2,7 @@ import { Card, CardContent, Grid, Typography, CardMedia, Button } from '@mui/mat
 import React, { useState } from 'react'
 import { useRouter } from 'next/router';
 
-export const CatalogueDetailsView = ({ productDescription, image, points , handleGetProduct}) => {
+export const CatalogueDetailsView = ({ id, productDescription, image, points , handleGetProduct}) => {
   const [isImageOpen, setIsImageOpen] = useState(false);
   const router = useRouter();
 
@@ -64,7 +64,7 @@ export const CatalogueDetailsView = ({ productDescription, image, points , handl
               color="primary"
               size="large"
               sx={{ mt: 2 }}
-              onClick={() =>handleGetProduct(points)}
+              onClick={() =>handleGetProduct(points,id)}
             >
               Buy now
             </Button>
